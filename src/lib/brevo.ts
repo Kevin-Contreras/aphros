@@ -65,7 +65,7 @@ export async function sendRecommendationEmail(payload: RecommendationEmailPayloa
   const absoluteSite = getSiteOrigin() || "https://aphros.vercel.app";
 
   const productCards = payload.products
-    .map((product, idx) => {
+    .map((product) => {
       const imageSrc = toPublicImageUrl(product.imageUrl, absoluteSite) || "";
       const imageHtml = imageSrc
         ? `<td width="92" valign="top" style="padding-right:16px;">
@@ -77,12 +77,12 @@ export async function sendRecommendationEmail(payload: RecommendationEmailPayloa
       <tr>
         <td style="padding-bottom:16px;">
           <div style="background:#ffffff;border:1px solid #e6ded1;border-radius:18px;padding:18px 20px;">
-            <!-- Step Tag & Price -->
+            <!-- Category Tag & Price -->
             <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:8px;">
               <tr>
                 <td>
                   <span style="display:inline-block;background:#ffede7;color:#8e4f40;border:1px solid #f8d5ca;font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;padding:3px 10px;border-radius:12px;">
-                    Paso ${idx + 1} · ${escapeHtml(product.category || "Cuidado botánico")}
+                    ${escapeHtml(product.category || "Recomendado")}
                   </span>
                 </td>
                 <td align="right" style="font-size:15px;font-weight:700;color:#2b1f1c;">
@@ -187,13 +187,13 @@ export async function sendRecommendationEmail(payload: RecommendationEmailPayloa
                 </p>
               </div>
 
-              <!-- Routine Title -->
+              <!-- Recommended Products Title -->
               <div style="margin-bottom:18px;">
                 <h3 style="margin:0 0 4px;font-family:Georgia,serif;font-size:20px;font-weight:normal;color:#2b1f1c;">
-                  Tu Ritual Recomendado
+                  Productos Recomendados para Ti
                 </h3>
                 <p style="margin:0;font-size:13px;color:#786661;">
-                  Aplica estos productos en el orden sugerido para obtener los mejores resultados:
+                  Seleccionamos estos productos de Aphros pensando en lo que tu piel necesita:
                 </p>
               </div>
 

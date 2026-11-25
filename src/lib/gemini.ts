@@ -92,7 +92,7 @@ ${JSON.stringify(catalogPayload, null, 2)}
 
 REGLAS CLÍNICAS Y DE PRECISIÓN (OBLIGATORIAS):
 1. Lee a fondo la "description" de CADA producto del catálogo: usa sus ingredientes activos, beneficios específicos, textura, momento de uso (día/noche/semanal) y contraindicaciones para elegir la rutina más exacta.
-2. Elige entre 3 y 4 productos en ORDEN EXACTO DE APLICACIÓN: Limpieza/Jabón -> Exfoliante o Mascarilla (si aplica) -> Tónico -> Sérum/Tratamiento -> Crema facial -> Protector solar SPF (al final, solo si necesitaProtectorSolar=true).
+2. Elige entre 3 y 4 productos recomendados que mejor se adapten al perfil de la persona (no menciones números de paso ni impongas un orden estricto de pasos, son productos recomendados para su piel). Incluye protector solar SPF solo si necesitaProtectorSolar=true.
 3. Diferencia bien cada perfil, NO repitas siempre los mismos productos:
    - Si objetivoPrincipal = "manchas": prioriza Serum Facial de Vitamina C y/o Crema Facial Aclarante (o Protege y Aclara si también necesita SPF).
    - Si objetivoPrincipal = "antiedad": prioriza Crema Facial Macadamia y/o Serum Facial de Vitamina C (y Crema Exfoliante Rosa de Castilla si no tiene sensibilidad alta).

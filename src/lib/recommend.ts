@@ -79,37 +79,6 @@ export function isBodyOnlyProduct(product: ProductForAi) {
   );
 }
 
-function getRoutineStepOrder(product: ProductForAi): number {
-  const cat = product.category.toLowerCase();
-  const name = product.name.toLowerCase();
-  if (
-    cat.includes("limpieza") ||
-    cat.includes("jabón") ||
-    cat.includes("jabon") ||
-    name.includes("micelar") ||
-    name.includes("jabón") ||
-    name.includes("jabon")
-  ) {
-    return 1;
-  }
-  if (cat.includes("exfoliante") || name.includes("exfoliante") || cat.includes("mascarilla")) {
-    return 2;
-  }
-  if (cat.includes("tónico") || cat.includes("tonico") || name.includes("agua de rosas")) {
-    return 3;
-  }
-  if (cat.includes("serum") || cat.includes("sérum") || name.includes("serum")) {
-    return 4;
-  }
-  if (cat.includes("protector") || name.includes("spf") || name.includes("filtro solar")) {
-    return 6;
-  }
-  if (cat.includes("combo")) {
-    return 5;
-  }
-  return 5; // Cremas hidratantes / tratamientos
-}
-
 /** Avoid pairing a combo with the individual items already inside it. */
 export function conflictsWithSelected(
   candidate: ProductForAi,
@@ -564,12 +533,7 @@ function pickBalancedRoutine(
     selected.push(item);
   }
 
-  // Sort by natural routine step order (cleanser -> toner/mask -> serum -> cream -> SPF)
-  return selected
-    .slice(0, limit)
-    .sort(
-      (a, b) => getRoutineStepOrder(a.product) - getRoutineStepOrder(b.product),
-    );
+  return selected.slice(0, limit);
 }
 
 export function preciseFallbackRecommendation(
@@ -653,14 +617,10 @@ export function refineAiPicks(
       }
     }
 
-    const ordered = picked
-      .slice(0, 4)
-      .sort((a, b) => getRoutineStepOrder(a) - getRoutineStepOrder(b));
-
     return {
       ...ai,
       skinType: ai.skinType || profile.skinType,
-      productIds: ordered.map((p) => p.id),
+      productIds: picked.slice(0, 4).map((p) => p.id),
     };
   }
 

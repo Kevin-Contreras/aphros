@@ -149,7 +149,7 @@ async function ResultadoContent({
           <div className="flex items-center justify-between">
             <div>
               <h2 className="font-[family-name:var(--font-display)] text-2xl font-medium text-forest sm:text-3xl">
-                Tu Rutina Recomendada
+                Productos Recomendados
               </h2>
               <p className="text-xs text-muted-foreground">
                 {products.length} {products.length === 1 ? "producto seleccionado" : "productos seleccionados"} para ti
@@ -159,7 +159,7 @@ async function ResultadoContent({
           </div>
 
           <div className="mt-4 flex flex-col gap-4">
-            {products.map((product, idx) => (
+            {products.map((product) => (
               <Card
                 key={product.id}
                 className="overflow-hidden rounded-3xl border-border bg-card shadow-2xs [--card-spacing:--spacing(4)] sm:[--card-spacing:--spacing(5)]"
@@ -192,7 +192,7 @@ async function ResultadoContent({
                       <div>
                         <div className="flex items-center justify-between gap-1">
                           <Badge variant="secondary" className="h-auto px-2.5 py-0.5 text-[10px] uppercase font-semibold">
-                            Paso {idx + 1}
+                            Recomendado
                           </Badge>
                           <span className="font-semibold text-sm text-foreground">
                             {product.currency} {product.price.toFixed(2)}
