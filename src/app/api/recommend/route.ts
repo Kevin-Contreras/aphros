@@ -46,9 +46,14 @@ export async function POST(request: Request) {
       );
     }
 
+    // Plain Spanish for Gemini + keyword tags (option value) for matching skinTags
     const aiAnswers = data.answers.map((answer) => ({
       question: answer.questionText,
-      answer: `${answer.optionLabel} (${answer.optionValue})`,
+      chosenOption: answer.optionLabel,
+      tags: answer.optionValue
+        .split(/[,\s|]+/)
+        .map((tag) => tag.trim().toLowerCase())
+        .filter(Boolean),
     }));
 
     const recommendation = await analyzeSkinAndRecommend(

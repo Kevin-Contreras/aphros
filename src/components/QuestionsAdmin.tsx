@@ -223,12 +223,18 @@ export function QuestionsAdmin() {
         </div>
 
         <div className="space-y-3">
-          <div className="flex items-center justify-between">
-            <p className="text-sm font-medium text-forest">Opciones</p>
+          <div className="flex items-center justify-between gap-3">
+            <div>
+              <p className="text-sm font-medium text-forest">Opciones</p>
+              <p className="text-xs text-mist">
+                Izquierda = texto del quiz · Derecha = tags para la IA (igual que
+                skinTags de productos, ej. <code>grasa,acne</code>)
+              </p>
+            </div>
             <button
               type="button"
               onClick={addOption}
-              className="text-xs text-sage hover:text-sage-dark"
+              className="shrink-0 text-xs text-sage hover:text-sage-dark"
             >
               + Agregar opción
             </button>
@@ -236,14 +242,14 @@ export function QuestionsAdmin() {
           {form.options.map((option, index) => (
             <div key={index} className="grid gap-2 sm:grid-cols-[1fr_1fr_auto]">
               <input
-                placeholder="Etiqueta visible"
+                placeholder="Lo que ve la persona"
                 value={option.label}
                 onChange={(e) => updateOption(index, "label", e.target.value)}
                 className="rounded-xl border border-sand bg-ivory/70 px-3 py-2 text-sm outline-none focus:border-sage"
                 required
               />
               <input
-                placeholder="Valor interno (ej. grasa)"
+                placeholder="Tags IA: grasa,acne"
                 value={option.value}
                 onChange={(e) => updateOption(index, "value", e.target.value)}
                 className="rounded-xl border border-sand bg-ivory/70 px-3 py-2 text-sm outline-none focus:border-sage"

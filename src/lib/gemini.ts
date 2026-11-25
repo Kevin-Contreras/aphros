@@ -14,7 +14,12 @@ export type ProductForAi = {
 
 export type AnswerForAi = {
   question: string;
-  answer: string;
+  /** Human-readable option shown in the quiz */
+  chosenOption?: string;
+  /** Keyword tags from the option value (aligned with product skinTags) */
+  tags?: string[];
+  /** @deprecated legacy shape */
+  answer?: string;
 };
 
 export type RecommendationResult = {
@@ -40,7 +45,12 @@ function fallbackRecommendation(
   answers: AnswerForAi[],
   products: ProductForAi[],
 ): RecommendationResult {
-  const joined = answers.map((a) => a.answer.toLowerCase()).join(" ");
+  const joined = answers
+    .map((a) =>
+      [a.chosenOption, a.answer, ...(a.tags ?? [])].filter(Boolean).join(" "),
+    )
+    .join(" ")
+    .toLowerCase();
   const tags: string[] = [];
   if (joined.includes("grasa") || joined.includes("acne") || joined.includes("brillo")) {
     tags.push("grasa", "acne", "mixta");
@@ -118,6 +128,12 @@ export async function analyzeSkinAndRecommend(
 
   const prompt = `Eres esteticista de Aphros, marca guatemalteca de cosmética artesanal.
 Analiza las respuestas del quiz de piel y recomienda SOLO productos del catálogo (usa sus id exactos).
+
+Cada respuesta del usuario trae:
+- question: la pregunta
+- chosenOption: lo que eligió, en español claro (prioridad para entender la necesidad)
+- tags: palabras clave internas (ej. grasa, acne, sin_rutina). Úsalas para cruzar con skinTags del catálogo.
+
 Responde ÚNICAMENTE con JSON válido (sin markdown) con esta forma:
 {
   "skinType": "grasa|seca|mixta|sensible|madura|normal",
@@ -128,8 +144,8 @@ Responde ÚNICAMENTE con JSON válido (sin markdown) con esta forma:
 }
 Reglas:
 - Recomienda entre 3 y 5 productos.
-- Prioriza match con tags de piel y preocupación principal.
-- Si hay alta exposición al sol, incluye protector SPF si está en catálogo.
+- Prioriza match entre tags del usuario y skinTags del producto.
+- Si hay alta exposición al sol / tags de proteccion, incluye protector SPF si está en catálogo.
 - No inventes productos fuera del catálogo.
 
 Respuestas del usuario:
