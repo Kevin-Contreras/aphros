@@ -1,0 +1,88 @@
+@import "tailwindcss";
+
+:root {
+  --ivory: #f7f3ea;
+  --cream: #fffdf8;
+  --sage: #6b8f71;
+  --sage-dark: #4f6f55;
+  --forest: #2f3d2c;
+  --mist: #5c6558;
+  --sand: #e8e2d6;
+  --clay: #7a6a4f;
+  --background: var(--ivory);
+  --foreground: var(--forest);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-ivory: var(--ivory);
+  --color-cream: var(--cream);
+  --color-sage: var(--sage);
+  --color-sage-dark: var(--sage-dark);
+  --color-forest: var(--forest);
+  --color-mist: var(--mist);
+  --color-sand: var(--sand);
+  --color-clay: var(--clay);
+  --font-sans: var(--font-body);
+  --font-display: var(--font-display);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-body), Georgia, serif;
+  min-height: 100vh;
+}
+
+::selection {
+  background: color-mix(in oklab, var(--sage) 35%, white);
+}
+
+.aphros-grain {
+  background-image:
+    radial-gradient(circle at 12% 18%, rgba(107, 143, 113, 0.12), transparent 42%),
+    radial-gradient(circle at 88% 12%, rgba(122, 106, 79, 0.1), transparent 36%),
+    linear-gradient(180deg, #f7f3ea 0%, #f3eee3 48%, #efe8da 100%);
+}
+
+.fade-up {
+  animation: fadeUp 0.7s ease both;
+}
+
+.fade-up-delay {
+  animation: fadeUp 0.9s ease 0.12s both;
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes softPulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.03);
+  }
+}
+
+.soft-pulse {
+  animation: softPulse 4.5s ease-in-out infinite;
+}
