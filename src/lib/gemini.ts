@@ -3,8 +3,8 @@ import { recordAiUsage } from "@/lib/ai-usage";
 import { withTimeout } from "@/lib/with-timeout";
 import {
   buildUserProfile,
+  isBodyOnlyProduct,
   preciseFallbackRecommendation,
-  rankProducts,
   refineAiPicks,
   type AnswerForAi,
   type ProductForAi,
@@ -29,12 +29,11 @@ export async function analyzeSkinAndRecommend(
   products: ProductForAi[],
 ): Promise<RecommendationResult> {
   const profile = buildUserProfile(answers);
-  const ranked = rankProducts(products, profile);
-  const candidates = ranked.filter((item) => item.score > 0).slice(0, 10);
+  const facialCatalog = products.filter((product) => !isBodyOnlyProduct(product));
   const fallback = preciseFallbackRecommendation(answers, products);
 
   const apiKey = process.env.GEMINI_API_KEY;
-  if (!apiKey || candidates.length === 0) {
+  if (!apiKey || facialCatalog.length === 0) {
     return fallback;
   }
 
@@ -42,55 +41,85 @@ export async function analyzeSkinAndRecommend(
   const genAI = new GoogleGenerativeAI(apiKey);
   const model = genAI.getGenerativeModel({
     model: modelName,
-    generationConfig: { temperature: 0.2 },
+    generationConfig: {
+      temperature: 0.4,
+      responseMimeType: "application/json",
+    },
   });
 
-  const candidatePayload = candidates.map((item) => ({
-    id: item.product.id,
-    name: item.product.name,
-    category: item.product.category,
-    description: item.product.description,
-    skinTags: item.product.skinTags,
-    matchScore: item.score,
-    matchedTags: item.matched,
+  const catalogPayload = facialCatalog.map((product) => ({
+    id: product.id,
+    name: product.name,
+    category: product.category,
+    description: product.description,
+    skinTags: product.skinTags,
+    price: `${product.currency}${product.price}`,
   }));
 
-  const prompt = `Eres una esteticista y consultora botánica de Aphros (Guatemala).
-Tu misión es recomendar una rutina personalizada con tono humano, cálido, empático y experto, como una asesora de cabecera en una boutique natural.
-Evita a toda costa sonar como un bot o inteligencia artificial (prohibido usar frases cliché como "se recomienda", "según las respuestas", "en conclusión", "como IA").
+  const prompt = `Eres la esteticista principal y consultora botánica de Aphros (cosmética natural artesanal de Guatemala).
+Tu tarea es analizar en profundidad CADA respuesta de la persona y diseñar una rutina facial verdaderamente personalizada, precisa y distinta según su perfil exacto.
 
-Solo puedes elegir productos de la lista CANDIDATOS (ya filtrados por score). No inventes ids.
+Tono: humano, cálido, empático y experto, como una asesora en una boutique botánica. Prohibido usar frases robóticas o cliché ("según tus respuestas", "se recomienda", "como IA", "en conclusión").
 
-Perfil detectado:
-${JSON.stringify(profile, null, 2)}
+PERFIL ESTRUCTURADO DETECTADO:
+${JSON.stringify(
+  {
+    tipoDePiel: profile.skinType,
+    objetivoPrincipal: profile.primaryGoal,
+    nivelDeAcne: profile.acneLevel,
+    nivelDeSensibilidad: profile.sensitivityLevel,
+    nivelDeBrillo: profile.shineLevel,
+    rutinaActual: profile.routineLevel,
+    ambienteDiario: profile.environment,
+    necesitaProtectorSolar: profile.needsSpf,
+  },
+  null,
+  2,
+)}
 
-Respuestas del quiz:
-${JSON.stringify(answers, null, 2)}
+RESPUESTAS COMPLETAS DEL CUESTIONARIO:
+${JSON.stringify(
+  answers.map((a) => ({
+    pregunta: a.question,
+    respuesta: a.chosenOption || a.answer || "",
+  })),
+  null,
+  2,
+)}
 
-CANDIDATOS (ordenados por relevancia, matchScore más alto = mejor):
-${JSON.stringify(candidatePayload, null, 2)}
+CATÁLOGO FACIAL COMPLETO DE APHROS (elige SOLO IDs exactos de esta lista):
+${JSON.stringify(catalogPayload, null, 2)}
 
-Elige 3 a 4 productos que formen una rutina diaria coherente y minimalista:
-- 1 limpieza o tónico si hace falta
-- 1 tratamiento o sérum según la preocupación principal
-- 1 hidratante / crema adecuada al tipo de piel
-- incluye SPF si needsSpf=true y hay candidato con proteccion/SPF
+REGLAS CLÍNICAS Y DE PRECISIÓN (OBLIGATORIAS):
+1. Elige entre 3 y 4 productos en ORDEN EXACTO DE APLICACIÓN: Limpieza/Jabón -> Exfoliante o Mascarilla (si aplica) -> Tónico -> Sérum/Tratamiento -> Crema facial -> Protector solar SPF (al final, solo si necesitaProtectorSolar=true).
+2. Diferencia bien cada perfil, NO repitas siempre los mismos productos:
+   - Si objetivoPrincipal = "manchas": prioriza Serum Facial de Vitamina C y/o Crema Facial Aclarante (o Protege y Aclara si también necesita SPF).
+   - Si objetivoPrincipal = "antiedad": prioriza Crema Facial Macadamia y/o Serum Facial de Vitamina C (y Crema Exfoliante Rosa de Castilla si no tiene sensibilidad alta).
+   - Si objetivoPrincipal = "hidratacion" o piel seca: prioriza Crema Facial Humectante, Jabón Facial de Miel y Avena, Kit Mascarilla de Miel o Agua Micelar Artesanal.
+   - Si objetivoPrincipal = "calmar" o sensibilidad alta: prioriza Jabón Facial de Miel y Avena, Agua de Rosas Artesanal (o Combo Rosas) y Kit Mascarilla de Miel; evita exfoliantes fuertes.
+   - Si objetivoPrincipal = "control_grasa" o piel grasa: prioriza Crema Facial Hamamelis; solo incluye productos "Anti Acné" si nivelDeAcne es "constante" u "ocasional".
+   - Si nivelDeAcne = "ninguno": PROHIBIDO recomendar Jabón Facial Antiacné, Crema Facial Anti Acné o Combo Anti Acné.
+   - Si piel = "seca": PROHIBIDO recomendar Crema Facial Hamamelis.
+   - Si piel = "grasa" con brotes: PROHIBIDO recomendar Crema Facial Macadamia.
+   - Si rutinaActual = "completa", ofrece pasos más específicos (sérum, mascarilla, exfoliante o tratamiento puntual) en lugar de solo básicos genéricos.
+3. NUNCA dupliques un Combo con los productos individuales que ya incluye:
+   - "Protege y Aclara" ya incluye SPF 45 + Serum Vitamina C.
+   - "Combo Rosas" ya incluye Agua de Rosas.
+   - "Combo Anti Acné" ya incluye productos antiacné.
+4. En "reasons", explica de forma única por qué cada producto elegido responde a las respuestas concretas de esta persona y qué hace su ingrediente botánico.
 
-Evita productos de pies/manos/desodorante salvo que encajen claramente con el rostro.
-Prefiere candidatos con matchScore alto.
-
-Responde ÚNICAMENTE JSON válido (sin formato markdown):
+Responde ÚNICAMENTE con JSON válido con esta estructura exacta:
 {
   "skinType": "${profile.skinType}",
-  "summary": "2 a 3 frases cálidas, personales y profesionales explicando cómo se encuentra la piel y cómo estos productos botánicos le devolverán su equilibrio natural.",
+  "summary": "2 a 3 frases cálidas y específicas describiendo el estado de su piel y cómo esta combinación exacta atiende su objetivo principal y su entorno diario.",
   "tips": [
-    "Consejo práctico y amoroso de aplicación (ej. cómo masajear o momento del día)",
-    "Consejo de cuidado o hábito complementario",
-    "Consejo de constancia o protección solar"
+    "Consejo práctico de aplicación específico para esta rutina",
+    "Consejo adaptado a su ambiente diario o sensibilidad",
+    "Consejo de constancia o protección"
   ],
   "productIds": ["id1", "id2", "id3"],
   "reasons": {
-    "id1": "Explicación natural de cómo sus ingredientes botánicos específicos benefician a su piel (ej. 'La caléndula calma el enrojecimiento y repara la barrera cutánea suavemente')"
+    "id1": "Explicación concreta conectando los ingredientes botánicos del producto con su piel y objetivo."
   }
 }`;
 
@@ -101,7 +130,7 @@ Responde ÚNICAMENTE JSON válido (sin formato markdown):
   try {
     const result = await withTimeout(
       model.generateContent(prompt),
-      10_000,
+      12_000,
       "Gemini",
     );
     const usage = result.response.usageMetadata;
@@ -122,15 +151,16 @@ Responde ÚNICAMENTE JSON válido (sin formato markdown):
       console.error("AiUsage record failed:", error);
     });
     return refined;
-  } catch {
+  } catch (error) {
+    console.error("Gemini recommendation failed, using fallback:", error);
     void recordAiUsage({
       model: modelName,
       promptTokens,
       candidatesTokens,
       totalTokens,
       success: false,
-    }).catch((error) => {
-      console.error("AiUsage record failed:", error);
+    }).catch((recordError) => {
+      console.error("AiUsage record failed:", recordError);
     });
     return fallback;
   }

@@ -70,9 +70,10 @@ export async function POST(request: Request) {
       })),
     );
 
-    const recommended = products.filter((product) =>
-      recommendation.productIds.includes(product.id),
-    );
+    const productById = new Map(products.map((product) => [product.id, product]));
+    const recommended = recommendation.productIds
+      .map((id) => productById.get(id))
+      .filter((product): product is (typeof products)[number] => Boolean(product));
 
     // Always persist first so the UI can navigate immediately
     const submission = await prisma.quizSubmission.create({

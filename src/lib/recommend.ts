@@ -24,8 +24,22 @@ export type RecommendationResult = {
   reasons: Record<string, string>;
 };
 
+export type PrimaryGoal =
+  | "control_grasa"
+  | "hidratacion"
+  | "manchas"
+  | "antiedad"
+  | "calmar"
+  | "proteccion"
+  | null;
+
 export type UserProfile = {
   skinType: string;
+  primaryGoal: PrimaryGoal;
+  acneLevel: "constante" | "ocasional" | "ninguno";
+  sensitivityLevel: "alta" | "media" | "baja";
+  shineLevel: "alto" | "zona_t" | "mate" | "reseca" | "unknown";
+  environment: "sol" | "ac" | "casa" | "mixto" | "unknown";
   tags: string[];
   concerns: string[];
   needsSpf: boolean;
@@ -37,56 +51,6 @@ export type UserProfile = {
   prefersAntiAging: boolean;
   routineLevel: "none" | "basic" | "medium" | "full" | "unknown";
 };
-
-const TAG_ALIASES: Record<string, string[]> = {
-  grasa: ["grasa", "acne", "mixta"],
-  seca: ["seca", "hidratante"],
-  mixta: ["mixta", "grasa", "seca"],
-  sensible: ["sensible", "calmante"],
-  normal: ["todos", "mixta", "hidratante"],
-  mucho_brillo: ["grasa", "acne"],
-  algo_brillo: ["mixta", "grasa"],
-  poco_brillo: ["normal", "seca"],
-  reseca: ["seca", "hidratante"],
-  muy_sensible: ["sensible", "calmante"],
-  algo_sensible: ["sensible"],
-  no_sensible: [],
-  acne_constante: ["acne", "grasa"],
-  acne_ocasional: ["acne", "mixta"],
-  sin_acne: [],
-  control_grasa: ["grasa", "acne"],
-  hidratacion: ["seca", "hidratante"],
-  manchas: ["aclarante"],
-  antiedad: ["madura", "antiedad"],
-  calmar: ["sensible", "calmante"],
-  proteccion: ["proteccion"],
-  sol_alto: ["proteccion"],
-  sol_medio: ["proteccion"],
-  sol_bajo: [],
-  usa_spf_diario: ["proteccion"],
-  sin_rutina: ["todos"],
-  basica: ["todos"],
-  media: ["hidratante"],
-  completa: [],
-  ambiente_sol: ["proteccion", "grasa"],
-  ambiente_ac: ["seca", "hidratante"],
-  ambiente_casa: [],
-  ambiente_mixto: ["mixta"],
-};
-
-const HIGH_WEIGHT = new Set([
-  "grasa",
-  "seca",
-  "mixta",
-  "sensible",
-  "acne",
-  "hidratante",
-  "aclarante",
-  "antiedad",
-  "madura",
-  "calmante",
-  "proteccion",
-]);
 
 function splitTags(value: string) {
   return value
@@ -100,87 +64,7 @@ function unique(tags: string[]) {
   return [...new Set(tags)];
 }
 
-export function buildUserProfile(answers: AnswerForAi[]): UserProfile {
-  const rawTags: string[] = [];
-  const textBits: string[] = [];
-
-  for (const answer of answers) {
-    if (answer.chosenOption) textBits.push(answer.chosenOption.toLowerCase());
-    if (answer.answer) textBits.push(answer.answer.toLowerCase());
-    for (const tag of answer.tags ?? []) {
-      rawTags.push(tag.toLowerCase());
-      rawTags.push(...(TAG_ALIASES[tag.toLowerCase()] ?? []));
-    }
-  }
-
-  const joined = `${rawTags.join(" ")} ${textBits.join(" ")}`;
-
-  let skinType = "mixta";
-  if (/\bgrasa\b/.test(joined)) skinType = "grasa";
-  else if (/\bseca\b/.test(joined) || /reseca|tirante/.test(joined)) skinType = "seca";
-  else if (/\bsensible\b/.test(joined)) skinType = "sensible";
-  else if (/\bmadura\b|antiedad/.test(joined)) skinType = "madura";
-  else if (/\bnormal\b/.test(joined)) skinType = "normal";
-  else if (/\bmixta\b/.test(joined)) skinType = "mixta";
-
-  const hasAcne = /acne|brotes|impurezas/.test(joined);
-  const isSensitive = /sensible|calmar|irrit/.test(joined);
-  const prefersHydration = /seca|hidrat|reseca|tirante/.test(joined);
-  const prefersOilControl = /grasa|brillo|control_grasa|acne/.test(joined);
-  const prefersBrightening = /manchas|aclar|tono|vitamina c/.test(joined);
-  const prefersAntiAging = /antiedad|madura|firmeza|edad/.test(joined);
-  const needsSpf =
-    /proteccion|sol_alto|sol_medio|usa_spf_diario|ambiente_sol|spf|solar/.test(
-      joined,
-    ) || prefersBrightening;
-
-  let routineLevel: UserProfile["routineLevel"] = "unknown";
-  if (/sin_rutina|solo jab[oó]n/.test(joined)) routineLevel = "none";
-  else if (/\bbasica\b|limpieza b[aá]sica/.test(joined)) routineLevel = "basic";
-  else if (/\bmedia\b|limpieza \+ crema/.test(joined)) routineLevel = "medium";
-  else if (/completa|s[eé]rum|spf/.test(joined)) routineLevel = "full";
-
-  const tags = unique([
-    skinType,
-    ...rawTags,
-    ...(hasAcne ? ["acne"] : []),
-    ...(isSensitive ? ["sensible", "calmante"] : []),
-    ...(prefersHydration ? ["seca", "hidratante"] : []),
-    ...(prefersOilControl ? ["grasa"] : []),
-    ...(prefersBrightening ? ["aclarante"] : []),
-    ...(prefersAntiAging ? ["madura", "antiedad"] : []),
-    ...(needsSpf ? ["proteccion"] : []),
-  ]).filter((tag) => tag !== "no_sensible" && tag !== "sin_acne");
-
-  const concerns: string[] = [];
-  if (hasAcne) concerns.push("acné / impurezas");
-  if (prefersOilControl) concerns.push("control de grasa");
-  if (prefersHydration) concerns.push("hidratación");
-  if (prefersBrightening) concerns.push("manchas / luminosidad");
-  if (prefersAntiAging) concerns.push("antiedad");
-  if (isSensitive) concerns.push("sensibilidad");
-  if (needsSpf) concerns.push("protección solar");
-
-  return {
-    skinType,
-    tags,
-    concerns,
-    needsSpf,
-    hasAcne,
-    isSensitive,
-    prefersHydration,
-    prefersOilControl,
-    prefersBrightening,
-    prefersAntiAging,
-    routineLevel,
-  };
-}
-
-function productTagList(product: ProductForAi) {
-  return splitTags(product.skinTags);
-}
-
-function isBodyOnlyProduct(product: ProductForAi) {
+export function isBodyOnlyProduct(product: ProductForAi) {
   const category = product.category.toLowerCase();
   const name = product.name.toLowerCase();
   return (
@@ -195,78 +79,372 @@ function isBodyOnlyProduct(product: ProductForAi) {
   );
 }
 
-function isFacialCore(product: ProductForAi) {
-  const category = product.category.toLowerCase();
-  return (
-    category.includes("crema") ||
-    category.includes("serum") ||
-    category.includes("sérum") ||
-    category.includes("jabón") ||
-    category.includes("jabon") ||
-    category.includes("limpieza") ||
-    category.includes("tónico") ||
-    category.includes("tonico") ||
-    category.includes("protector") ||
-    category.includes("combo") ||
-    category.includes("mascarilla")
-  );
+function getRoutineStepOrder(product: ProductForAi): number {
+  const cat = product.category.toLowerCase();
+  const name = product.name.toLowerCase();
+  if (
+    cat.includes("limpieza") ||
+    cat.includes("jabón") ||
+    cat.includes("jabon") ||
+    name.includes("micelar") ||
+    name.includes("jabón") ||
+    name.includes("jabon")
+  ) {
+    return 1;
+  }
+  if (cat.includes("exfoliante") || name.includes("exfoliante") || cat.includes("mascarilla")) {
+    return 2;
+  }
+  if (cat.includes("tónico") || cat.includes("tonico") || name.includes("agua de rosas")) {
+    return 3;
+  }
+  if (cat.includes("serum") || cat.includes("sérum") || name.includes("serum")) {
+    return 4;
+  }
+  if (cat.includes("protector") || name.includes("spf") || name.includes("filtro solar")) {
+    return 6;
+  }
+  if (cat.includes("combo")) {
+    return 5;
+  }
+  return 5; // Cremas hidratantes / tratamientos
+}
+
+/** Avoid pairing a combo with the individual items already inside it. */
+export function conflictsWithSelected(
+  candidate: ProductForAi,
+  selected: ProductForAi[],
+): boolean {
+  const candName = candidate.name.toLowerCase();
+
+  for (const existing of selected) {
+    const existName = existing.name.toLowerCase();
+
+    // Protege y Aclara = Crema SPF 45 + Serum Vitamina C
+    const isProtegeCombo = (n: string) => n.includes("protege y aclara");
+    const isProtegePart = (n: string) =>
+      n.includes("spf") || n.includes("filtro solar") || n.includes("vitamina c");
+    if (
+      (isProtegeCombo(candName) && isProtegePart(existName)) ||
+      (isProtegePart(candName) && isProtegeCombo(existName))
+    ) {
+      return true;
+    }
+
+    // Combo Rosas = Agua de Rosas + complementos
+    const isRosasCombo = (n: string) => n.includes("combo rosas");
+    const isRosasPart = (n: string) => n.includes("agua de rosas");
+    if (
+      (isRosasCombo(candName) && isRosasPart(existName)) ||
+      (isRosasPart(candName) && isRosasCombo(existName))
+    ) {
+      return true;
+    }
+
+    // Combo Anti Acné = Jabón Antiacné / Crema Anti Acné
+    const isAcneCombo = (n: string) => n.includes("combo anti acn") || n.includes("combo antiacn");
+    const isAcnePart = (n: string) =>
+      n.includes("antiacn") || n.includes("anti acn");
+    if (
+      (isAcneCombo(candName) && isAcnePart(existName)) ||
+      (isAcnePart(candName) && isAcneCombo(existName))
+    ) {
+      return true;
+    }
+  }
+
+  return false;
+}
+
+export function buildUserProfile(answers: AnswerForAi[]): UserProfile {
+  const exactTags = new Set<string>();
+  const textBits: string[] = [];
+
+  for (const answer of answers) {
+    if (answer.chosenOption) textBits.push(answer.chosenOption.toLowerCase());
+    if (answer.answer) textBits.push(answer.answer.toLowerCase());
+    for (const tag of answer.tags ?? []) {
+      exactTags.add(tag.toLowerCase());
+    }
+  }
+
+  const text = textBits.join(" | ");
+
+  // 1. Skin type — strictly respect explicit skin-type tags without alias pollution
+  let skinType = "mixta";
+  if (exactTags.has("grasa")) skinType = "grasa";
+  else if (exactTags.has("seca")) skinType = "seca";
+  else if (exactTags.has("mixta")) skinType = "mixta";
+  else if (exactTags.has("sensible")) skinType = "sensible";
+  else if (exactTags.has("normal")) skinType = "normal";
+  else if (exactTags.has("madura")) skinType = "madura";
+  else if (/tirante|áspero|deshidrat/.test(text)) skinType = "seca";
+  else if (/enrojecer|irritar/.test(text)) skinType = "sensible";
+  else if (/frente\/nariz|zona t/.test(text)) skinType = "mixta";
+  else if (/exceso de grasa|brilloso/.test(text)) skinType = "grasa";
+  else if (/cómodo y equilibrado/.test(text)) skinType = "normal";
+
+  // 2. Shine level
+  let shineLevel: UserProfile["shineLevel"] = "unknown";
+  if (exactTags.has("mucho_brillo")) shineLevel = "alto";
+  else if (exactTags.has("algo_brillo")) shineLevel = "zona_t";
+  else if (exactTags.has("poco_brillo")) shineLevel = "mate";
+  else if (exactTags.has("reseca")) shineLevel = "reseca";
+
+  // 3. Acne level — NEVER trigger on sin_acne or "casi no tengo acné"
+  let acneLevel: UserProfile["acneLevel"] = "ninguno";
+  if (exactTags.has("acne_constante") || exactTags.has("acne")) {
+    acneLevel = "constante";
+  } else if (exactTags.has("acne_ocasional")) {
+    acneLevel = "ocasional";
+  } else if (exactTags.has("sin_acne")) {
+    acneLevel = "ninguno";
+  } else if (/casi siempre tengo brotes/.test(text)) {
+    acneLevel = "constante";
+  } else if (/estrés o ciclo/.test(text)) {
+    acneLevel = "ocasional";
+  }
+
+  // 4. Sensitivity level — NEVER trigger on no_sensible
+  let sensitivityLevel: UserProfile["sensitivityLevel"] = "baja";
+  if (
+    exactTags.has("muy_sensible") ||
+    exactTags.has("calmar") ||
+    skinType === "sensible"
+  ) {
+    sensitivityLevel = "alta";
+  } else if (exactTags.has("algo_sensible")) {
+    sensitivityLevel = "media";
+  } else if (exactTags.has("no_sensible")) {
+    sensitivityLevel = "baja";
+  }
+
+  // 5. Primary goal (Question 5)
+  let primaryGoal: PrimaryGoal = null;
+  if (exactTags.has("control_grasa")) primaryGoal = "control_grasa";
+  else if (exactTags.has("hidratacion")) primaryGoal = "hidratacion";
+  else if (exactTags.has("manchas")) primaryGoal = "manchas";
+  else if (exactTags.has("antiedad")) primaryGoal = "antiedad";
+  else if (exactTags.has("calmar")) primaryGoal = "calmar";
+  else if (exactTags.has("proteccion")) primaryGoal = "proteccion";
+
+  // 6. Routine level
+  let routineLevel: UserProfile["routineLevel"] = "unknown";
+  if (exactTags.has("sin_rutina")) routineLevel = "none";
+  else if (exactTags.has("basica")) routineLevel = "basic";
+  else if (exactTags.has("media")) routineLevel = "medium";
+  else if (exactTags.has("completa")) routineLevel = "full";
+
+  // 7. Environment
+  let environment: UserProfile["environment"] = "unknown";
+  if (exactTags.has("ambiente_sol")) environment = "sol";
+  else if (exactTags.has("ambiente_ac")) environment = "ac";
+  else if (exactTags.has("ambiente_casa")) environment = "casa";
+  else if (exactTags.has("ambiente_mixto")) environment = "mixto";
+
+  // 8. Derived boolean flags (accurate, no false positives)
+  const hasAcne = acneLevel === "constante" || acneLevel === "ocasional";
+  const isSensitive = sensitivityLevel === "alta" || sensitivityLevel === "media";
+  const prefersHydration =
+    primaryGoal === "hidratacion" ||
+    skinType === "seca" ||
+    shineLevel === "reseca" ||
+    environment === "ac";
+  const prefersOilControl =
+    primaryGoal === "control_grasa" ||
+    skinType === "grasa" ||
+    shineLevel === "alto" ||
+    acneLevel === "constante";
+  const prefersBrightening =
+    primaryGoal === "manchas" || exactTags.has("aclarante");
+  const prefersAntiAging =
+    primaryGoal === "antiedad" || exactTags.has("madura") || skinType === "madura";
+  const needsSpf =
+    primaryGoal === "proteccion" ||
+    exactTags.has("sol_alto") ||
+    exactTags.has("sol_medio") ||
+    environment === "sol" ||
+    prefersBrightening;
+
+  const tags = unique([
+    skinType,
+    ...(hasAcne ? ["acne"] : []),
+    ...(isSensitive ? ["sensible", "calmante"] : []),
+    ...(prefersHydration ? ["hidratante", ...(skinType === "seca" ? ["seca"] : [])] : []),
+    ...(prefersOilControl ? ["grasa"] : []),
+    ...(prefersBrightening ? ["aclarante"] : []),
+    ...(prefersAntiAging ? ["madura", "antiedad"] : []),
+    ...(needsSpf ? ["proteccion"] : []),
+  ]);
+
+  const concerns: string[] = [];
+  if (primaryGoal === "control_grasa") concerns.push("control de grasa e impurezas");
+  if (primaryGoal === "hidratacion") concerns.push("hidratación profunda");
+  if (primaryGoal === "manchas") concerns.push("aclarar manchas y luminosidad");
+  if (primaryGoal === "antiedad") concerns.push("firmeza y cuidado antiedad");
+  if (primaryGoal === "calmar") concerns.push("calmar enrojecimiento y sensibilidad");
+  if (primaryGoal === "proteccion") concerns.push("protección solar diaria");
+
+  if (hasAcne && primaryGoal !== "control_grasa") {
+    concerns.push(acneLevel === "constante" ? "brotes frecuentes" : "brotes ocasionales");
+  }
+  if (sensitivityLevel === "alta" && primaryGoal !== "calmar") {
+    concerns.push("piel sensible");
+  }
+  if (needsSpf && primaryGoal !== "proteccion") {
+    concerns.push("protección solar");
+  }
+
+  return {
+    skinType,
+    primaryGoal,
+    acneLevel,
+    sensitivityLevel,
+    shineLevel,
+    environment,
+    tags,
+    concerns,
+    needsSpf,
+    hasAcne,
+    isSensitive,
+    prefersHydration,
+    prefersOilControl,
+    prefersBrightening,
+    prefersAntiAging,
+    routineLevel,
+  };
 }
 
 export function scoreProduct(product: ProductForAi, profile: UserProfile) {
-  const productTags = productTagList(product);
+  const productTags = splitTags(product.skinTags);
+  const nameLower = product.name.toLowerCase();
+  const catLower = product.category.toLowerCase();
   let score = 0;
   const matched: string[] = [];
 
-  for (const tag of profile.tags) {
-    const hit = productTags.some(
-      (productTag) => productTag === tag || productTag.includes(tag) || tag.includes(productTag),
-    );
-    if (!hit) continue;
-    const weight = HIGH_WEIGHT.has(tag) ? 3 : 1;
-    score += weight;
-    matched.push(tag);
+  // Hard filter out body-only products from facial quiz
+  if (isBodyOnlyProduct(product)) {
+    return { score: -20, matched: [] };
   }
 
-  // Strong bonuses for exact concern fit
-  if (profile.hasAcne && productTags.some((t) => t.includes("acne"))) score += 4;
-  if (profile.prefersOilControl && productTags.some((t) => t.includes("grasa"))) score += 3;
-  if (profile.prefersHydration && productTags.some((t) => t.includes("hidrat") || t === "seca"))
+  // Skin type match
+  if (productTags.includes(profile.skinType)) {
+    score += 4;
+    matched.push(profile.skinType);
+  } else if (profile.skinType === "normal" && productTags.includes("todos")) {
     score += 3;
-  if (profile.prefersBrightening && productTags.some((t) => t.includes("aclar") || t.includes("antiedad")))
-    score += 3;
-  if (profile.prefersAntiAging && productTags.some((t) => t.includes("madura") || t.includes("antiedad")))
-    score += 3;
-  if (profile.isSensitive && productTags.some((t) => t.includes("sensible") || t.includes("calmante")))
-    score += 3;
-  if (profile.needsSpf && productTags.some((t) => t.includes("proteccion"))) score += 5;
+    matched.push("todo tipo de piel");
+  }
+
+  // Heavy bonus for the user's explicit PRIMARY GOAL
+  if (profile.primaryGoal === "manchas" && productTags.includes("aclarante")) {
+    score += 9;
+    matched.push("aclarante");
+  }
   if (
-    !profile.needsSpf &&
-    (/spf|solar/i.test(product.name) || product.category.toLowerCase().includes("protector"))
+    profile.primaryGoal === "antiedad" &&
+    (productTags.includes("antiedad") || productTags.includes("madura"))
   ) {
+    score += 9;
+    matched.push("antiedad");
+  }
+  if (
+    profile.primaryGoal === "control_grasa" &&
+    (productTags.includes("grasa") || productTags.includes("acne"))
+  ) {
+    score += 8;
+    matched.push("control de grasa");
+  }
+  if (
+    profile.primaryGoal === "hidratacion" &&
+    (productTags.includes("hidratante") || nameLower.includes("humectante"))
+  ) {
+    score += 8;
+    matched.push("hidratante");
+  }
+  if (
+    profile.primaryGoal === "calmar" &&
+    (productTags.includes("calmante") ||
+      productTags.includes("sensible") ||
+      productTags.includes("rosacea"))
+  ) {
+    score += 9;
+    matched.push("calmante");
+  }
+  if (profile.primaryGoal === "proteccion" && productTags.includes("proteccion")) {
+    score += 9;
+    matched.push("protección solar");
+  }
+
+  // Secondary concern bonuses
+  if (profile.acneLevel === "constante" && productTags.includes("acne")) {
+    score += 6;
+    matched.push("acné");
+  } else if (profile.acneLevel === "ocasional" && productTags.includes("acne")) {
+    score += 3;
+    matched.push("brotes ocasionales");
+  }
+
+  if (profile.sensitivityLevel === "alta" && (productTags.includes("calmante") || productTags.includes("sensible"))) {
+    score += 5;
+    matched.push("sensible");
+  } else if (profile.sensitivityLevel === "media" && productTags.includes("sensible")) {
+    score += 2;
+    matched.push("sensible");
+  }
+
+  if (profile.prefersHydration && productTags.includes("hidratante")) {
+    score += 3;
+    matched.push("hidratación");
+  }
+  if (profile.prefersOilControl && productTags.includes("grasa")) {
+    score += 3;
+    matched.push("control de brillo");
+  }
+  if (profile.prefersBrightening && productTags.includes("aclarante")) {
+    score += 4;
+    matched.push("luminosidad");
+  }
+  if (profile.prefersAntiAging && (productTags.includes("antiedad") || productTags.includes("madura"))) {
+    score += 4;
+    matched.push("antiedad");
+  }
+  if (profile.needsSpf && productTags.includes("proteccion")) {
+    score += 5;
+    matched.push("SPF");
+  }
+
+  // Strict mismatch penalties so irrelevant products don't repeat for every user
+  const isAntiAcneProduct = /anti\s*acn|antiacn/i.test(nameLower);
+  if (profile.acneLevel === "ninguno" && isAntiAcneProduct) {
+    score -= 10;
+  }
+
+  const isSpfProduct = /spf|filtro solar/i.test(nameLower) || catLower.includes("protector");
+  if (!profile.needsSpf && isSpfProduct) {
+    score -= 6;
+  }
+
+  if (
+    profile.skinType === "grasa" &&
+    productTags.includes("seca") &&
+    !productTags.includes("grasa") &&
+    !productTags.includes("mixta")
+  ) {
+    score -= 6;
+  }
+
+  if (
+    profile.skinType === "seca" &&
+    productTags.includes("grasa") &&
+    !productTags.includes("seca") &&
+    !productTags.includes("mixta")
+  ) {
+    score -= 6;
+  }
+
+  if (profile.sensitivityLevel === "alta" && productTags.includes("exfoliante")) {
     score -= 5;
-  }
-
-  // Penalize irrelevant body products unless concern clearly matches
-  if (isBodyOnlyProduct(product) && isFacialCore(product) === false) {
-    const bodyOk =
-      (product.category.toLowerCase().includes("labios") && profile.prefersHydration) ||
-      (product.category.toLowerCase().includes("manos") && profile.prefersHydration) ||
-      (product.category.toLowerCase().includes("pies") && false);
-    if (!bodyOk) score -= 6;
-  }
-
-  // Avoid recommending "todos" catch-alls as top picks unless little else matches
-  if (productTags.includes("todos") && matched.length <= 1) score -= 2;
-
-  // Mismatch penalties
-  if (profile.skinType === "grasa" && productTags.includes("seca") && !productTags.includes("mixta") && !productTags.includes("grasa")) {
-    score -= 4;
-  }
-  if (profile.skinType === "seca" && productTags.includes("grasa") && !productTags.includes("mixta") && !productTags.includes("seca")) {
-    score -= 4;
-  }
-  if (!profile.hasAcne && /anti\s*acn|antiacne|combo anti/i.test(product.name) && !profile.prefersOilControl) {
-    score -= 3;
   }
 
   return { score, matched: unique(matched) };
@@ -287,75 +465,77 @@ function pickBalancedRoutine(
   limit = 4,
 ) {
   const selected: typeof ranked = [];
-  const usedCategories = new Set<string>();
+
+  const canTake = (item: (typeof ranked)[number]) =>
+    item.score > 0 &&
+    !selected.some((s) => s.product.id === item.product.id) &&
+    !conflictsWithSelected(
+      item.product,
+      selected.map((s) => s.product),
+    );
 
   const take = (predicate: (item: (typeof ranked)[number]) => boolean) => {
     for (const item of ranked) {
-      if (selected.some((s) => s.product.id === item.product.id)) continue;
-      if (item.score <= 0) continue;
+      if (!canTake(item)) continue;
       if (!predicate(item)) continue;
       selected.push(item);
-      usedCategories.add(item.product.category.toLowerCase());
       return true;
     }
     return false;
   };
 
-  const isSpf = (item: (typeof ranked)[number]) =>
-    /spf|solar|protege y aclara/i.test(item.product.name) ||
-    item.product.category.toLowerCase().includes("protector");
+  // 1) Cleanser or toner appropriate for skin type
+  take((item) =>
+    /limpieza|jab[oó]n|t[oó]nico|micelar|agua de rosas/i.test(
+      `${item.product.category} ${item.product.name}`,
+    ),
+  );
 
-  // 1) Core treatment for main concern (exclude SPF from this slot)
-  if (profile.hasAcne || profile.prefersOilControl) {
-    take(
-      (item) =>
-        !isSpf(item) &&
-        /anti\s*acn|antiacne|hamamelis|jab[oó]n facial anti/i.test(item.product.name),
-    );
-    take(
-      (item) =>
-        !isSpf(item) &&
-        /acne|grasa/i.test(item.product.skinTags) &&
-        /crema|jab[oó]n|combo|serum/i.test(`${item.product.category} ${item.product.name}`),
-    );
-  } else if (profile.prefersBrightening) {
-    take((item) => !isSpf(item) && /aclar|vitamina c|serum/i.test(`${item.product.name} ${item.product.skinTags}`));
-  } else if (profile.prefersAntiAging) {
-    take((item) => !isSpf(item) && /madura|antiedad|macadamia|serum/i.test(`${item.product.name} ${item.product.skinTags}`));
-  } else if (profile.isSensitive) {
-    take((item) => !isSpf(item) && /sensible|calmante|rosas|miel|avena|micelar/i.test(`${item.product.name} ${item.product.skinTags}`));
-  } else if (profile.prefersHydration) {
-    take((item) => !isSpf(item) && /hidrat|humect/i.test(`${item.product.name} ${item.product.skinTags}`));
+  // 2) Targeted treatment (serum / mask / exfoliant / primary goal cream)
+  if (profile.primaryGoal === "manchas") {
+    take((item) => /vitamina c|aclarante/i.test(item.product.name));
+  } else if (profile.primaryGoal === "antiedad") {
+    take((item) => /macadamia|vitamina c|exfoliante rosa/i.test(item.product.name));
+  } else if (profile.primaryGoal === "calmar" || profile.sensitivityLevel === "alta") {
+    take((item) => /miel|avena|rosas/i.test(item.product.name));
+  } else if (profile.primaryGoal === "control_grasa" || profile.acneLevel === "constante") {
+    take((item) => /anti\s*acn|hamamelis/i.test(item.product.name));
+  } else if (profile.primaryGoal === "hidratacion") {
+    take((item) => /humectante|miel|vitamina c/i.test(item.product.name));
   }
 
-  // 2) Cleanser / toner if routine is weak
-  if (profile.routineLevel === "none" || profile.routineLevel === "basic") {
-    take((item) => /jab[oó]n|micelar|agua de rosas|t[oó]nico|limpieza/i.test(`${item.product.category} ${item.product.name}`));
+  // 3) Daily facial cream / moisturizer if not already covered
+  if (
+    !selected.some((s) =>
+      /crema facial/i.test(s.product.category) && !/spf|solar/i.test(s.product.name),
+    )
+  ) {
+    take(
+      (item) =>
+        /crema/i.test(item.product.category) && !/spf|solar/i.test(item.product.name),
+    );
   }
-
-  // 3) Moisturizer / cream
-  take((item) => /crema|humect|hidrat/i.test(`${item.product.category} ${item.product.name}`));
 
   // 4) SPF if needed
   if (profile.needsSpf) {
-    take((item) => /spf|solar|proteccion|protege/i.test(`${item.product.name} ${item.product.skinTags}`));
+    take((item) =>
+      /spf|solar|protege/i.test(`${item.product.name} ${item.product.category}`),
+    );
   }
 
-  // Fill remaining with best scores, prefer facial
+  // Fill remaining slots with highest-scoring non-conflicting facial products
   for (const item of ranked) {
     if (selected.length >= limit) break;
-    if (selected.some((s) => s.product.id === item.product.id)) continue;
-    if (item.score <= 0) continue;
-    if (isBodyOnlyProduct(item.product) && selected.length < limit - 1) continue;
+    if (!canTake(item)) continue;
     selected.push(item);
   }
 
-  // Absolute fallback
-  if (selected.length === 0) {
-    return ranked.filter((item) => item.score > 0).slice(0, limit);
-  }
-
-  return selected.slice(0, limit);
+  // Sort by natural routine step order (cleanser -> toner/mask -> serum -> cream -> SPF)
+  return selected
+    .slice(0, limit)
+    .sort(
+      (a, b) => getRoutineStepOrder(a.product) - getRoutineStepOrder(b.product),
+    );
 }
 
 export function preciseFallbackRecommendation(
@@ -370,70 +550,83 @@ export function preciseFallbackRecommendation(
   for (const item of selected) {
     const why =
       item.matched.length > 0
-        ? `Coincide con tu perfil (${item.matched.slice(0, 3).join(", ")}).`
-        : "Encaja con las necesidades detectadas en tu test Aphros.";
+        ? `Seleccionado para tu piel ${profile.skinType} por su enfoque en ${item.matched.slice(0, 3).join(", ")}.`
+        : `Complementa tu rutina diaria para piel ${profile.skinType}.`;
     reasons[item.product.id] = why;
   }
 
   const concernText =
     profile.concerns.length > 0
-      ? `Priorizamos: ${profile.concerns.join(", ")}.`
-      : "Armamos una rutina equilibrada según tus respuestas.";
+      ? `Priorizamos ${profile.concerns.slice(0, 3).join(", ")}.`
+      : "Armamos una rutina equilibrada y ligera para tu día a día.";
 
   return {
     skinType: profile.skinType,
-    summary: `Detectamos piel ${profile.skinType}. ${concernText}`,
+    summary: `Tu piel muestra características de piel ${profile.skinType}. ${concernText}`,
     tips: [
-      profile.hasAcne
-        ? "Mantén limpieza suave mañana y noche; evita sobre-exfoliar."
-        : "Limpia suavemente mañana y noche.",
+      profile.sensitivityLevel === "alta"
+        ? "Aplica cada producto con toques suaves sin frotar, idealmente con agua tibia o fresca."
+        : "Limpia tu rostro mañana y noche con movimientos circulares suaves durante 30 segundos.",
       profile.needsSpf
-        ? "Aplica protector solar SPF todos los días, incluso en interiores luminosos."
-        : "Si sales al sol, suma protector SPF a tu rutina.",
-      "Introduce un producto nuevo a la vez para ver cómo responde tu piel.",
+        ? "Reaplica tu protector solar SPF 45 cada 3 a 4 horas si estás al aire libre o cerca de ventanas."
+        : "Mantén una hidratación constante incluso los días que permaneces en interiores.",
+      "Dale a tu piel de 2 a 3 semanas de constancia para notar el equilibrio natural de los ingredientes botánicos.",
     ],
     productIds: selected.map((item) => item.product.id),
     reasons,
   };
 }
 
-/** Keep only AI picks that are among the top scored candidates. */
+/** Validate AI picks against active facial products, remove combo conflicts, and keep routine order. */
 export function refineAiPicks(
   ai: RecommendationResult,
   answers: AnswerForAi[],
   products: ProductForAi[],
 ): RecommendationResult {
   const profile = buildUserProfile(answers);
-  const ranked = rankProducts(products, profile);
-  const candidateIds = new Set(
-    ranked.filter((item) => item.score > 0).slice(0, 10).map((item) => item.product.id),
-  );
+  const byId = new Map(products.map((p) => [p.id, p]));
+  const picked: ProductForAi[] = [];
 
-  const filtered = (ai.productIds ?? []).filter((id) => candidateIds.has(id));
+  for (const id of ai.productIds ?? []) {
+    const product = byId.get(id);
+    if (!product) continue;
+    if (isBodyOnlyProduct(product)) continue;
+    if (picked.some((p) => p.id === product.id)) continue;
+    if (conflictsWithSelected(product, picked)) continue;
+    picked.push(product);
+  }
 
-  if (filtered.length >= 3) {
-    // Ensure SPF if required
+  if (picked.length >= 2) {
+    // Ensure SPF if strongly needed and AI omitted it
     if (profile.needsSpf) {
-      const hasSpf = filtered.some((id) => {
-        const product = products.find((p) => p.id === id);
-        return product
-          ? /spf|solar|proteccion|protege/i.test(`${product.name} ${product.skinTags}`)
-          : false;
-      });
+      const hasSpf = picked.some((p) =>
+        /spf|solar|protege/i.test(`${p.name} ${p.skinTags}`),
+      );
       if (!hasSpf) {
-        const spf = ranked.find((item) =>
-          /spf|solar|proteccion|protege/i.test(`${item.product.name} ${item.product.skinTags}`),
+        const spf = products.find(
+          (p) =>
+            (/spf|filtro solar/i.test(p.name) ||
+              p.category.toLowerCase().includes("protector")) &&
+            !conflictsWithSelected(p, picked),
         );
-        if (spf && !filtered.includes(spf.product.id)) {
-          filtered[filtered.length - 1] = spf.product.id;
+        if (spf) {
+          if (picked.length >= 4) {
+            picked[picked.length - 1] = spf;
+          } else {
+            picked.push(spf);
+          }
         }
       }
     }
 
+    const ordered = picked
+      .slice(0, 4)
+      .sort((a, b) => getRoutineStepOrder(a) - getRoutineStepOrder(b));
+
     return {
       ...ai,
       skinType: ai.skinType || profile.skinType,
-      productIds: filtered.slice(0, 5),
+      productIds: ordered.map((p) => p.id),
     };
   }
 
