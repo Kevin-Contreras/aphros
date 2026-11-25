@@ -5,9 +5,28 @@ function isUsableDatabaseUrl(url: string | undefined): url is string {
   return /^(postgres|postgresql):\/\//i.test(url);
 }
 
+function normalizeSslMode(rawUrl: string): string {
+  try {
+    const parsed = new URL(rawUrl);
+    const sslmode = parsed.searchParams.get("sslmode");
+    const hasCompat = parsed.searchParams.has("uselibpqcompat");
+    if (
+      !hasCompat &&
+      sslmode &&
+      ["prefer", "require", "verify-ca"].includes(sslmode.toLowerCase())
+    ) {
+      parsed.searchParams.set("sslmode", "verify-full");
+      return parsed.toString();
+    }
+    return rawUrl;
+  } catch {
+    return rawUrl;
+  }
+}
+
 function firstUsable(...candidates: (string | undefined)[]) {
   for (const value of candidates) {
-    if (isUsableDatabaseUrl(value)) return value;
+    if (isUsableDatabaseUrl(value)) return normalizeSslMode(value);
   }
   return "";
 }
