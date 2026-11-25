@@ -68,6 +68,9 @@ async function AdminHomeContent() {
                 <div>
                   <p className="text-sm font-medium text-forest">{item.name}</p>
                   <p className="text-xs text-mist">{item.email}</p>
+                  {item.whatsapp ? (
+                    <p className="text-xs text-mist">WA: {item.whatsapp}</p>
+                  ) : null}
                 </div>
                 <p className="text-xs text-mist">
                   {new Date(item.createdAt).toLocaleString("es-GT")}

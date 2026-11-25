@@ -63,6 +63,16 @@ async function EnviosContent() {
                     <div>
                       <p className="font-medium text-forest">{item.name}</p>
                       <p className="text-sm text-mist">{item.email}</p>
+                      {item.whatsapp ? (
+                        <a
+                          href={`https://wa.me/${item.whatsapp.replace(/\D/g, "")}`}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="mt-1 inline-block text-sm text-sage hover:text-sage-dark"
+                        >
+                          WhatsApp: {item.whatsapp}
+                        </a>
+                      ) : null}
                       <p className="mt-2 text-sm text-forest">
                         Tipo de piel: {analysis.skinType || "—"}
                       </p>

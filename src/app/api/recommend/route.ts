@@ -8,6 +8,14 @@ import { getBrevoConfigStatus, sendRecommendationEmail } from "@/lib/brevo";
 const bodySchema = z.object({
   name: z.string().min(2).max(80),
   email: z.string().email(),
+  whatsapp: z
+    .string()
+    .trim()
+    .min(8)
+    .max(20)
+    .refine((value) => value.replace(/\D/g, "").length >= 8, {
+      message: "WhatsApp inválido",
+    }),
   answers: z
     .array(
       z.object({
@@ -66,6 +74,7 @@ export async function POST(request: Request) {
       data: {
         name: data.name,
         email: data.email,
+        whatsapp: data.whatsapp,
         answers: JSON.stringify(data.answers),
         skinAnalysis: JSON.stringify({
           skinType: recommendation.skinType,

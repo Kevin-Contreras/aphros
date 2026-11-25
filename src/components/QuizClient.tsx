@@ -11,6 +11,7 @@ export function QuizClient({ questions }: { questions: PublicQuestion[] }) {
   const [answers, setAnswers] = useState<QuizAnswerPayload[]>([]);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [whatsapp, setWhatsapp] = useState("");
   const [error, setError] = useState<string | null>(null);
 
   const current = questions[index];
@@ -55,6 +56,13 @@ export function QuizClient({ questions }: { questions: PublicQuestion[] }) {
       return;
     }
 
+    const phoneDigits = whatsapp.replace(/[^\d+]/g, "");
+    const phoneOnlyDigits = phoneDigits.replace(/\D/g, "");
+    if (phoneOnlyDigits.length < 8) {
+      setError("Escribe un WhatsApp válido (mínimo 8 dígitos).");
+      return;
+    }
+
     setStep("submitting");
 
     const controller = new AbortController();
@@ -67,6 +75,7 @@ export function QuizClient({ questions }: { questions: PublicQuestion[] }) {
         body: JSON.stringify({
           name: name.trim(),
           email: email.trim(),
+          whatsapp: phoneDigits,
           answers,
         }),
         signal: controller.signal,
@@ -131,7 +140,8 @@ export function QuizClient({ questions }: { questions: PublicQuestion[] }) {
           ¿Dónde te enviamos tu rutina?
         </h2>
         <p className="mt-2 text-sm text-mist">
-          Verás el resultado en pantalla y también llegará a tu correo.
+          Verás el resultado en pantalla, te llega por correo y queda tu WhatsApp
+          para seguimiento.
         </p>
 
         <div className="mt-8 space-y-4">
@@ -152,6 +162,17 @@ export function QuizClient({ questions }: { questions: PublicQuestion[] }) {
               onChange={(e) => setEmail(e.target.value)}
               className="w-full rounded-xl border border-sand bg-ivory/60 px-4 py-3 text-forest outline-none focus:border-sage"
               placeholder="tu@correo.com"
+            />
+          </label>
+          <label className="block">
+            <span className="mb-1.5 block text-sm text-forest">WhatsApp</span>
+            <input
+              type="tel"
+              inputMode="tel"
+              value={whatsapp}
+              onChange={(e) => setWhatsapp(e.target.value)}
+              className="w-full rounded-xl border border-sand bg-ivory/60 px-4 py-3 text-forest outline-none focus:border-sage"
+              placeholder="+502 5555 5555"
             />
           </label>
         </div>
