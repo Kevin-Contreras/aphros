@@ -1,6 +1,8 @@
 import { Suspense } from "react";
 import Link from "next/link";
 import { connection } from "next/server";
+import { AiUsageBar } from "@/components/AiUsageBar";
+import { getAiUsageToday } from "@/lib/ai-usage";
 import { prisma } from "@/lib/prisma";
 
 function AdminHomeFallback() {
@@ -16,10 +18,11 @@ function AdminHomeFallback() {
 
 async function AdminHomeContent() {
   await connection();
-  const [products, questions, submissions] = await Promise.all([
+  const [products, questions, submissions, aiUsage] = await Promise.all([
     prisma.product.count(),
     prisma.question.count(),
     prisma.quizSubmission.count(),
+    getAiUsageToday(),
   ]);
 
   const recent = await prisma.quizSubmission.findMany({
@@ -35,6 +38,10 @@ async function AdminHomeContent() {
       <p className="mt-2 text-sm text-mist">
         Gestiona el quiz, el catálogo y revisa los envíos de Aphros.
       </p>
+
+      <div className="mt-8">
+        <AiUsageBar usage={aiUsage} />
+      </div>
 
       <div className="mt-8 grid gap-4 sm:grid-cols-3">
         {[

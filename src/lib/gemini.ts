@@ -1,4 +1,5 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import { recordAiUsage } from "@/lib/ai-usage";
 import { withTimeout } from "@/lib/with-timeout";
 import {
   buildUserProfile,
@@ -84,16 +85,44 @@ Responde ÚNICAMENTE JSON válido (sin markdown):
   "reasons": { "id1": "motivo concreto ligado a las respuestas" }
 }`;
 
+  let promptTokens = 0;
+  let candidatesTokens = 0;
+  let totalTokens = 0;
+
   try {
     const result = await withTimeout(
       model.generateContent(prompt),
       10_000,
       "Gemini",
     );
+    const usage = result.response.usageMetadata;
+    promptTokens = usage?.promptTokenCount ?? 0;
+    candidatesTokens = usage?.candidatesTokenCount ?? 0;
+    totalTokens = usage?.totalTokenCount ?? 0;
+
     const text = result.response.text();
     const parsed = extractJson(text);
-    return refineAiPicks(parsed, answers, products);
+    const refined = refineAiPicks(parsed, answers, products);
+    void recordAiUsage({
+      model: modelName,
+      promptTokens,
+      candidatesTokens,
+      totalTokens,
+      success: true,
+    }).catch((error) => {
+      console.error("AiUsage record failed:", error);
+    });
+    return refined;
   } catch {
+    void recordAiUsage({
+      model: modelName,
+      promptTokens,
+      candidatesTokens,
+      totalTokens,
+      success: false,
+    }).catch((error) => {
+      console.error("AiUsage record failed:", error);
+    });
     return fallback;
   }
 }

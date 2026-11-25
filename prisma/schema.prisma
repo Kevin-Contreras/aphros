@@ -52,3 +52,16 @@ model QuizSubmission {
   emailSent           Boolean  @default(false)
   createdAt           DateTime @default(now())
 }
+
+/// One row per Gemini API call (for daily quota / token tracking)
+model AiUsage {
+  id                String   @id @default(cuid())
+  model             String
+  promptTokens      Int      @default(0)
+  candidatesTokens  Int      @default(0)
+  totalTokens       Int      @default(0)
+  success           Boolean  @default(true)
+  createdAt         DateTime @default(now())
+
+  @@index([createdAt])
+}
