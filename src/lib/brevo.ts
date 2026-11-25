@@ -1,4 +1,5 @@
 import { BrevoClient } from "@getbrevo/brevo";
+import { withTimeout } from "@/lib/with-timeout";
 
 type RecommendedProduct = {
   name: string;
@@ -25,6 +26,10 @@ export async function sendRecommendationEmail(payload: RecommendationEmailPayloa
 
   if (!apiKey || !senderEmail) {
     return { sent: false as const, reason: "Brevo no configurado" };
+  }
+
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(senderEmail)) {
+    return { sent: false as const, reason: "BREVO_SENDER_EMAIL inválido" };
   }
 
   const productBlocks = payload.products
@@ -65,12 +70,16 @@ export async function sendRecommendationEmail(payload: RecommendationEmailPayloa
   </div>`;
 
   const brevo = new BrevoClient({ apiKey });
-  const result = await brevo.transactionalEmails.sendTransacEmail({
-    sender: { name: senderName, email: senderEmail },
-    to: [{ email: payload.toEmail, name: payload.toName }],
-    subject: "Tu rutina Aphros según tu piel",
-    htmlContent,
-  });
+  const result = await withTimeout(
+    brevo.transactionalEmails.sendTransacEmail({
+      sender: { name: senderName, email: senderEmail },
+      to: [{ email: payload.toEmail, name: payload.toName }],
+      subject: "Tu rutina Aphros según tu piel",
+      htmlContent,
+    }),
+    8_000,
+    "Brevo",
+  );
 
   return { sent: true as const, messageId: result.messageId };
 }

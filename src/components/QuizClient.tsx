@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useTransition } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import type { PublicQuestion, QuizAnswerPayload } from "@/lib/types";
 
@@ -14,7 +14,6 @@ export function QuizClient({ questions }: { questions: PublicQuestion[] }) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [error, setError] = useState<string | null>(null);
-  const [isPending, startTransition] = useTransition();
 
   const current = questions[index];
   const progress =
@@ -47,7 +46,7 @@ export function QuizClient({ questions }: { questions: PublicQuestion[] }) {
     setStep("contact");
   }
 
-  function submit() {
+  async function submit() {
     setError(null);
     if (name.trim().length < 2) {
       setError("Escribe tu nombre.");
@@ -59,23 +58,45 @@ export function QuizClient({ questions }: { questions: PublicQuestion[] }) {
     }
 
     setStep("submitting");
-    startTransition(async () => {
-      try {
-        const response = await fetch("/api/recommend", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ name: name.trim(), email: email.trim(), answers }),
-        });
-        const data = await response.json();
-        if (!response.ok) {
-          throw new Error(data.error || "No se pudo completar el análisis");
-        }
-        router.push(`/resultado/${data.id}`);
-      } catch (err) {
-        setStep("contact");
-        setError(err instanceof Error ? err.message : "Error inesperado");
+
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 25_000);
+
+    try {
+      const response = await fetch("/api/recommend", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: name.trim(),
+          email: email.trim(),
+          answers,
+        }),
+        signal: controller.signal,
+      });
+
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) {
+        throw new Error(
+          data.error || data.message || "No se pudo completar el análisis",
+        );
       }
-    });
+      if (!data.id) {
+        throw new Error("No recibimos el resultado. Intenta de nuevo.");
+      }
+
+      router.push(`/resultado/${data.id}`);
+    } catch (err) {
+      const message =
+        err instanceof Error && err.name === "AbortError"
+          ? "La consulta tardó demasiado. Intenta de nuevo."
+          : err instanceof Error
+            ? err.message
+            : "Error inesperado";
+      setStep("contact");
+      setError(message);
+    } finally {
+      clearTimeout(timeout);
+    }
   }
 
   if (questions.length === 0) {
@@ -86,7 +107,7 @@ export function QuizClient({ questions }: { questions: PublicQuestion[] }) {
     );
   }
 
-  if (step === "submitting" || isPending) {
+  if (step === "submitting") {
     return (
       <div className="rounded-3xl border border-sand bg-cream/90 p-10 text-center shadow-sm">
         <p className="text-xs tracking-[0.25em] uppercase text-sage">Aphros</p>
@@ -96,6 +117,9 @@ export function QuizClient({ questions }: { questions: PublicQuestion[] }) {
         <p className="mt-3 text-sm text-mist">
           Estamos preparando tu rutina personalizada.
         </p>
+        <div className="mx-auto mt-6 h-1.5 w-40 overflow-hidden rounded-full bg-sand">
+          <div className="h-full w-1/2 animate-pulse rounded-full bg-sage" />
+        </div>
       </div>
     );
   }

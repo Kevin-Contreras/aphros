@@ -60,28 +60,7 @@ export async function POST(request: Request) {
       recommendation.productIds.includes(product.id),
     );
 
-    let emailSent = false;
-    try {
-      const emailResult = await sendRecommendationEmail({
-        toEmail: data.email,
-        toName: data.name,
-        skinType: recommendation.skinType,
-        summary: recommendation.summary,
-        tips: recommendation.tips,
-        products: recommended.map((product) => ({
-          name: product.name,
-          description: product.description,
-          price: product.price,
-          currency: product.currency,
-          buyUrl: product.buyUrl,
-          reason: recommendation.reasons?.[product.id],
-        })),
-      });
-      emailSent = emailResult.sent;
-    } catch {
-      emailSent = false;
-    }
-
+    // Save first so the UI can navigate even if email is slow/fails
     const submission = await prisma.quizSubmission.create({
       data: {
         name: data.name,
@@ -104,9 +83,38 @@ export async function POST(request: Request) {
             reason: recommendation.reasons?.[product.id] ?? null,
           })),
         ),
-        emailSent,
+        emailSent: false,
       },
     });
+
+    let emailSent = false;
+    try {
+      const emailResult = await sendRecommendationEmail({
+        toEmail: data.email,
+        toName: data.name,
+        skinType: recommendation.skinType,
+        summary: recommendation.summary,
+        tips: recommendation.tips,
+        products: recommended.map((product) => ({
+          name: product.name,
+          description: product.description,
+          price: product.price,
+          currency: product.currency,
+          buyUrl: product.buyUrl,
+          reason: recommendation.reasons?.[product.id],
+        })),
+      });
+      emailSent = emailResult.sent;
+      if (emailSent) {
+        await prisma.quizSubmission.update({
+          where: { id: submission.id },
+          data: { emailSent: true },
+        });
+      }
+    } catch (error) {
+      console.error("Brevo email failed:", error);
+      emailSent = false;
+    }
 
     return NextResponse.json({
       id: submission.id,

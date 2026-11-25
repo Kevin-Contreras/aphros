@@ -139,7 +139,12 @@ ${JSON.stringify(products, null, 2)}
 `;
 
   try {
-    const result = await model.generateContent(prompt);
+    const { withTimeout } = await import("@/lib/with-timeout");
+    const result = await withTimeout(
+      model.generateContent(prompt),
+      10_000,
+      "Gemini",
+    );
     const text = result.response.text();
     const parsed = extractJson(text);
     const validIds = new Set(products.map((p) => p.id));
