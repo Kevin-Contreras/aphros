@@ -21,6 +21,7 @@ const products = [
     category: "Serum",
     skinTags: "mixta,seca,madura,aclarante,antiedad",
     price: 61.6,
+    imageUrl: "/products/serum-vitamina-c.svg",
     buyUrl: MARKETPLACE,
   },
   {
@@ -29,6 +30,7 @@ const products = [
     category: "Crema facial",
     skinTags: "grasa,mixta,acne",
     price: 72,
+    imageUrl: "/products/crema-hamamelis.svg",
     buyUrl: MARKETPLACE,
   },
   {
@@ -38,6 +40,7 @@ const products = [
     category: "Jabón",
     skinTags: "acne,grasa,mixta",
     price: 65,
+    imageUrl: "/products/jabon-antiacne.svg",
     buyUrl: MARKETPLACE,
   },
   {
@@ -46,6 +49,7 @@ const products = [
     category: "Crema facial",
     skinTags: "acne,grasa,mixta",
     price: 68,
+    imageUrl: "/products/crema-antiacne.svg",
     buyUrl: MARKETPLACE,
   },
   {
@@ -54,6 +58,7 @@ const products = [
     category: "Manos",
     skinTags: "seca,sensible,hidratante",
     price: 50,
+    imageUrl: "/products/crema-manos-coco.svg",
     buyUrl: MARKETPLACE,
   },
   {
@@ -62,6 +67,7 @@ const products = [
     category: "Labios",
     skinTags: "seca,hidratante",
     price: 30,
+    imageUrl: "/products/balsamo-fresa.svg",
     buyUrl: MARKETPLACE,
   },
   {
@@ -71,6 +77,7 @@ const products = [
     category: "Crema facial",
     skinTags: "madura,seca,antiedad,hidratante",
     price: 68,
+    imageUrl: "/products/crema-macadamia.svg",
     buyUrl: MARKETPLACE,
   },
   {
@@ -79,6 +86,7 @@ const products = [
     category: "Protector solar",
     skinTags: "todos,grasa,seca,mixta,sensible,proteccion",
     price: 59.5,
+    imageUrl: "/products/crema-spf45.svg",
     buyUrl: MARKETPLACE,
   },
   {
@@ -87,6 +95,7 @@ const products = [
     category: "Labios",
     skinTags: "seca,exfoliante",
     price: 30,
+    imageUrl: "/products/exfoliante-labial.svg",
     buyUrl: MARKETPLACE,
   },
   {
@@ -95,6 +104,7 @@ const products = [
     category: "Limpieza",
     skinTags: "todos,sensible,mixta,seca,grasa",
     price: 49.5,
+    imageUrl: "/products/agua-micelar.svg",
     buyUrl: MARKETPLACE,
   },
   {
@@ -103,6 +113,7 @@ const products = [
     category: "Jabón",
     skinTags: "sensible,seca,calmante",
     price: 65,
+    imageUrl: "/products/jabon-miel-avena.svg",
     buyUrl: MARKETPLACE,
   },
   {
@@ -111,6 +122,7 @@ const products = [
     category: "Tónico",
     skinTags: "acne,sensible,rosacea,mixta",
     price: 49.5,
+    imageUrl: "/products/agua-rosas.svg",
     buyUrl: MARKETPLACE,
   },
   {
@@ -119,6 +131,7 @@ const products = [
     category: "Combo",
     skinTags: "acne,sensible,rosacea",
     price: 93.5,
+    imageUrl: "/products/combo-rosas.svg",
     buyUrl: MARKETPLACE,
   },
   {
@@ -127,6 +140,7 @@ const products = [
     category: "Pies",
     skinTags: "seca,exfoliante,hidratante",
     price: 110.5,
+    imageUrl: "/products/exfoliante-pies-luffa.svg",
     buyUrl: MARKETPLACE,
   },
   {
@@ -135,6 +149,7 @@ const products = [
     category: "Combo",
     skinTags: "mixta,seca,aclarante,proteccion,antiedad",
     price: 140,
+    imageUrl: "/products/protege-aclara.svg",
     buyUrl: MARKETPLACE,
   },
   {
@@ -143,6 +158,7 @@ const products = [
     category: "Combo",
     skinTags: "acne,grasa,mixta",
     price: 176,
+    imageUrl: "/products/combo-antiacne.svg",
     buyUrl: MARKETPLACE,
   },
   {
@@ -151,6 +167,7 @@ const products = [
     category: "Mascarilla",
     skinTags: "sensible,seca,calmante,hidratante",
     price: 70.4,
+    imageUrl: "/products/kit-mascarilla-miel.svg",
     buyUrl: MARKETPLACE,
   },
   {
@@ -159,6 +176,7 @@ const products = [
     category: "Crema facial",
     skinTags: "aclarante,mixta,seca,madura",
     price: 68,
+    imageUrl: "/products/crema-aclarante.svg",
     buyUrl: MARKETPLACE,
   },
   {
@@ -167,6 +185,7 @@ const products = [
     category: "Combo",
     skinTags: "seca,hidratante",
     price: 100,
+    imageUrl: "/products/combo-manos.svg",
     buyUrl: MARKETPLACE,
   },
   {
@@ -175,6 +194,7 @@ const products = [
     category: "Crema facial",
     skinTags: "seca,mixta,hidratante",
     price: 80,
+    imageUrl: "/products/crema-humectante.svg",
     buyUrl: MARKETPLACE,
   },
   {
@@ -183,6 +203,7 @@ const products = [
     category: "Crema facial",
     skinTags: "mixta,seca,exfoliante,madura",
     price: 68,
+    imageUrl: "/products/crema-exfoliante-rosa.svg",
     buyUrl: MARKETPLACE,
   },
   {
@@ -191,6 +212,7 @@ const products = [
     category: "Pies",
     skinTags: "seca,exfoliante",
     price: 65,
+    imageUrl: "/products/exfoliante-pies-arroz.svg",
     buyUrl: MARKETPLACE,
   },
   {
@@ -199,6 +221,7 @@ const products = [
     category: "Desodorante",
     skinTags: "sensible,todos",
     price: 185,
+    imageUrl: "/products/desodorante-alumbre.svg",
     buyUrl: MARKETPLACE,
   },
 ];

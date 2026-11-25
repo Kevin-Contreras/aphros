@@ -1,4 +1,5 @@
 import { Suspense } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { connection } from "next/server";
@@ -18,6 +19,7 @@ type RecommendedProduct = {
   description: string;
   price: number;
   currency: string;
+  imageUrl?: string | null;
   buyUrl: string;
   reason?: string | null;
 };
@@ -44,7 +46,22 @@ async function ResultadoContent({
   if (!submission) notFound();
 
   const analysis = JSON.parse(submission.skinAnalysis) as Analysis;
-  const products = JSON.parse(submission.recommendedProducts) as RecommendedProduct[];
+  const storedProducts = JSON.parse(
+    submission.recommendedProducts,
+  ) as RecommendedProduct[];
+
+  // Enrich with current catalog images (covers older submissions)
+  const fresh = await prisma.product.findMany({
+    where: { id: { in: storedProducts.map((p) => p.id) } },
+    select: { id: true, imageUrl: true },
+  });
+  const imageById = Object.fromEntries(
+    fresh.map((product) => [product.id, product.imageUrl]),
+  );
+  const products = storedProducts.map((product) => ({
+    ...product,
+    imageUrl: product.imageUrl || imageById[product.id] || null,
+  }));
 
   return (
     <main className="flex flex-1 flex-col">
@@ -80,33 +97,54 @@ async function ResultadoContent({
           {products.map((product) => (
             <article
               key={product.id}
-              className="rounded-3xl border border-sand bg-cream/90 p-6 md:p-7"
+              className="rounded-3xl border border-sand bg-cream/90 p-5 md:p-7"
             >
-              <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
-                <div className="max-w-2xl">
-                  <h3 className="font-[family-name:var(--font-display)] text-2xl text-forest">
-                    {product.name}
-                  </h3>
-                  <p className="mt-2 text-sm leading-relaxed text-mist">
-                    {product.description}
-                  </p>
-                  {product.reason ? (
-                    <p className="mt-3 text-sm italic text-clay">{product.reason}</p>
-                  ) : null}
+              <div className="flex flex-col gap-5 sm:flex-row sm:items-start">
+                <div className="relative mx-auto h-36 w-36 shrink-0 overflow-hidden rounded-2xl border border-sand bg-ivory sm:mx-0">
+                  {product.imageUrl ? (
+                    <Image
+                      src={product.imageUrl}
+                      alt={product.name}
+                      fill
+                      unoptimized={product.imageUrl.endsWith(".svg")}
+                      className="object-cover"
+                      sizes="144px"
+                    />
+                  ) : (
+                    <div className="flex h-full items-center justify-center text-xs tracking-[0.2em] uppercase text-sage">
+                      Aphros
+                    </div>
+                  )}
                 </div>
-                <div className="shrink-0 md:text-right">
-                  <p className="text-lg font-semibold text-forest">
-                    {product.currency}
-                    {product.price.toFixed(2)}
-                  </p>
-                  <a
-                    href={product.buyUrl}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="mt-3 inline-flex rounded-full bg-sage px-5 py-2.5 text-sm font-semibold text-cream hover:bg-sage-dark"
-                  >
-                    Comprar en Pacifiko
-                  </a>
+
+                <div className="min-w-0 flex-1">
+                  <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
+                    <div className="max-w-2xl">
+                      <h3 className="font-[family-name:var(--font-display)] text-2xl text-forest">
+                        {product.name}
+                      </h3>
+                      <p className="mt-2 text-sm leading-relaxed text-mist">
+                        {product.description}
+                      </p>
+                      {product.reason ? (
+                        <p className="mt-3 text-sm italic text-clay">{product.reason}</p>
+                      ) : null}
+                    </div>
+                    <div className="shrink-0 md:text-right">
+                      <p className="text-lg font-semibold text-forest">
+                        {product.currency}
+                        {product.price.toFixed(2)}
+                      </p>
+                      <a
+                        href={product.buyUrl}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="mt-3 inline-flex rounded-full bg-sage px-5 py-2.5 text-sm font-semibold text-cream hover:bg-sage-dark"
+                      >
+                        Comprar en Pacifiko
+                      </a>
+                    </div>
+                  </div>
                 </div>
               </div>
             </article>

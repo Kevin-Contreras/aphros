@@ -5,6 +5,7 @@ type RecommendedProduct = {
   description: string;
   price: number;
   currency: string;
+  imageUrl?: string | null;
   buyUrl: string;
   reason?: string;
 };
@@ -59,23 +60,52 @@ export async function sendRecommendationEmail(payload: RecommendationEmailPayloa
     };
   }
 
+  const siteUrl = (
+    process.env.NEXT_PUBLIC_SITE_URL ||
+    process.env.VERCEL_PROJECT_PRODUCTION_URL ||
+    process.env.VERCEL_URL ||
+    ""
+  ).replace(/\/$/, "");
+  const absoluteSite = siteUrl
+    ? siteUrl.startsWith("http")
+      ? siteUrl
+      : `https://${siteUrl}`
+    : "https://aphros.vercel.app";
+
   const productBlocks = payload.products
-    .map(
-      (product) => `
+    .map((product) => {
+      const rawImage = product.imageUrl || "";
+      const imageSrc = rawImage
+        ? rawImage.startsWith("http")
+          ? rawImage
+          : `${absoluteSite}${rawImage}`
+        : "";
+      const imageHtml = imageSrc
+        ? `<img src="${escapeHtml(imageSrc)}" alt="${escapeHtml(product.name)}" width="96" height="96" style="display:block;width:96px;height:96px;object-fit:cover;border-radius:16px;border:1px solid #e8e2d6;background:#f7f3ea;" />`
+        : "";
+
+      return `
       <tr>
         <td style="padding:16px 0;border-bottom:1px solid #e8e2d6;">
-          <p style="margin:0 0 6px;font-size:16px;font-weight:600;color:#2f3d2c;">${escapeHtml(product.name)}</p>
-          <p style="margin:0 0 8px;font-size:14px;color:#5c6558;line-height:1.5;">${escapeHtml(product.description)}</p>
-          ${
-            product.reason
-              ? `<p style="margin:0 0 8px;font-size:13px;color:#7a6a4f;"><em>${escapeHtml(product.reason)}</em></p>`
-              : ""
-          }
-          <p style="margin:0 0 10px;font-size:14px;color:#2f3d2c;">${escapeHtml(product.currency)}${product.price.toFixed(2)}</p>
-          <a href="${escapeHtml(product.buyUrl)}" style="display:inline-block;padding:10px 16px;background:#6b8f71;color:#fff;text-decoration:none;border-radius:999px;font-size:13px;">Ver en Pacifiko</a>
+          <table width="100%" cellpadding="0" cellspacing="0">
+            <tr>
+              ${imageHtml ? `<td width="112" valign="top" style="padding-right:16px;">${imageHtml}</td>` : ""}
+              <td valign="top">
+                <p style="margin:0 0 6px;font-size:16px;font-weight:600;color:#2f3d2c;">${escapeHtml(product.name)}</p>
+                <p style="margin:0 0 8px;font-size:14px;color:#5c6558;line-height:1.5;">${escapeHtml(product.description)}</p>
+                ${
+                  product.reason
+                    ? `<p style="margin:0 0 8px;font-size:13px;color:#7a6a4f;"><em>${escapeHtml(product.reason)}</em></p>`
+                    : ""
+                }
+                <p style="margin:0 0 10px;font-size:14px;color:#2f3d2c;">${escapeHtml(product.currency)}${product.price.toFixed(2)}</p>
+                <a href="${escapeHtml(product.buyUrl)}" style="display:inline-block;padding:10px 16px;background:#6b8f71;color:#fff;text-decoration:none;border-radius:999px;font-size:13px;">Ver en Pacifiko</a>
+              </td>
+            </tr>
+          </table>
         </td>
-      </tr>`,
-    )
+      </tr>`;
+    })
     .join("");
 
   const tips = payload.tips

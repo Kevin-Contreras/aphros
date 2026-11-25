@@ -9,7 +9,17 @@ const productSchema = z.object({
   skinTags: z.string().min(2),
   price: z.number().positive(),
   currency: z.string().default("Q"),
-  imageUrl: z.string().url().optional().nullable(),
+  imageUrl: z
+    .string()
+    .refine(
+      (value) =>
+        !value ||
+        value.startsWith("/") ||
+        /^https?:\/\//i.test(value),
+      "URL de imagen inválida",
+    )
+    .optional()
+    .nullable(),
   buyUrl: z.string().url(),
   active: z.boolean().default(true),
 });

@@ -224,17 +224,29 @@ export function ProductsAdmin() {
                 key={product.id}
                 className="flex flex-col gap-3 px-5 py-4 md:flex-row md:items-center md:justify-between"
               >
-                <div>
-                  <p className="font-medium text-forest">
-                    {product.name}{" "}
-                    <span className="text-xs font-normal text-mist">
-                      {product.active ? "activo" : "inactivo"}
-                    </span>
-                  </p>
-                  <p className="mt-1 text-xs text-mist">
-                    {product.category} · {product.currency}
-                    {product.price} · {product.skinTags}
-                  </p>
+                <div className="flex items-center gap-3">
+                  <div className="h-14 w-14 shrink-0 overflow-hidden rounded-xl border border-sand bg-ivory">
+                    {product.imageUrl ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={product.imageUrl}
+                        alt={product.name}
+                        className="h-full w-full object-cover"
+                      />
+                    ) : null}
+                  </div>
+                  <div>
+                    <p className="font-medium text-forest">
+                      {product.name}{" "}
+                      <span className="text-xs font-normal text-mist">
+                        {product.active ? "activo" : "inactivo"}
+                      </span>
+                    </p>
+                    <p className="mt-1 text-xs text-mist">
+                      {product.category} · {product.currency}
+                      {product.price} · {product.skinTags}
+                    </p>
+                  </div>
                 </div>
                 <div className="flex gap-2">
                   <button
