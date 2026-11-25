@@ -63,10 +63,15 @@ const TAG_ALIASES: Record<string, string[]> = {
   sol_alto: ["proteccion"],
   sol_medio: ["proteccion"],
   sol_bajo: [],
+  usa_spf_diario: ["proteccion"],
   sin_rutina: ["todos"],
   basica: ["todos"],
   media: ["hidratante"],
   completa: [],
+  ambiente_sol: ["proteccion", "grasa"],
+  ambiente_ac: ["seca", "hidratante"],
+  ambiente_casa: [],
+  ambiente_mixto: ["mixta"],
 };
 
 const HIGH_WEIGHT = new Set([
@@ -125,7 +130,9 @@ export function buildUserProfile(answers: AnswerForAi[]): UserProfile {
   const prefersBrightening = /manchas|aclar|tono|vitamina c/.test(joined);
   const prefersAntiAging = /antiedad|madura|firmeza|edad/.test(joined);
   const needsSpf =
-    /proteccion|sol_alto|sol_medio|spf|solar/.test(joined) || prefersBrightening;
+    /proteccion|sol_alto|sol_medio|usa_spf_diario|ambiente_sol|spf|solar/.test(
+      joined,
+    ) || prefersBrightening;
 
   let routineLevel: UserProfile["routineLevel"] = "unknown";
   if (/sin_rutina|solo jab[oó]n/.test(joined)) routineLevel = "none";
