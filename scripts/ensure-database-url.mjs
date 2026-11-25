@@ -1,5 +1,9 @@
 const url =
   process.env.DATABASE_URL ||
+  process.env.APHROS_DATABASE_URL ||
+  process.env.APHROS_POSTGRES_URL ||
+  process.env.APHROS_PRISMA_DATABASE_URL ||
+  process.env.APHROS_DATABASE_URL_POOLED ||
   process.env.POSTGRES_PRISMA_URL ||
   process.env.POSTGRES_URL ||
   process.env.PRISMA_DATABASE_URL;
@@ -8,14 +12,14 @@ if (!url) {
   console.error(`
 Missing database URL for prisma migrate deploy.
 
-In Vercel:
-  1. Project → Storage → create/connect Prisma Postgres (or Postgres)
-  2. Or Settings → Environment Variables → add DATABASE_URL
-     (postgresql://...@...:5432/postgres?sslmode=require)
-  3. Enable it for Production (and Preview if needed)
-  4. Redeploy
+Expected one of:
+  DATABASE_URL
+  APHROS_DATABASE_URL
+  APHROS_POSTGRES_URL
+  APHROS_DATABASE_URL_POOLED
 
-Locally: npx vercel env pull .env.local
+In Vercel → Settings → Environment Variables, confirm the Prisma Postgres
+integration variables are enabled for Production, then redeploy.
 `);
   process.exit(1);
 }
