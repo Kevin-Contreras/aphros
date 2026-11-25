@@ -1,13 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import type { PublicQuestion, QuizAnswerPayload } from "@/lib/types";
 
 type Step = "questions" | "contact" | "submitting";
 
 export function QuizClient({ questions }: { questions: PublicQuestion[] }) {
-  const router = useRouter();
   const [step, setStep] = useState<Step>("questions");
   const [index, setIndex] = useState(0);
   const [answers, setAnswers] = useState<QuizAnswerPayload[]>([]);
@@ -60,7 +58,7 @@ export function QuizClient({ questions }: { questions: PublicQuestion[] }) {
     setStep("submitting");
 
     const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 25_000);
+    const timeout = setTimeout(() => controller.abort(), 20_000);
 
     try {
       const response = await fetch("/api/recommend", {
@@ -84,7 +82,8 @@ export function QuizClient({ questions }: { questions: PublicQuestion[] }) {
         throw new Error("No recibimos el resultado. Intenta de nuevo.");
       }
 
-      router.push(`/resultado/${data.id}`);
+      // Hard navigation avoids staying stuck on the analyzing screen
+      window.location.assign(`/resultado/${data.id}`);
     } catch (err) {
       const message =
         err instanceof Error && err.name === "AbortError"

@@ -1,8 +1,9 @@
 import { NextResponse } from "next/server";
+import { after } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { analyzeSkinAndRecommend } from "@/lib/gemini";
-import { sendRecommendationEmail } from "@/lib/brevo";
+import { getBrevoConfigStatus, sendRecommendationEmail } from "@/lib/brevo";
 
 const bodySchema = z.object({
   name: z.string().min(2).max(80),
@@ -60,7 +61,7 @@ export async function POST(request: Request) {
       recommendation.productIds.includes(product.id),
     );
 
-    // Save first so the UI can navigate even if email is slow/fails
+    // Always persist first so the UI can navigate immediately
     const submission = await prisma.quizSubmission.create({
       data: {
         name: data.name,
@@ -87,9 +88,19 @@ export async function POST(request: Request) {
       },
     });
 
+    const brevoStatus = getBrevoConfigStatus();
     let emailSent = false;
-    try {
-      const emailResult = await sendRecommendationEmail({
+    let emailReason: string | null = null;
+
+    // Try a quick send; if it fails/times out, queue via after() without blocking UX
+    if (!brevoStatus.ready) {
+      emailReason = !brevoStatus.apiKeyPresent
+        ? "BREVO_API_KEY ausente en Vercel"
+        : !brevoStatus.senderEmailValid
+          ? "BREVO_SENDER_EMAIL inválido en Vercel (debe ser un correo verificado)"
+          : "Brevo no configurado";
+    } else {
+      const emailPayload = {
         toEmail: data.email,
         toName: data.name,
         skinType: recommendation.skinType,
@@ -103,22 +114,41 @@ export async function POST(request: Request) {
           buyUrl: product.buyUrl,
           reason: recommendation.reasons?.[product.id],
         })),
-      });
+      };
+
+      const emailResult = await sendRecommendationEmail(emailPayload);
       emailSent = emailResult.sent;
+      emailReason = emailResult.sent ? null : emailResult.reason;
+
       if (emailSent) {
         await prisma.quizSubmission.update({
           where: { id: submission.id },
           data: { emailSent: true },
         });
+      } else {
+        // Retry once in the background so the browser is not stuck
+        after(async () => {
+          try {
+            const retry = await sendRecommendationEmail(emailPayload);
+            if (retry.sent) {
+              await prisma.quizSubmission.update({
+                where: { id: submission.id },
+                data: { emailSent: true },
+              });
+            } else {
+              console.error("Brevo retry failed:", retry.reason);
+            }
+          } catch (error) {
+            console.error("Brevo after() failed:", error);
+          }
+        });
       }
-    } catch (error) {
-      console.error("Brevo email failed:", error);
-      emailSent = false;
     }
 
     return NextResponse.json({
       id: submission.id,
       emailSent,
+      emailReason,
       result: {
         skinType: recommendation.skinType,
         summary: recommendation.summary,

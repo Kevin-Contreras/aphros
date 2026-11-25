@@ -1,4 +1,5 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import { withTimeout } from "@/lib/with-timeout";
 
 export type ProductForAi = {
   id: string;
@@ -139,7 +140,6 @@ ${JSON.stringify(products, null, 2)}
 `;
 
   try {
-    const { withTimeout } = await import("@/lib/with-timeout");
     const result = await withTimeout(
       model.generateContent(prompt),
       10_000,
