@@ -110,7 +110,7 @@ export default function HomePage() {
               {
                 step: "3",
                 title: "Recibe tu rutina exacta",
-                desc: "Obtienes recomendaciones con enlace directo de compra y consejos de aplicación en tu correo y pantalla.",
+                desc: "Obtienes recomendaciones personalizadas y consejos de aplicación en tu correo y pantalla.",
               },
             ].map((item) => (
               <Card

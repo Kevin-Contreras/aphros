@@ -6,7 +6,6 @@ import { connection } from "next/server";
 import {
   ArrowRightIcon,
   CheckCircle2Icon,
-  ExternalLinkIcon,
   LightbulbIcon,
   RotateCcwIcon,
   Share2Icon,
@@ -19,8 +18,6 @@ import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
-  CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -219,19 +216,6 @@ async function ResultadoContent({
                     </div>
                   ) : null}
                 </CardContent>
-
-                {/* Mobile Direct Buy Button using shadcn Button */}
-                <CardFooter className="bg-secondary/20">
-                  <Button
-                    asChild
-                    className="h-11 w-full rounded-xl text-xs font-semibold shadow-2xs active:scale-[0.98]"
-                  >
-                    <a href={product.buyUrl} target="_blank" rel="noreferrer">
-                      <span>Comprar en Pacifiko</span>
-                      <ExternalLinkIcon data-icon="inline-end" />
-                    </a>
-                  </Button>
-                </CardFooter>
               </Card>
             ))}
           </div>

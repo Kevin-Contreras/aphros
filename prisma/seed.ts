@@ -11,7 +11,7 @@ if (!connectionString) {
 const adapter = new PrismaPg({ connectionString });
 const prisma = new PrismaClient({ adapter });
 
-const MARKETPLACE = "https://www.pacifiko.com/marketplace/aphros";
+const MARKETPLACE = "";
 
 const products = [
   {

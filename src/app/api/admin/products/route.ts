@@ -20,7 +20,7 @@ const productSchema = z.object({
     )
     .optional()
     .nullable(),
-  buyUrl: z.string().url(),
+  buyUrl: z.string().optional().default(""),
   active: z.boolean().default(true),
 });
 

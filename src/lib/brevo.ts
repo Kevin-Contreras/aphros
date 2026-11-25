@@ -114,13 +114,6 @@ export async function sendRecommendationEmail(payload: RecommendationEmailPayloa
                    </div>`
                 : ""
             }
-
-            <!-- CTA button -->
-            <div style="margin-top:14px;text-align:right;">
-              <a href="${escapeHtml(product.buyUrl)}" style="display:inline-block;padding:9px 18px;background:#b85d43;color:#ffffff;text-decoration:none;border-radius:999px;font-size:12.5px;font-weight:600;letter-spacing:0.02em;">
-                Ver en Pacifiko →
-              </a>
-            </div>
           </div>
         </td>
       </tr>`;
@@ -248,8 +241,6 @@ export async function sendRecommendationEmail(payload: RecommendationEmailPayloa
               </p>
               <p style="margin:0;">
                 <a href="${absoluteSite}" style="color:#b85d43;text-decoration:none;font-weight:500;">Visitar sitio web</a>
-                &nbsp;·&nbsp;
-                <a href="https://www.pacifiko.com/marketplace/aphros" style="color:#b85d43;text-decoration:none;font-weight:500;">Catálogo en Pacifiko</a>
               </p>
             </td>
           </tr>

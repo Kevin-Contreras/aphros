@@ -189,7 +189,6 @@ export function ProductsAdmin() {
             ["skinTags", "Tags de piel (coma)", "text"],
             ["price", "Precio", "number"],
             ["currency", "Moneda", "text"],
-            ["buyUrl", "Link Pacifiko", "url"],
           ] as const
         ).map(([key, label, type]) => (
           <label key={key} className="block text-sm">
