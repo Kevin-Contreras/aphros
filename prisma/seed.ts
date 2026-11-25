@@ -1,10 +1,11 @@
 import "dotenv/config";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "../src/generated/prisma/client";
+import { getDatabaseUrl } from "../src/lib/database-url";
 
-const connectionString = process.env.DATABASE_URL;
+const connectionString = getDatabaseUrl();
 if (!connectionString) {
-  throw new Error("DATABASE_URL is not set");
+  throw new Error("Missing DATABASE_URL (or POSTGRES_URL)");
 }
 
 const adapter = new PrismaPg({ connectionString });
