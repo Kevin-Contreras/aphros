@@ -9,6 +9,15 @@ import {
   SparklesIcon,
 } from "lucide-react";
 import { SiteHeader } from "@/components/SiteHeader";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
 export default function HomePage() {
   return (
@@ -18,15 +27,17 @@ export default function HomePage() {
       {/* Hero Section */}
       <section className="relative flex flex-col justify-center px-4 pt-6 pb-10 sm:px-8 sm:py-16">
         <div className="pointer-events-none absolute inset-0 overflow-hidden">
-          <div className="soft-pulse absolute -right-12 top-4 h-64 w-64 rounded-full bg-blush/80 blur-3xl" />
-          <div className="absolute -left-12 bottom-4 h-60 w-60 rounded-full bg-blush-hover/60 blur-3xl" />
+          <div className="soft-pulse absolute -right-12 top-4 h-64 w-64 rounded-full bg-secondary/80 blur-3xl" />
+          <div className="absolute -left-12 bottom-4 h-60 w-60 rounded-full bg-secondary/60 blur-3xl" />
         </div>
 
         <div className="relative mx-auto w-full max-w-xl text-center">
-          {/* Badge */}
-          <div className="fade-up mx-auto inline-flex items-center gap-1.5 rounded-full border border-blush-border bg-blush px-3.5 py-1 text-[11px] font-semibold tracking-wider text-blush-dark uppercase shadow-2xs">
-            <LeafIcon className="size-3 text-blush-dark" />
-            <span>Guatemala · Cosmética botánica</span>
+          {/* Badge using shadcn variant="secondary" */}
+          <div className="fade-up flex justify-center">
+            <Badge variant="secondary" className="gap-1.5 px-3.5 py-1 text-xs tracking-wider uppercase shadow-2xs font-semibold">
+              <LeafIcon data-icon="inline-start" />
+              <span>Guatemala · Cosmética botánica</span>
+            </Badge>
           </div>
 
           {/* Title */}
@@ -40,43 +51,46 @@ export default function HomePage() {
             artesanal personalizada con productos naturales Aphros.
           </p>
 
-          {/* CTAs */}
+          {/* CTA using shadcn Button */}
           <div className="fade-up-delay mt-6 flex justify-center">
-            <Link
-              href="/quiz"
-              className="inline-flex h-13 w-full items-center justify-center gap-2 rounded-2xl bg-sage px-6 text-base font-semibold tracking-wide text-cream shadow-sm transition hover:bg-sage-dark active:scale-[0.98] sm:w-auto sm:px-8"
+            <Button
+              asChild
+              size="lg"
+              className="h-13 w-full rounded-2xl text-base font-semibold tracking-wide shadow-sm active:scale-[0.98] sm:w-auto sm:px-8"
             >
-              <span>Empezar test gratis</span>
-              <ArrowRightIcon className="size-4" />
-            </Link>
+              <Link href="/quiz">
+                <span>Empezar test gratis</span>
+                <ArrowRightIcon data-icon="inline-end" />
+              </Link>
+            </Button>
           </div>
 
-          {/* Mobile Trust Signals */}
-          <div className="mt-6 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-xs text-mist">
-            <span className="inline-flex items-center gap-1">
-              <ClockIcon className="size-3.5 text-sage" />
-              Solo 2 minutos
-            </span>
-            <span className="inline-flex items-center gap-1">
-              <SparklesIcon className="size-3.5 text-sage" />
-              Diagnóstico con IA
-            </span>
-            <span className="inline-flex items-center gap-1">
-              <ShieldCheckIcon className="size-3.5 text-sage" />
-              100% Natural
-            </span>
+          {/* Mobile Trust Badges using shadcn */}
+          <div className="mt-6 flex flex-wrap items-center justify-center gap-2">
+            <Badge variant="outline" className="gap-1 bg-background/60 py-1 text-xs text-mist">
+              <ClockIcon className="size-3 text-secondary-foreground" />
+              <span>Solo 2 minutos</span>
+            </Badge>
+            <Badge variant="secondary" className="gap-1 py-1 text-xs">
+              <SparklesIcon className="size-3 text-secondary-foreground" />
+              <span>Diagnóstico con IA</span>
+            </Badge>
+            <Badge variant="outline" className="gap-1 bg-background/60 py-1 text-xs text-mist">
+              <ShieldCheckIcon className="size-3 text-secondary-foreground" />
+              <span>100% Natural</span>
+            </Badge>
           </div>
         </div>
       </section>
 
-      {/* Steps Journey */}
-      <section className="border-t border-sand/70 bg-cream/50 px-4 py-10 sm:px-8 sm:py-14">
+      {/* Steps Journey with shadcn Cards */}
+      <section className="border-t border-border/70 bg-cream/50 px-4 py-10 sm:px-8 sm:py-14">
         <div className="mx-auto max-w-xl">
           <div className="text-center">
-            <p className="text-xs font-semibold tracking-[0.2em] uppercase text-blush-dark">
+            <Badge variant="secondary" className="font-semibold uppercase tracking-[0.2em]">
               Paso a paso
-            </p>
-            <h2 className="mt-1 font-[family-name:var(--font-display)] text-2xl text-forest sm:text-3xl">
+            </Badge>
+            <h2 className="mt-2 font-[family-name:var(--font-display)] text-2xl text-forest sm:text-3xl">
               ¿Cómo funciona el test?
             </h2>
           </div>
@@ -99,11 +113,11 @@ export default function HomePage() {
                 desc: "Obtienes recomendaciones con enlace directo de compra y consejos de aplicación en tu correo y pantalla.",
               },
             ].map((item) => (
-              <div
+              <Card
                 key={item.step}
-                className="flex items-start gap-3.5 rounded-2xl border border-sand/80 bg-background/90 p-4 shadow-2xs"
+                className="flex flex-row items-start gap-3.5 border-border/80 bg-background/90 p-4 shadow-2xs"
               >
-                <div className="flex size-8 shrink-0 items-center justify-center rounded-xl border border-blush-border bg-blush font-heading text-sm font-semibold text-blush-dark">
+                <div className="flex size-8 shrink-0 items-center justify-center rounded-xl bg-secondary font-heading text-sm font-semibold text-secondary-foreground">
                   {item.step}
                 </div>
                 <div className="min-w-0 flex-1">
@@ -114,65 +128,76 @@ export default function HomePage() {
                     {item.desc}
                   </p>
                 </div>
-              </div>
+              </Card>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Why Aphros Section */}
+      {/* Why Aphros Section with shadcn Card */}
       <section className="px-4 py-10 sm:px-8">
-        <div className="mx-auto max-w-xl rounded-3xl border border-blush-border bg-linear-to-b from-cream/90 to-blush/25 p-6 text-center shadow-xs sm:p-8">
-          <HeartIcon className="mx-auto size-7 text-blush-dark" />
-          <h2 className="mt-3 font-[family-name:var(--font-display)] text-2xl text-forest sm:text-3xl">
-            Cuidado consciente para tu piel
-          </h2>
-          <p className="mt-2 text-xs leading-relaxed text-mist sm:text-sm">
-            Aphros elabora productos libres de sulfatos y parabenos, respetando
-            tu barrera cutánea con ingredientes botánicos de origen consciente.
-          </p>
+        <Card className="mx-auto max-w-xl rounded-3xl border-border bg-linear-to-b from-card to-secondary/30 p-6 text-center shadow-xs sm:p-8">
+          <CardHeader className="items-center pb-2">
+            <div className="flex size-12 items-center justify-center rounded-2xl bg-secondary text-secondary-foreground">
+              <HeartIcon className="size-6" />
+            </div>
+            <CardTitle className="mt-3 font-[family-name:var(--font-display)] text-2xl text-forest sm:text-3xl">
+              Cuidado consciente para tu piel
+            </CardTitle>
+            <CardDescription className="text-xs leading-relaxed text-mist sm:text-sm">
+              Aphros elabora productos libres de sulfatos y parabenos, respetando
+              tu barrera cutánea con ingredientes botánicos de origen consciente.
+            </CardDescription>
+          </CardHeader>
 
-          <div className="mt-5 grid grid-cols-2 gap-2.5 text-left text-xs">
-            <div className="flex items-center gap-1.5 rounded-xl border border-sand/60 bg-background/60 p-2.5">
-              <CheckCircle2Icon className="size-4 shrink-0 text-sage" />
-              <span>Sin químicos agresivos</span>
+          <CardContent className="pt-2">
+            <div className="grid grid-cols-2 gap-2.5 text-left text-xs">
+              <div className="flex items-center gap-1.5 rounded-xl border border-border/70 bg-background/80 p-2.5">
+                <CheckCircle2Icon className="size-4 shrink-0 text-primary" />
+                <span>Sin químicos agresivos</span>
+              </div>
+              <div className="flex items-center gap-1.5 rounded-xl border border-border/70 bg-background/80 p-2.5">
+                <CheckCircle2Icon className="size-4 shrink-0 text-primary" />
+                <span>Ingredientes puros</span>
+              </div>
+              <div className="flex items-center gap-1.5 rounded-xl border border-border/70 bg-background/80 p-2.5">
+                <CheckCircle2Icon className="size-4 shrink-0 text-primary" />
+                <span>Artesanal de Guatemala</span>
+              </div>
+              <div className="flex items-center gap-1.5 rounded-xl border border-border/70 bg-background/80 p-2.5">
+                <CheckCircle2Icon className="size-4 shrink-0 text-primary" />
+                <span>Rutinas minimalistas</span>
+              </div>
             </div>
-            <div className="flex items-center gap-1.5 rounded-xl border border-sand/60 bg-background/60 p-2.5">
-              <CheckCircle2Icon className="size-4 shrink-0 text-sage" />
-              <span>Ingredientes puros</span>
-            </div>
-            <div className="flex items-center gap-1.5 rounded-xl border border-sand/60 bg-background/60 p-2.5">
-              <CheckCircle2Icon className="size-4 shrink-0 text-sage" />
-              <span>Artesanal de Guatemala</span>
-            </div>
-            <div className="flex items-center gap-1.5 rounded-xl border border-sand/60 bg-background/60 p-2.5">
-              <CheckCircle2Icon className="size-4 shrink-0 text-sage" />
-              <span>Rutinas minimalistas</span>
-            </div>
-          </div>
 
-          <div className="mt-6">
-            <Link
-              href="/quiz"
-              className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-2xl bg-sage px-6 text-sm font-semibold text-cream shadow-2xs transition hover:bg-sage-dark active:scale-[0.98]"
-            >
-              <span>Hacer mi test personalizado</span>
-              <ArrowRightIcon className="size-4" />
-            </Link>
-          </div>
-        </div>
+            <div className="mt-6">
+              <Button
+                asChild
+                className="h-12 w-full rounded-2xl text-sm font-semibold shadow-2xs active:scale-[0.98]"
+              >
+                <Link href="/quiz">
+                  <span>Hacer mi test personalizado</span>
+                  <ArrowRightIcon data-icon="inline-end" />
+                </Link>
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
       </section>
 
-      {/* Sticky Mobile Bottom Bar */}
-      <div className="fixed inset-x-0 bottom-0 z-30 border-t border-sand/80 bg-ivory/95 p-3.5 backdrop-blur-md sm:hidden">
-        <Link
-          href="/quiz"
-          className="flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-sage font-semibold text-sm text-cream shadow-md active:scale-[0.98]"
+      {/* Sticky Mobile Bottom Bar using shadcn Button */}
+      <div className="fixed inset-x-0 bottom-0 z-30 border-t border-border/80 bg-background/95 p-3.5 backdrop-blur-md sm:hidden">
+        <Button
+          asChild
+          size="lg"
+          className="h-12 w-full rounded-xl font-semibold text-sm shadow-md active:scale-[0.98]"
         >
-          <SparklesIcon className="size-4" />
-          <span>Comenzar test de piel gratis</span>
-          <ArrowRightIcon className="size-4" />
-        </Link>
+          <Link href="/quiz">
+            <SparklesIcon data-icon="inline-start" />
+            <span>Comenzar test de piel gratis</span>
+            <ArrowRightIcon data-icon="inline-end" />
+          </Link>
+        </Button>
       </div>
     </main>
   );

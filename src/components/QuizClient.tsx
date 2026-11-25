@@ -14,6 +14,20 @@ import {
   UserIcon,
 } from "lucide-react";
 import type { PublicQuestion, QuizAnswerPayload } from "@/lib/types";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
+import { Progress } from "@/components/ui/progress";
 
 type Step = "questions" | "contact" | "submitting";
 
@@ -166,13 +180,13 @@ export function QuizClient({ questions }: { questions: PublicQuestion[] }) {
 
   if (questions.length === 0) {
     return (
-      <div className="rounded-3xl border border-sand bg-cream/90 p-6 text-center text-mist">
+      <Card className="p-6 text-center text-muted-foreground">
         Aún no hay preguntas activas en el sistema.
-      </div>
+      </Card>
     );
   }
 
-  // Submitting Screen
+  // Submitting Screen with shadcn Card
   if (step === "submitting") {
     const loadingPhrases = [
       "Analizando las necesidades de tu piel…",
@@ -182,17 +196,17 @@ export function QuizClient({ questions }: { questions: PublicQuestion[] }) {
     ];
 
     return (
-      <div className="flex min-h-[420px] flex-col items-center justify-center rounded-3xl border border-blush-border bg-linear-to-b from-cream/95 to-blush/30 p-6 text-center shadow-xs">
-        <div className="relative mb-6 flex size-20 items-center justify-center rounded-full border border-blush-border bg-blush text-blush-dark">
-          <SparklesIcon className="size-10 animate-spin transition-all" style={{ animationDuration: "6s" }} />
-          <div className="absolute inset-0 rounded-full border-2 border-blush-dark border-t-transparent animate-spin" />
+      <Card className="flex min-h-[420px] flex-col items-center justify-center rounded-3xl border-border bg-linear-to-b from-card to-secondary/35 p-6 text-center shadow-xs">
+        <div className="relative mb-6 flex size-20 items-center justify-center rounded-full bg-secondary text-secondary-foreground shadow-2xs">
+          <SparklesIcon className="size-10 animate-spin" style={{ animationDuration: "6s" }} />
+          <div className="absolute inset-0 rounded-full border-2 border-secondary-foreground/40 border-t-transparent animate-spin" />
         </div>
 
-        <p className="text-xs font-semibold tracking-[0.25em] uppercase text-blush-dark">
+        <Badge variant="secondary" className="uppercase tracking-[0.2em] font-semibold">
           Diagnóstico en curso
-        </p>
+        </Badge>
 
-        <h2 className="mt-2 font-[family-name:var(--font-display)] text-2xl text-forest sm:text-3xl">
+        <h2 className="mt-3 font-[family-name:var(--font-display)] text-2xl text-forest sm:text-3xl">
           Personalizando tu rutina Aphros
         </h2>
 
@@ -200,248 +214,275 @@ export function QuizClient({ questions }: { questions: PublicQuestion[] }) {
           {loadingPhrases[loadingPhraseIndex]}
         </p>
 
-        <div className="mt-8 h-2 w-52 overflow-hidden rounded-full bg-sand">
-          <div className="h-full w-2/3 animate-pulse rounded-full bg-sage" />
+        <div className="mt-8 w-52">
+          <Progress value={65} className="h-2" />
         </div>
-      </div>
+      </Card>
     );
   }
 
-  // Contact Form Screen
+  // Contact Form Screen with shadcn Card, Fields & Buttons
   if (step === "contact") {
     return (
-      <div className="flex flex-col rounded-3xl border border-sand bg-cream/95 p-5 shadow-xs sm:p-8">
-        {/* Top Navigation Bar */}
+      <Card className="rounded-3xl border-border bg-card p-5 shadow-xs sm:p-8">
+        {/* Top Navigation Bar with shadcn Button & Badge */}
         <div className="mb-4 flex items-center justify-between">
-          <button
+          <Button
             type="button"
+            variant="secondary"
+            size="sm"
             onClick={goBack}
-            className="inline-flex items-center gap-1.5 rounded-full border border-blush-border bg-blush/60 px-3 py-1.5 text-xs font-medium text-blush-foreground hover:bg-blush active:scale-95 transition"
+            className="rounded-full shadow-2xs"
           >
-            <ArrowLeftIcon className="size-3.5" />
-            <span>← Regresar a preguntas</span>
-          </button>
-          <span className="rounded-full border border-blush-border bg-blush px-2.5 py-0.5 text-xs font-semibold text-blush-dark">
+            <ArrowLeftIcon data-icon="inline-start" />
+            <span>Regresar a preguntas</span>
+          </Button>
+
+          <Badge variant="secondary" className="font-semibold">
             Paso final
-          </span>
+          </Badge>
         </div>
 
-        <div>
-          <p className="text-[11px] font-semibold tracking-[0.25em] uppercase text-blush-dark">
+        <CardHeader className="p-0">
+          <Badge variant="secondary" className="w-fit font-semibold uppercase tracking-[0.2em]">
             Tu diagnóstico está listo
-          </p>
-          <h2 className="mt-1 font-[family-name:var(--font-display)] text-2xl text-forest sm:text-3xl leading-tight">
+          </Badge>
+          <CardTitle className="mt-1 font-[family-name:var(--font-display)] text-2xl text-forest sm:text-3xl leading-tight">
             ¿A dónde enviamos tu rutina?
-          </h2>
-          <p className="mt-1.5 text-xs sm:text-sm text-mist leading-relaxed">
+          </CardTitle>
+          <CardDescription className="text-xs sm:text-sm leading-relaxed">
             Verás tus resultados al instante en pantalla y recibirás un respaldo en tu correo.
-          </p>
-        </div>
+          </CardDescription>
+        </CardHeader>
 
-        {/* Inputs */}
-        <div className="mt-6 flex flex-col gap-3.5">
-          <div>
-            <label className="mb-1 block text-xs font-medium text-forest">
-              Nombre completo
-            </label>
-            <div className="relative flex items-center">
-              <UserIcon className="pointer-events-none absolute left-3.5 size-4 text-mist" />
-              <input
-                type="text"
-                autoComplete="name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                placeholder="Ej. Sofía Morales"
-                className="h-13 w-full rounded-2xl border border-sand bg-background/90 pl-10 pr-4 text-base text-forest outline-none transition focus:border-sage focus:ring-2 focus:ring-sage/20 placeholder:text-mist/60"
-              />
-            </div>
-          </div>
+        {/* Inputs using shadcn FieldGroup, Field and Input */}
+        <CardContent className="p-0 mt-6">
+          <FieldGroup>
+            <Field>
+              <FieldLabel htmlFor="fullName" className="text-xs font-medium text-forest">
+                Nombre completo
+              </FieldLabel>
+              <div className="relative flex items-center">
+                <UserIcon className="pointer-events-none absolute left-3 size-4 text-mist" />
+                <Input
+                  id="fullName"
+                  type="text"
+                  autoComplete="name"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  placeholder="Ej. Sofía Morales"
+                  className="h-12 pl-9 text-base"
+                />
+              </div>
+            </Field>
 
-          <div>
-            <label className="mb-1 block text-xs font-medium text-forest">
-              Correo electrónico
-            </label>
-            <div className="relative flex items-center">
-              <MailIcon className="pointer-events-none absolute left-3.5 size-4 text-mist" />
-              <input
-                type="email"
-                autoComplete="email"
-                inputMode="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="tu@correo.com"
-                className="h-13 w-full rounded-2xl border border-sand bg-background/90 pl-10 pr-4 text-base text-forest outline-none transition focus:border-sage focus:ring-2 focus:ring-sage/20 placeholder:text-mist/60"
-              />
-            </div>
-          </div>
+            <Field>
+              <FieldLabel htmlFor="emailAddress" className="text-xs font-medium text-forest">
+                Correo electrónico
+              </FieldLabel>
+              <div className="relative flex items-center">
+                <MailIcon className="pointer-events-none absolute left-3 size-4 text-mist" />
+                <Input
+                  id="emailAddress"
+                  type="email"
+                  autoComplete="email"
+                  inputMode="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="tu@correo.com"
+                  className="h-12 pl-9 text-base"
+                />
+              </div>
+            </Field>
 
-          <div>
-            <label className="mb-1 flex items-center justify-between text-xs font-medium text-forest">
-              <span>WhatsApp</span>
-              <span className="text-[11px] text-sage font-normal">Para asesoría directa</span>
-            </label>
-            <div className="relative flex items-center">
-              <MessageCircleIcon className="pointer-events-none absolute left-3.5 size-4 text-emerald-600 dark:text-emerald-400" />
-              <input
-                type="tel"
-                autoComplete="tel"
-                inputMode="tel"
-                value={whatsapp}
-                onChange={(e) => setWhatsapp(e.target.value)}
-                placeholder="+502 5555 5555"
-                className="h-13 w-full rounded-2xl border border-sand bg-background/90 pl-10 pr-4 text-base text-forest outline-none transition focus:border-sage focus:ring-2 focus:ring-sage/20 placeholder:text-mist/60"
-              />
-            </div>
-          </div>
-        </div>
+            <Field>
+              <div className="flex items-center justify-between">
+                <FieldLabel htmlFor="whatsappPhone" className="text-xs font-medium text-forest">
+                  WhatsApp
+                </FieldLabel>
+                <span className="text-[11px] text-secondary-foreground font-medium">
+                  Para asesoría directa
+                </span>
+              </div>
+              <div className="relative flex items-center">
+                <MessageCircleIcon className="pointer-events-none absolute left-3 size-4 text-emerald-600 dark:text-emerald-400" />
+                <Input
+                  id="whatsappPhone"
+                  type="tel"
+                  autoComplete="tel"
+                  inputMode="tel"
+                  value={whatsapp}
+                  onChange={(e) => setWhatsapp(e.target.value)}
+                  placeholder="+502 5555 5555"
+                  className="h-12 pl-9 text-base"
+                />
+              </div>
+            </Field>
+          </FieldGroup>
 
-        {error ? (
-          <div className="mt-4 rounded-xl border border-red-200 bg-red-50/80 p-3 text-xs text-red-700">
-            {error}
-          </div>
-        ) : null}
+          {error ? (
+            <Alert variant="destructive" className="mt-4">
+              <AlertDescription>{error}</AlertDescription>
+            </Alert>
+          ) : null}
+        </CardContent>
 
-        {/* Action Buttons */}
-        <div className="mt-6 flex flex-col gap-3">
-          <button
+        {/* Action Buttons using shadcn Button */}
+        <CardFooter className="p-0 mt-6 flex flex-col gap-3">
+          <Button
             type="button"
+            size="lg"
             onClick={submit}
-            className="flex h-13 w-full items-center justify-center gap-2 rounded-2xl bg-sage text-base font-semibold text-cream shadow-sm transition hover:bg-sage-dark active:scale-[0.98]"
+            className="h-13 w-full rounded-2xl text-base font-semibold shadow-sm active:scale-[0.98]"
           >
             <span>Ver mi rutina personalizada</span>
-            <ArrowRightIcon className="size-4" />
-          </button>
+            <ArrowRightIcon data-icon="inline-end" />
+          </Button>
 
-          <button
+          <Button
             type="button"
+            variant="secondary"
             onClick={goBack}
-            className="flex h-11 w-full items-center justify-center gap-1.5 rounded-xl border border-blush-border bg-blush/80 text-xs font-semibold text-blush-foreground hover:bg-blush transition active:scale-[0.98]"
+            className="h-11 w-full rounded-xl text-xs font-semibold active:scale-[0.98]"
           >
-            <RotateCcwIcon className="size-3.5" />
+            <RotateCcwIcon data-icon="inline-start" />
             <span>Revisar o cambiar respuestas</span>
-          </button>
+          </Button>
 
           <p className="flex items-center justify-center gap-1.5 text-center text-[11px] text-mist">
-            <LockIcon className="size-3 text-blush-dark" />
+            <LockIcon className="size-3 text-secondary-foreground" />
             <span>Tus datos son 100% confidenciales. Sin spam.</span>
           </p>
-        </div>
-      </div>
+        </CardFooter>
+      </Card>
     );
   }
 
-  // Questions Screen
+  // Questions Screen with shadcn Card & Progress
   return (
-    <div className="flex flex-col rounded-3xl border border-sand bg-cream/95 p-5 shadow-xs sm:p-8">
-      {/* Top Header Bar */}
+    <Card className="rounded-3xl border-border bg-card p-5 shadow-xs sm:p-8">
+      {/* Top Header Bar with shadcn Button and Badge */}
       <div className="mb-4 flex items-center justify-between">
         {index > 0 ? (
-          <button
+          <Button
             type="button"
+            variant="secondary"
+            size="sm"
             onClick={goBack}
-            className="inline-flex items-center gap-1.5 rounded-full border border-blush-border bg-blush/60 px-3 py-1.5 text-xs font-medium text-blush-foreground hover:bg-blush active:scale-95 transition"
+            className="rounded-full shadow-2xs font-medium"
           >
-            <ArrowLeftIcon className="size-3.5 text-blush-dark" />
+            <ArrowLeftIcon data-icon="inline-start" />
             <span>Anterior</span>
-          </button>
+          </Button>
         ) : (
-          <Link
-            href="/"
-            className="inline-flex items-center gap-1.5 rounded-full border border-sand/80 bg-background/80 px-3 py-1.5 text-xs font-medium text-mist hover:text-forest active:scale-95 transition"
+          <Button
+            asChild
+            variant="outline"
+            size="sm"
+            className="rounded-full font-medium text-mist"
           >
-            <ArrowLeftIcon className="size-3.5 text-mist" />
-            <span>Inicio</span>
-          </Link>
+            <Link href="/">
+              <ArrowLeftIcon data-icon="inline-start" />
+              <span>Inicio</span>
+            </Link>
+          </Button>
         )}
 
-        <span className="rounded-full border border-blush-border bg-blush px-3 py-1 text-xs font-semibold text-blush-dark">
+        <Badge variant="secondary" className="px-3 py-1 text-xs font-semibold">
           {index + 1} de {total}
-        </span>
+        </Badge>
       </div>
 
-      {/* Progress Bar */}
-      <div className="mb-6 h-1.5 w-full overflow-hidden rounded-full bg-sand/60">
-        <div
-          className="h-full rounded-full bg-sage transition-all duration-300 ease-out"
-          style={{ width: `${Math.max(progressPercent, 6)}%` }}
-        />
+      {/* Progress Bar using shadcn Progress */}
+      <div className="mb-6">
+        <Progress value={progressPercent} className="h-1.5 w-full" />
       </div>
 
       {/* Question Title */}
-      <div className="mb-6">
-        <h2 className="font-[family-name:var(--font-display)] text-2xl font-medium leading-snug text-forest sm:text-3xl">
+      <CardHeader className="p-0 mb-6">
+        <CardTitle className="font-[family-name:var(--font-display)] text-2xl font-medium leading-snug text-forest sm:text-3xl">
           {current.text}
-        </h2>
-        <p className="mt-1 text-xs text-mist">
+        </CardTitle>
+        <CardDescription className="mt-1 text-xs text-mist">
           Selecciona una opción para avanzar (puedes regresar en cualquier momento):
-        </p>
-      </div>
+        </CardDescription>
+      </CardHeader>
 
       {/* Option Cards: large tap targets for mobile thumbs */}
-      <div className="flex flex-col gap-2.5">
-        {current.options.map((option) => {
-          const isSelected =
-            selectedOptionId === option.id ||
-            (!selectedOptionId && currentAnswer?.optionId === option.id);
+      <CardContent className="p-0">
+        <div className="flex flex-col gap-2.5">
+          {current.options.map((option) => {
+            const isSelected =
+              selectedOptionId === option.id ||
+              (!selectedOptionId && currentAnswer?.optionId === option.id);
 
-          return (
-            <button
-              key={option.id}
-              type="button"
-              onClick={() => selectOption(option)}
-              className={`group flex min-h-[58px] w-full items-center justify-between rounded-2xl border px-4 py-3.5 text-left text-sm font-medium transition-all duration-150 active:scale-[0.98] ${
-                isSelected
-                  ? "border-sage bg-sage/12 text-forest shadow-2xs font-semibold"
-                  : "border-sand bg-background/80 text-forest hover:border-sage/60 hover:bg-cream"
-              }`}
-            >
-              <span className="pr-3 leading-snug">{option.label}</span>
-              <div
-                className={`flex size-5 shrink-0 items-center justify-center rounded-full border transition-all ${
+            return (
+              <button
+                key={option.id}
+                type="button"
+                onClick={() => selectOption(option)}
+                className={`group flex min-h-[58px] w-full items-center justify-between rounded-2xl border px-4 py-3.5 text-left text-sm font-medium transition-all duration-150 active:scale-[0.98] ${
                   isSelected
-                    ? "border-sage bg-sage text-cream"
-                    : "border-sand bg-cream group-hover:border-sage/60"
+                    ? "border-primary bg-secondary/80 text-secondary-foreground shadow-2xs font-semibold"
+                    : "border-border bg-background/80 text-foreground hover:border-primary/60 hover:bg-card"
                 }`}
               >
-                {isSelected ? <CheckIcon className="size-3" /> : null}
-              </div>
-            </button>
-          );
-        })}
-      </div>
+                <span className="pr-3 leading-snug">{option.label}</span>
+                <div
+                  className={`flex size-5 shrink-0 items-center justify-center rounded-full border transition-all ${
+                    isSelected
+                      ? "border-primary bg-primary text-primary-foreground"
+                      : "border-border bg-card group-hover:border-primary/60"
+                  }`}
+                >
+                  {isSelected ? <CheckIcon className="size-3" /> : null}
+                </div>
+              </button>
+            );
+          })}
+        </div>
+      </CardContent>
 
-      {/* Bottom Navigation Row */}
-      <div className="mt-6 flex items-center justify-between border-t border-sand/60 pt-4">
+      {/* Bottom Navigation Row using shadcn Buttons */}
+      <CardFooter className="p-0 mt-6 flex items-center justify-between border-t border-border/60 pt-4">
         {index > 0 ? (
-          <button
+          <Button
             type="button"
+            variant="secondary"
+            size="sm"
             onClick={goBack}
-            className="inline-flex items-center gap-1.5 rounded-xl border border-blush-border bg-blush/60 px-4 py-2.5 text-xs font-medium text-blush-foreground hover:bg-blush active:scale-95 transition"
+            className="rounded-xl font-medium"
           >
-            <ArrowLeftIcon className="size-3.5 text-blush-dark" />
+            <ArrowLeftIcon data-icon="inline-start" />
             <span>Pregunta anterior</span>
-          </button>
+          </Button>
         ) : (
-          <Link
-            href="/"
-            className="inline-flex items-center gap-1.5 rounded-xl border border-sand bg-background/90 px-4 py-2.5 text-xs font-medium text-mist hover:text-forest active:scale-95 transition"
+          <Button
+            asChild
+            variant="outline"
+            size="sm"
+            className="rounded-xl font-medium"
           >
-            <ArrowLeftIcon className="size-3.5" />
-            <span>Volver al inicio</span>
-          </Link>
+            <Link href="/">
+              <ArrowLeftIcon data-icon="inline-start" />
+              <span>Volver al inicio</span>
+            </Link>
+          </Button>
         )}
 
         {hasCurrentAnswer ? (
-          <button
+          <Button
             type="button"
+            variant="secondary"
+            size="sm"
             onClick={goNext}
-            className="inline-flex items-center gap-1.5 rounded-xl border border-blush-border bg-blush px-4 py-2.5 text-xs font-semibold text-blush-dark hover:bg-blush-hover active:scale-95 transition"
+            className="rounded-xl font-semibold"
           >
             <span>{index === total - 1 ? "Continuar" : "Siguiente"}</span>
-            <ArrowRightIcon className="size-3.5" />
-          </button>
+            <ArrowRightIcon data-icon="inline-end" />
+          </Button>
         ) : null}
-      </div>
-    </div>
+      </CardFooter>
+    </Card>
   );
 }
