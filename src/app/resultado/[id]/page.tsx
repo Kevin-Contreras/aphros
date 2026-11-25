@@ -103,22 +103,22 @@ async function ResultadoContent({
 
       <section className="mx-auto w-full max-w-xl flex-1 px-4 py-6 sm:px-6 sm:py-10">
         {/* Diagnostic Hero Card using shadcn Card */}
-        <Card className="rounded-3xl border-border bg-linear-to-b from-card to-secondary/35 p-5 shadow-xs sm:p-7">
-          <CardHeader className="p-0">
-            <div className="flex items-center justify-between">
-              <Badge variant="secondary" className="gap-1.5 uppercase tracking-wider font-semibold">
+        <Card className="rounded-3xl border-border bg-linear-to-b from-card to-secondary/35 shadow-xs [--card-spacing:--spacing(5)] sm:[--card-spacing:--spacing(7)]">
+          <CardHeader className="gap-3">
+            <div className="flex items-center justify-between gap-2">
+              <Badge variant="secondary" className="h-auto gap-1.5 px-3 py-1 uppercase tracking-wider font-semibold">
                 <SparklesIcon data-icon="inline-start" />
                 <span>Diagnóstico Facial</span>
               </Badge>
               <span className="text-[11px] text-muted-foreground font-medium">Aphros Lab</span>
             </div>
 
-            <CardTitle className="mt-4 font-[family-name:var(--font-display)] text-3xl font-medium text-forest sm:text-4xl leading-tight">
+            <CardTitle className="font-[family-name:var(--font-display)] text-3xl font-medium text-forest sm:text-4xl leading-tight">
               Hola, {submission.name}
             </CardTitle>
           </CardHeader>
 
-          <CardContent className="p-0 mt-4">
+          <CardContent className="flex flex-col gap-4">
             <div className="rounded-2xl border border-border bg-secondary/50 p-4">
               <p className="text-[11px] font-semibold uppercase tracking-wider text-secondary-foreground/80">
                 Tipo de piel detectado
@@ -128,11 +128,11 @@ async function ResultadoContent({
               </p>
             </div>
 
-            <p className="mt-4 text-xs sm:text-sm leading-relaxed text-muted-foreground">
+            <p className="text-xs sm:text-sm leading-relaxed text-muted-foreground">
               {analysis.summary}
             </p>
 
-            <div className="mt-4 border-t border-border/70 pt-3 text-xs">
+            <div className="border-t border-border/70 pt-3 text-xs">
               {submission.emailSent ? (
                 <p className="flex items-center gap-1.5 text-primary font-medium">
                   <CheckCircle2Icon className="size-3.5 shrink-0" />
@@ -165,9 +165,9 @@ async function ResultadoContent({
             {products.map((product, idx) => (
               <Card
                 key={product.id}
-                className="overflow-hidden rounded-3xl border-border bg-card p-4 shadow-2xs sm:p-5"
+                className="overflow-hidden rounded-3xl border-border bg-card shadow-2xs [--card-spacing:--spacing(4)] sm:[--card-spacing:--spacing(5)]"
               >
-                <CardContent className="p-0">
+                <CardContent>
                   <div className="flex gap-4">
                     {/* Thumbnail */}
                     <div className="relative size-24 shrink-0 overflow-hidden rounded-2xl border border-border bg-background sm:size-28">
@@ -194,7 +194,7 @@ async function ResultadoContent({
                     <div className="flex min-w-0 flex-1 flex-col justify-between">
                       <div>
                         <div className="flex items-center justify-between gap-1">
-                          <Badge variant="secondary" className="text-[10px] uppercase font-semibold">
+                          <Badge variant="secondary" className="h-auto px-2.5 py-0.5 text-[10px] uppercase font-semibold">
                             Paso {idx + 1}
                           </Badge>
                           <span className="font-semibold text-sm text-foreground">
@@ -221,7 +221,7 @@ async function ResultadoContent({
                 </CardContent>
 
                 {/* Mobile Direct Buy Button using shadcn Button */}
-                <CardFooter className="p-0 mt-3.5">
+                <CardFooter className="bg-secondary/20">
                   <Button
                     asChild
                     className="h-11 w-full rounded-xl text-xs font-semibold shadow-2xs active:scale-[0.98]"
@@ -239,8 +239,8 @@ async function ResultadoContent({
 
         {/* Tips Section with shadcn Card */}
         {analysis.tips?.length ? (
-          <Card className="mt-8 rounded-3xl border-border bg-secondary/30 p-5 sm:p-6">
-            <CardHeader className="p-0">
+          <Card className="mt-8 rounded-3xl border-border bg-secondary/30 [--card-spacing:--spacing(5)] sm:[--card-spacing:--spacing(6)]">
+            <CardHeader>
               <div className="flex items-center gap-2">
                 <LightbulbIcon className="size-4 text-secondary-foreground" />
                 <CardTitle className="font-[family-name:var(--font-display)] text-xl font-medium text-forest">
@@ -248,7 +248,7 @@ async function ResultadoContent({
                 </CardTitle>
               </div>
             </CardHeader>
-            <CardContent className="p-0 mt-3.5">
+            <CardContent>
               <ul className="space-y-2.5 text-xs sm:text-sm text-muted-foreground">
                 {analysis.tips.map((tip, i) => (
                   <li key={i} className="flex items-start gap-2 leading-relaxed">

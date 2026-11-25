@@ -34,7 +34,7 @@ export default function HomePage() {
         <div className="relative mx-auto w-full max-w-xl text-center">
           {/* Badge using shadcn variant="secondary" */}
           <div className="fade-up flex justify-center">
-            <Badge variant="secondary" className="gap-1.5 px-3.5 py-1 text-xs tracking-wider uppercase shadow-2xs font-semibold">
+            <Badge variant="secondary" className="h-auto gap-1.5 px-3.5 py-1.5 text-xs tracking-wider uppercase shadow-2xs font-semibold">
               <LeafIcon data-icon="inline-start" />
               <span>Guatemala · Cosmética botánica</span>
             </Badge>
@@ -67,15 +67,15 @@ export default function HomePage() {
 
           {/* Mobile Trust Badges using shadcn */}
           <div className="mt-6 flex flex-wrap items-center justify-center gap-2">
-            <Badge variant="outline" className="gap-1 bg-background/60 py-1 text-xs text-mist">
+            <Badge variant="outline" className="h-auto gap-1.5 bg-background/60 px-3 py-1 text-xs text-mist">
               <ClockIcon className="size-3 text-secondary-foreground" />
               <span>Solo 2 minutos</span>
             </Badge>
-            <Badge variant="secondary" className="gap-1 py-1 text-xs">
+            <Badge variant="secondary" className="h-auto gap-1.5 px-3 py-1 text-xs">
               <SparklesIcon className="size-3 text-secondary-foreground" />
               <span>Diagnóstico con IA</span>
             </Badge>
-            <Badge variant="outline" className="gap-1 bg-background/60 py-1 text-xs text-mist">
+            <Badge variant="outline" className="h-auto gap-1.5 bg-background/60 px-3 py-1 text-xs text-mist">
               <ShieldCheckIcon className="size-3 text-secondary-foreground" />
               <span>100% Natural</span>
             </Badge>
@@ -87,7 +87,7 @@ export default function HomePage() {
       <section className="border-t border-border/70 bg-cream/50 px-4 py-10 sm:px-8 sm:py-14">
         <div className="mx-auto max-w-xl">
           <div className="text-center">
-            <Badge variant="secondary" className="font-semibold uppercase tracking-[0.2em]">
+            <Badge variant="secondary" className="h-auto px-3 py-1 font-semibold uppercase tracking-[0.2em]">
               Paso a paso
             </Badge>
             <h2 className="mt-2 font-[family-name:var(--font-display)] text-2xl text-forest sm:text-3xl">
@@ -136,12 +136,12 @@ export default function HomePage() {
 
       {/* Why Aphros Section with shadcn Card */}
       <section className="px-4 py-10 sm:px-8">
-        <Card className="mx-auto max-w-xl rounded-3xl border-border bg-linear-to-b from-card to-secondary/30 p-6 text-center shadow-xs sm:p-8">
-          <CardHeader className="items-center pb-2">
+        <Card className="mx-auto max-w-xl rounded-3xl border-border bg-linear-to-b from-card to-secondary/30 text-center shadow-xs [--card-spacing:--spacing(5)] sm:[--card-spacing:--spacing(7)]">
+          <CardHeader className="justify-items-center gap-2">
             <div className="flex size-12 items-center justify-center rounded-2xl bg-secondary text-secondary-foreground">
               <HeartIcon className="size-6" />
             </div>
-            <CardTitle className="mt-3 font-[family-name:var(--font-display)] text-2xl text-forest sm:text-3xl">
+            <CardTitle className="mt-1 font-[family-name:var(--font-display)] text-2xl text-forest sm:text-3xl">
               Cuidado consciente para tu piel
             </CardTitle>
             <CardDescription className="text-xs leading-relaxed text-mist sm:text-sm">
@@ -150,7 +150,7 @@ export default function HomePage() {
             </CardDescription>
           </CardHeader>
 
-          <CardContent className="pt-2">
+          <CardContent>
             <div className="grid grid-cols-2 gap-2.5 text-left text-xs">
               <div className="flex items-center gap-1.5 rounded-xl border border-border/70 bg-background/80 p-2.5">
                 <CheckCircle2Icon className="size-4 shrink-0 text-primary" />

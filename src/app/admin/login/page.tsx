@@ -57,7 +57,7 @@ export default function AdminLoginPage() {
             Ingresa la contraseña definida en tu archivo .env
           </CardDescription>
         </CardHeader>
-        <form onSubmit={onSubmit}>
+        <form onSubmit={onSubmit} className="flex flex-col gap-(--card-spacing)">
           <CardContent>
             <FieldGroup>
               <Field data-invalid={Boolean(error) || undefined}>

@@ -224,39 +224,41 @@ export function QuizClient({ questions }: { questions: PublicQuestion[] }) {
   // Contact Form Screen with shadcn Card, Fields & Buttons
   if (step === "contact") {
     return (
-      <Card className="rounded-3xl border-border bg-card p-5 shadow-xs sm:p-8">
-        {/* Top Navigation Bar with shadcn Button & Badge */}
-        <div className="mb-4 flex items-center justify-between">
-          <Button
-            type="button"
-            variant="secondary"
-            size="sm"
-            onClick={goBack}
-            className="rounded-full shadow-2xs"
-          >
-            <ArrowLeftIcon data-icon="inline-start" />
-            <span>Regresar a preguntas</span>
-          </Button>
+      <Card className="rounded-3xl border-border bg-card shadow-xs [--card-spacing:--spacing(5)] sm:[--card-spacing:--spacing(7)]">
+        <CardHeader className="gap-3">
+          {/* Top Navigation Bar with shadcn Button & Badge */}
+          <div className="flex items-center justify-between gap-2">
+            <Button
+              type="button"
+              variant="secondary"
+              size="sm"
+              onClick={goBack}
+              className="rounded-full px-3.5 shadow-2xs"
+            >
+              <ArrowLeftIcon data-icon="inline-start" />
+              <span>Regresar a preguntas</span>
+            </Button>
 
-          <Badge variant="secondary" className="font-semibold">
-            Paso final
-          </Badge>
-        </div>
+            <Badge variant="secondary" className="h-auto px-3 py-1 font-semibold">
+              Paso final
+            </Badge>
+          </div>
 
-        <CardHeader className="p-0">
-          <Badge variant="secondary" className="w-fit font-semibold uppercase tracking-[0.2em]">
-            Tu diagnóstico está listo
-          </Badge>
-          <CardTitle className="mt-1 font-[family-name:var(--font-display)] text-2xl text-forest sm:text-3xl leading-tight">
-            ¿A dónde enviamos tu rutina?
-          </CardTitle>
-          <CardDescription className="text-xs sm:text-sm leading-relaxed">
-            Verás tus resultados al instante en pantalla y recibirás un respaldo en tu correo.
-          </CardDescription>
+          <div className="mt-1 flex flex-col gap-1.5">
+            <Badge variant="secondary" className="h-auto w-fit px-3 py-1 font-semibold uppercase tracking-[0.2em]">
+              Tu diagnóstico está listo
+            </Badge>
+            <CardTitle className="mt-1 font-[family-name:var(--font-display)] text-2xl text-forest sm:text-3xl leading-tight">
+              ¿A dónde enviamos tu rutina?
+            </CardTitle>
+            <CardDescription className="text-xs sm:text-sm leading-relaxed">
+              Verás tus resultados al instante en pantalla y recibirás un respaldo en tu correo.
+            </CardDescription>
+          </div>
         </CardHeader>
 
         {/* Inputs using shadcn FieldGroup, Field and Input */}
-        <CardContent className="p-0 mt-6">
+        <CardContent>
           <FieldGroup>
             <Field>
               <FieldLabel htmlFor="fullName" className="text-xs font-medium text-forest">
@@ -328,7 +330,7 @@ export function QuizClient({ questions }: { questions: PublicQuestion[] }) {
         </CardContent>
 
         {/* Action Buttons using shadcn Button */}
-        <CardFooter className="p-0 mt-6 flex flex-col gap-3">
+        <CardFooter className="flex-col items-stretch gap-3 bg-secondary/20">
           <Button
             type="button"
             size="lg"
@@ -360,56 +362,56 @@ export function QuizClient({ questions }: { questions: PublicQuestion[] }) {
 
   // Questions Screen with shadcn Card & Progress
   return (
-    <Card className="rounded-3xl border-border bg-card p-5 shadow-xs sm:p-8">
-      {/* Top Header Bar with shadcn Button and Badge */}
-      <div className="mb-4 flex items-center justify-between">
-        {index > 0 ? (
-          <Button
-            type="button"
-            variant="secondary"
-            size="sm"
-            onClick={goBack}
-            className="rounded-full shadow-2xs font-medium"
-          >
-            <ArrowLeftIcon data-icon="inline-start" />
-            <span>Anterior</span>
-          </Button>
-        ) : (
-          <Button
-            asChild
-            variant="outline"
-            size="sm"
-            className="rounded-full font-medium text-mist"
-          >
-            <Link href="/">
+    <Card className="rounded-3xl border-border bg-card shadow-xs [--card-spacing:--spacing(5)] sm:[--card-spacing:--spacing(7)]">
+      <CardHeader className="gap-4">
+        {/* Top Header Bar with shadcn Button and Badge */}
+        <div className="flex items-center justify-between gap-2">
+          {index > 0 ? (
+            <Button
+              type="button"
+              variant="secondary"
+              size="sm"
+              onClick={goBack}
+              className="rounded-full px-3.5 shadow-2xs font-medium"
+            >
               <ArrowLeftIcon data-icon="inline-start" />
-              <span>Inicio</span>
-            </Link>
-          </Button>
-        )}
+              <span>Anterior</span>
+            </Button>
+          ) : (
+            <Button
+              asChild
+              variant="outline"
+              size="sm"
+              className="rounded-full px-3.5 font-medium text-mist"
+            >
+              <Link href="/">
+                <ArrowLeftIcon data-icon="inline-start" />
+                <span>Inicio</span>
+              </Link>
+            </Button>
+          )}
 
-        <Badge variant="secondary" className="px-3 py-1 text-xs font-semibold">
-          {index + 1} de {total}
-        </Badge>
-      </div>
+          <Badge variant="secondary" className="h-auto px-3 py-1 text-xs font-semibold">
+            {index + 1} de {total}
+          </Badge>
+        </div>
 
-      {/* Progress Bar using shadcn Progress */}
-      <div className="mb-6">
+        {/* Progress Bar using shadcn Progress */}
         <Progress value={progressPercent} className="h-1.5 w-full" />
-      </div>
 
-      {/* Question Title */}
-      <CardHeader className="p-0 mb-6">
-        <CardTitle className="font-[family-name:var(--font-display)] text-2xl font-medium leading-snug text-forest sm:text-3xl">
-          {current.text}
-        </CardTitle>
-        <CardDescription className="mt-1 text-xs text-mist">
-          Selecciona una opción para avanzar (puedes regresar en cualquier momento):
-        </CardDescription>
+        {/* Question Title */}
+        <div className="flex flex-col gap-1 pt-1">
+          <CardTitle className="font-[family-name:var(--font-display)] text-2xl font-medium leading-snug text-forest sm:text-3xl">
+            {current.text}
+          </CardTitle>
+          <CardDescription className="text-xs text-mist">
+            Selecciona una opción para avanzar (puedes regresar en cualquier momento):
+          </CardDescription>
+        </div>
       </CardHeader>
 
       {/* Option Cards: large tap targets for mobile thumbs */}
-      <CardContent className="p-0">
+      <CardContent>
         <div className="flex flex-col gap-2.5">
           {current.options.map((option) => {
             const isSelected =
@@ -444,14 +446,14 @@ export function QuizClient({ questions }: { questions: PublicQuestion[] }) {
       </CardContent>
 
       {/* Bottom Navigation Row using shadcn Buttons */}
-      <CardFooter className="p-0 mt-6 flex items-center justify-between border-t border-border/60 pt-4">
+      <CardFooter className="justify-between gap-2 bg-secondary/20">
         {index > 0 ? (
           <Button
             type="button"
             variant="secondary"
             size="sm"
             onClick={goBack}
-            className="rounded-xl font-medium"
+            className="h-9 rounded-xl px-3.5 font-medium"
           >
             <ArrowLeftIcon data-icon="inline-start" />
             <span>Pregunta anterior</span>
@@ -461,7 +463,7 @@ export function QuizClient({ questions }: { questions: PublicQuestion[] }) {
             asChild
             variant="outline"
             size="sm"
-            className="rounded-xl font-medium"
+            className="h-9 rounded-xl px-3.5 font-medium"
           >
             <Link href="/">
               <ArrowLeftIcon data-icon="inline-start" />
@@ -476,7 +478,7 @@ export function QuizClient({ questions }: { questions: PublicQuestion[] }) {
             variant="secondary"
             size="sm"
             onClick={goNext}
-            className="rounded-xl font-semibold"
+            className="h-9 rounded-xl px-3.5 font-semibold"
           >
             <span>{index === total - 1 ? "Continuar" : "Siguiente"}</span>
             <ArrowRightIcon data-icon="inline-end" />

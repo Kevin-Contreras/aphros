@@ -144,7 +144,7 @@ async function ImpactContent() {
                 <CardDescription className="text-xs font-medium uppercase tracking-wider">
                   Valor Recomendado
                 </CardDescription>
-                <div className="flex size-8 items-center justify-center rounded-md bg-amber-500/10 text-amber-600 dark:text-amber-400">
+                <div className="flex size-8 items-center justify-center rounded-md bg-secondary text-primary">
                   <TrendingUpIcon className="size-4" />
                 </div>
               </CardHeader>
@@ -163,7 +163,7 @@ async function ImpactContent() {
                 <CardDescription className="text-xs font-medium uppercase tracking-wider">
                   Entrega de Diagnósticos
                 </CardDescription>
-                <div className="flex size-8 items-center justify-center rounded-md bg-sky-500/10 text-sky-600 dark:text-sky-400">
+                <div className="flex size-8 items-center justify-center rounded-md bg-secondary text-primary">
                   <CheckCircle2Icon className="size-4" />
                 </div>
               </CardHeader>

@@ -166,7 +166,7 @@ async function AdminHomeContent() {
                 <span className="text-xs font-medium uppercase tracking-wider">
                   Valor Recomendado
                 </span>
-                <TrendingUpIcon className="size-4 text-amber-600 dark:text-amber-400" />
+                <TrendingUpIcon className="size-4 text-primary" />
               </div>
               <p className="mt-2 font-heading text-2xl font-semibold">
                 Q{metrics.totalEstimatedValue.toLocaleString("es-GT")}

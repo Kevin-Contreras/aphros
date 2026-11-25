@@ -21,7 +21,7 @@ export function SiteHeader({ isQuiz = false }: SiteHeaderProps) {
 
         <nav className="flex items-center gap-2.5 sm:gap-4">
           {!isQuiz ? (
-            <Button asChild size="sm" className="rounded-full shadow-2xs font-semibold">
+            <Button asChild size="sm" className="h-9 rounded-full px-4 shadow-2xs font-semibold">
               <Link href="/quiz">
                 <SparklesIcon data-icon="inline-start" />
                 <span>Hacer test</span>
