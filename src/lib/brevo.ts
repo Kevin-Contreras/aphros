@@ -117,7 +117,7 @@ export async function sendRecommendationEmail(payload: RecommendationEmailPayloa
 
             <!-- CTA button -->
             <div style="margin-top:14px;text-align:right;">
-              <a href="${escapeHtml(product.buyUrl)}" style="display:inline-block;padding:9px 18px;background:#56775c;color:#ffffff;text-decoration:none;border-radius:999px;font-size:12.5px;font-weight:600;letter-spacing:0.02em;">
+              <a href="${escapeHtml(product.buyUrl)}" style="display:inline-block;padding:9px 18px;background:#b85d43;color:#ffffff;text-decoration:none;border-radius:999px;font-size:12.5px;font-weight:600;letter-spacing:0.02em;">
                 Ver en Pacifiko →
               </a>
             </div>
@@ -131,7 +131,7 @@ export async function sendRecommendationEmail(payload: RecommendationEmailPayloa
     .map(
       (tip) => `
       <div style="margin-bottom:10px;display:flex;align-items:flex-start;">
-        <span style="display:inline-block;width:18px;color:#56775c;font-size:15px;line-height:1.4;">🌿</span>
+        <span style="display:inline-block;width:18px;color:#b85d43;font-size:15px;line-height:1.4;">✦</span>
         <span style="font-size:13.5px;color:#4f5c4b;line-height:1.55;">${escapeHtml(tip)}</span>
       </div>`,
     )
@@ -159,7 +159,7 @@ export async function sendRecommendationEmail(payload: RecommendationEmailPayloa
           
           <!-- Header Banner -->
           <tr>
-            <td style="background-color:#263423;padding:36px 24px 30px;text-align:center;">
+            <td style="background-color:#2b1e19;padding:36px 24px 30px;text-align:center;">
               <p style="margin:0 0 6px;font-size:10.5px;letter-spacing:0.32em;text-transform:uppercase;color:#fcdfd5;font-weight:600;">
                 Cosmética Botánica · Guatemala
               </p>
@@ -231,7 +231,7 @@ export async function sendRecommendationEmail(payload: RecommendationEmailPayloa
               <p style="margin:0 0 16px;font-size:13px;color:#61705d;line-height:1.5;max-width:440px;margin-left:auto;margin-right:auto;">
                 Puedes responder a este correo o escribirnos a nuestro WhatsApp para recibir asesoría personalizada sobre la aplicación de tus productos.
               </p>
-              <a href="https://wa.me/50255555555" style="display:inline-block;padding:10px 22px;background:#25d366;color:#ffffff;text-decoration:none;border-radius:999px;font-size:13px;font-weight:600;">
+              <a href="https://wa.me/50255555555" style="display:inline-block;padding:10px 22px;background:#b85d43;color:#ffffff;text-decoration:none;border-radius:999px;font-size:13px;font-weight:600;">
                 Consultar por WhatsApp
               </a>
             </td>
@@ -247,9 +247,9 @@ export async function sendRecommendationEmail(payload: RecommendationEmailPayloa
                 Formulaciones botánicas conscientes elaboradas en Guatemala.
               </p>
               <p style="margin:0;">
-                <a href="${absoluteSite}" style="color:#507256;text-decoration:none;font-weight:500;">Visitar sitio web</a>
+                <a href="${absoluteSite}" style="color:#b85d43;text-decoration:none;font-weight:500;">Visitar sitio web</a>
                 &nbsp;·&nbsp;
-                <a href="https://www.pacifiko.com/marketplace/aphros" style="color:#507256;text-decoration:none;font-weight:500;">Catálogo en Pacifiko</a>
+                <a href="https://www.pacifiko.com/marketplace/aphros" style="color:#b85d43;text-decoration:none;font-weight:500;">Catálogo en Pacifiko</a>
               </p>
             </td>
           </tr>

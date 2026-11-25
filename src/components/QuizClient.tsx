@@ -305,7 +305,7 @@ export function QuizClient({ questions }: { questions: PublicQuestion[] }) {
                 </span>
               </div>
               <div className="relative flex items-center">
-                <MessageCircleIcon className="pointer-events-none absolute left-3 size-4 text-emerald-600 dark:text-emerald-400" />
+                <MessageCircleIcon className="pointer-events-none absolute left-3 size-4 text-primary" />
                 <Input
                   id="whatsappPhone"
                   type="tel"

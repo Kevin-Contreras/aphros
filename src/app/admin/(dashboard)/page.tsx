@@ -151,7 +151,7 @@ async function AdminHomeContent() {
                 <span className="text-xs font-medium uppercase tracking-wider">
                   Captación WhatsApp
                 </span>
-                <MessageCircleIcon className="size-4 text-emerald-600 dark:text-emerald-400" />
+                <MessageCircleIcon className="size-4 text-primary" />
               </div>
               <p className="mt-2 font-heading text-2xl font-semibold">
                 {metrics.whatsappConversionRate}%

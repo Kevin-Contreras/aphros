@@ -30,7 +30,7 @@ import {
 const leadsTrendConfig: ChartConfig = {
   leads: {
     label: "Total Envíos",
-    color: "#6b8f71",
+    color: "#b85d43",
   },
   whatsapp: {
     label: "Con WhatsApp",
@@ -52,8 +52,8 @@ export function LeadsTrendChart({ data }: { data: DailyTrendPoint[] }) {
       <AreaChart data={data} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
         <defs>
           <linearGradient id="fillLeads" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="5%" stopColor="#6b8f71" stopOpacity={0.4} />
-            <stop offset="95%" stopColor="#6b8f71" stopOpacity={0.0} />
+            <stop offset="5%" stopColor="#b85d43" stopOpacity={0.4} />
+            <stop offset="95%" stopColor="#b85d43" stopOpacity={0.0} />
           </linearGradient>
           <linearGradient id="fillWhatsapp" x1="0" y1="0" x2="0" y2="1">
             <stop offset="5%" stopColor="#cc7f6b" stopOpacity={0.4} />
@@ -79,7 +79,7 @@ export function LeadsTrendChart({ data }: { data: DailyTrendPoint[] }) {
         <Area
           type="monotone"
           dataKey="leads"
-          stroke="#6b8f71"
+          stroke="#b85d43"
           strokeWidth={2}
           fill="url(#fillLeads)"
         />
@@ -99,7 +99,7 @@ export function LeadsTrendChart({ data }: { data: DailyTrendPoint[] }) {
 const skinTypeConfig: ChartConfig = {
   count: {
     label: "Diagnósticos",
-    color: "#6b8f71",
+    color: "#b85d43",
   },
 };
 
@@ -112,7 +112,7 @@ export function SkinTypeChart({ data }: { data: SkinTypeDistribution[] }) {
     );
   }
 
-  const palette = ["#6b8f71", "#4f6f55", "#7a6a4f", "#5c6558", "#2f3d2c", "#8fa995"];
+  const palette = ["#b85d43", "#cc7f6b", "#8e4f40", "#e09d8c", "#a66a5b", "#38231c"];
 
   return (
     <ChartContainer config={skinTypeConfig} className="h-72 w-full">
@@ -158,11 +158,11 @@ export function SkinTypeChart({ data }: { data: SkinTypeDistribution[] }) {
 const productsConfig: ChartConfig = {
   count: {
     label: "Recomendaciones",
-    color: "#6b8f71",
+    color: "#b85d43",
   },
   estimatedValue: {
     label: "Valor Total (Q)",
-    color: "#7a6a4f",
+    color: "#8e4f40",
   },
 };
 
@@ -222,7 +222,7 @@ export function TopProductsChart({
             />
           }
         />
-        <Bar dataKey="count" fill="#6b8f71" radius={[4, 4, 0, 0]} />
+        <Bar dataKey="count" fill="#b85d43" radius={[4, 4, 0, 0]} />
       </BarChart>
     </ChartContainer>
   );
@@ -231,7 +231,7 @@ export function TopProductsChart({
 const channelConfig: ChartConfig = {
   count: {
     label: "Leads",
-    color: "#6b8f71",
+    color: "#b85d43",
   },
 };
 
@@ -244,7 +244,7 @@ export function ContactChannelChart({ data }: { data: ContactChannelStat[] }) {
     );
   }
 
-  const colors = ["#6b8f71", "#cc7f6b"];
+  const colors = ["#b85d43", "#cc7f6b"];
 
   return (
     <ChartContainer config={channelConfig} className="mx-auto h-72 w-full">

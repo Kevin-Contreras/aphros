@@ -125,7 +125,7 @@ async function ImpactContent() {
                 <CardDescription className="text-xs font-medium uppercase tracking-wider">
                   Captación WhatsApp
                 </CardDescription>
-                <div className="flex size-8 items-center justify-center rounded-md bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
+                <div className="flex size-8 items-center justify-center rounded-md bg-secondary text-primary">
                   <MessageCircleIcon className="size-4" />
                 </div>
               </CardHeader>
