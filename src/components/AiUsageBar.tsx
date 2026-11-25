@@ -27,8 +27,8 @@ export function AiUsageBar({ usage }: { usage: AiUsageToday }) {
     <Card>
       <CardHeader className="flex flex-row items-start justify-between gap-3">
         <div className="flex flex-col gap-1">
-          <CardDescription>Consumo de IA</CardDescription>
-          <CardTitle className="font-heading text-2xl">Hoy · Gemini</CardTitle>
+          <CardDescription>Consumo diario</CardDescription>
+          <CardTitle className="font-heading text-2xl">Hoy · Diagnósticos</CardTitle>
         </div>
         <Badge variant={status.variant}>{status.label}</Badge>
       </CardHeader>
@@ -43,7 +43,7 @@ export function AiUsageBar({ usage }: { usage: AiUsageToday }) {
         </div>
         <Progress
           value={Math.max(usage.percent, usage.requests > 0 ? 2 : 0)}
-          aria-label="Solicitudes de IA usadas hoy"
+          aria-label="Diagnósticos generados hoy"
         />
         <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-muted-foreground">
           <span>{usage.remaining} restantes</span>

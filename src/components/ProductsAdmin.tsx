@@ -170,7 +170,7 @@ export function ProductsAdmin() {
           Productos
         </h1>
         <p className="mt-2 text-sm text-mist">
-          Catálogo Aphros usado por la IA para recomendar.
+          Catálogo Aphros disponible para las recomendaciones.
         </p>
       </div>
 

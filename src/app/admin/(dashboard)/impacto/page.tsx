@@ -71,7 +71,7 @@ async function ImpactContent() {
             </h1>
             <Badge variant="secondary" className="gap-1">
               <SparklesIcon className="size-3" />
-              Diagnóstico AI
+              Diagnóstico Facial
             </Badge>
           </div>
           <p className="text-sm text-muted-foreground">
@@ -196,7 +196,7 @@ async function ImpactContent() {
               <CardHeader>
                 <CardTitle>Tipos de Piel Diagnosticados</CardTitle>
                 <CardDescription>
-                  Distribución de condiciones detectadas por el motor de IA.
+                  Distribución de condiciones detectadas en los diagnósticos.
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -211,7 +211,7 @@ async function ImpactContent() {
               <CardHeader>
                 <CardTitle>Productos Más Recomendados</CardTitle>
                 <CardDescription>
-                  Frecuencia con la que la IA incluye cada producto en las rutinas personalizadas.
+                  Frecuencia con la que se incluye cada producto en las rutinas personalizadas.
                 </CardDescription>
               </CardHeader>
               <CardContent>

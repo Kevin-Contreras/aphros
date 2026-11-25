@@ -227,7 +227,7 @@ export function QuestionsAdmin() {
             <div>
               <p className="text-sm font-medium text-forest">Opciones</p>
               <p className="text-xs text-mist">
-                Izquierda = texto del quiz · Derecha = tags para la IA (igual que
+                Izquierda = texto del quiz · Derecha = tags de diagnóstico (igual que
                 skinTags de productos, ej. <code>grasa,acne</code>)
               </p>
             </div>
@@ -249,7 +249,7 @@ export function QuestionsAdmin() {
                 required
               />
               <input
-                placeholder="Tags IA: grasa,acne"
+                placeholder="Tags: grasa,acne"
                 value={option.value}
                 onChange={(e) => updateOption(index, "value", e.target.value)}
                 className="rounded-xl border border-sand bg-ivory/70 px-3 py-2 text-sm outline-none focus:border-sage"

@@ -47,7 +47,7 @@ export default function HomePage() {
 
           {/* Description */}
           <p className="fade-up-delay mx-auto mt-3.5 max-w-md text-sm leading-relaxed text-mist sm:text-base">
-            En menos de 2 minutos, nuestra IA evalúa tu piel y diseña una rutina
+            En menos de 2 minutos, evaluamos tu piel y diseñamos una rutina
             artesanal personalizada con productos naturales Aphros.
           </p>
 
@@ -73,7 +73,7 @@ export default function HomePage() {
             </Badge>
             <Badge variant="secondary" className="h-auto gap-1.5 px-3 py-1 text-xs">
               <SparklesIcon className="size-3 text-secondary-foreground" />
-              <span>Diagnóstico con IA</span>
+              <span>Diagnóstico personalizado</span>
             </Badge>
             <Badge variant="outline" className="h-auto gap-1.5 bg-background/60 px-3 py-1 text-xs text-mist">
               <ShieldCheckIcon className="size-3 text-secondary-foreground" />
@@ -104,8 +104,8 @@ export default function HomePage() {
               },
               {
                 step: "2",
-                title: "Diagnóstico inteligente",
-                desc: "Nuestra IA analiza tus respuestas y las cruza con las formulaciones botánicas de Aphros.",
+                title: "Análisis personalizado",
+                desc: "Analizamos tus respuestas y las cruzamos con las formulaciones botánicas de Aphros.",
               },
               {
                 step: "3",
