@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import {
   ArrowLeftIcon,
   ArrowRightIcon,
@@ -8,6 +9,7 @@ import {
   LockIcon,
   MailIcon,
   MessageCircleIcon,
+  RotateCcwIcon,
   SparklesIcon,
   UserIcon,
 } from "lucide-react";
@@ -29,6 +31,11 @@ export function QuizClient({ questions }: { questions: PublicQuestion[] }) {
   const current = questions[index];
   const total = questions.length;
   const progressPercent = total === 0 ? 0 : Math.round(((index + 1) / total) * 100);
+
+  const currentAnswer = current
+    ? answers.find((a) => a.questionId === current.id)
+    : undefined;
+  const hasCurrentAnswer = Boolean(currentAnswer);
 
   // Rotate loading phrases while analyzing
   useEffect(() => {
@@ -62,7 +69,7 @@ export function QuizClient({ questions }: { questions: PublicQuestion[] }) {
     const nextAnswers = [...withoutCurrent, nextAnswer];
     setAnswers(nextAnswers);
 
-    // Short visual feedback before advancing to give tactile mobile feel
+    // Tactile feedback before advancing
     setTimeout(() => {
       setSelectedOptionId(null);
       if (index < total - 1) {
@@ -71,6 +78,29 @@ export function QuizClient({ questions }: { questions: PublicQuestion[] }) {
         setStep("contact");
       }
     }, 180);
+  }
+
+  function goBack() {
+    setError(null);
+    setSelectedOptionId(null);
+    if (step === "contact") {
+      setStep("questions");
+      setIndex(total - 1);
+      return;
+    }
+    if (index > 0) {
+      setIndex((val) => val - 1);
+    }
+  }
+
+  function goNext() {
+    setError(null);
+    setSelectedOptionId(null);
+    if (index < total - 1) {
+      setIndex((val) => val + 1);
+    } else {
+      setStep("contact");
+    }
   }
 
   async function submit() {
@@ -181,18 +211,15 @@ export function QuizClient({ questions }: { questions: PublicQuestion[] }) {
   if (step === "contact") {
     return (
       <div className="flex flex-col rounded-3xl border border-sand bg-cream/95 p-5 shadow-xs sm:p-8">
-        {/* Top Navigation */}
+        {/* Top Navigation Bar */}
         <div className="mb-4 flex items-center justify-between">
           <button
             type="button"
-            onClick={() => {
-              setStep("questions");
-              setIndex(total - 1);
-            }}
-            className="inline-flex items-center gap-1.5 rounded-full py-1.5 pr-3 text-xs font-medium text-mist hover:text-forest active:scale-95"
+            onClick={goBack}
+            className="inline-flex items-center gap-1.5 rounded-full border border-sand/80 bg-background/80 px-3 py-1.5 text-xs font-medium text-forest hover:bg-cream active:scale-95 transition"
           >
             <ArrowLeftIcon className="size-3.5" />
-            <span>Volver a preguntas</span>
+            <span>← Regresar a preguntas</span>
           </button>
           <span className="text-xs font-medium text-sage">Paso final</span>
         </div>
@@ -209,7 +236,7 @@ export function QuizClient({ questions }: { questions: PublicQuestion[] }) {
           </p>
         </div>
 
-        {/* Inputs (16px base font size prevents unwanted iOS Safari zoom) */}
+        {/* Inputs */}
         <div className="mt-6 flex flex-col gap-3.5">
           <div>
             <label className="mb-1 block text-xs font-medium text-forest">
@@ -272,7 +299,7 @@ export function QuizClient({ questions }: { questions: PublicQuestion[] }) {
           </div>
         ) : null}
 
-        {/* Submit Button */}
+        {/* Action Buttons */}
         <div className="mt-6 flex flex-col gap-3">
           <button
             type="button"
@@ -281,6 +308,15 @@ export function QuizClient({ questions }: { questions: PublicQuestion[] }) {
           >
             <span>Ver mi rutina personalizada</span>
             <ArrowRightIcon className="size-4" />
+          </button>
+
+          <button
+            type="button"
+            onClick={goBack}
+            className="flex h-11 w-full items-center justify-center gap-1.5 rounded-xl border border-sand/80 bg-background/70 text-xs font-medium text-mist hover:text-forest transition active:scale-[0.98]"
+          >
+            <RotateCcwIcon className="size-3.5" />
+            <span>Revisar o cambiar respuestas</span>
           </button>
 
           <p className="flex items-center justify-center gap-1.5 text-center text-[11px] text-mist">
@@ -296,23 +332,27 @@ export function QuizClient({ questions }: { questions: PublicQuestion[] }) {
   return (
     <div className="flex flex-col rounded-3xl border border-sand bg-cream/95 p-5 shadow-xs sm:p-8">
       {/* Top Header Bar */}
-      <div className="mb-5 flex items-center justify-between">
+      <div className="mb-4 flex items-center justify-between">
         {index > 0 ? (
           <button
             type="button"
-            onClick={() => setIndex((val) => val - 1)}
-            className="inline-flex items-center gap-1 rounded-full py-1 pr-2.5 text-xs font-medium text-mist hover:text-forest active:scale-95"
+            onClick={goBack}
+            className="inline-flex items-center gap-1.5 rounded-full border border-sand/80 bg-background/80 px-3 py-1.5 text-xs font-medium text-forest hover:bg-cream active:scale-95 transition"
           >
-            <ArrowLeftIcon className="size-3.5" />
+            <ArrowLeftIcon className="size-3.5 text-sage" />
             <span>Anterior</span>
           </button>
         ) : (
-          <span className="text-[11px] font-semibold tracking-wider uppercase text-sage">
-            Aphros Skincare
-          </span>
+          <Link
+            href="/"
+            className="inline-flex items-center gap-1.5 rounded-full border border-sand/80 bg-background/80 px-3 py-1.5 text-xs font-medium text-mist hover:text-forest active:scale-95 transition"
+          >
+            <ArrowLeftIcon className="size-3.5 text-mist" />
+            <span>Inicio</span>
+          </Link>
         )}
 
-        <span className="rounded-full bg-sand/50 px-2.5 py-0.5 text-xs font-medium text-mist">
+        <span className="rounded-full bg-sand/60 px-3 py-1 text-xs font-semibold text-forest">
           {index + 1} de {total}
         </span>
       </div>
@@ -331,14 +371,17 @@ export function QuizClient({ questions }: { questions: PublicQuestion[] }) {
           {current.text}
         </h2>
         <p className="mt-1 text-xs text-mist">
-          Selecciona la opción que mejor describe tu situación:
+          Selecciona una opción para avanzar (puedes regresar en cualquier momento):
         </p>
       </div>
 
       {/* Option Cards: large tap targets for mobile thumbs */}
       <div className="flex flex-col gap-2.5">
         {current.options.map((option) => {
-          const isSelected = selectedOptionId === option.id;
+          const isSelected =
+            selectedOptionId === option.id ||
+            (!selectedOptionId && currentAnswer?.optionId === option.id);
+
           return (
             <button
               key={option.id}
@@ -346,7 +389,7 @@ export function QuizClient({ questions }: { questions: PublicQuestion[] }) {
               onClick={() => selectOption(option)}
               className={`group flex min-h-[58px] w-full items-center justify-between rounded-2xl border px-4 py-3.5 text-left text-sm font-medium transition-all duration-150 active:scale-[0.98] ${
                 isSelected
-                  ? "border-sage bg-sage/10 text-forest shadow-2xs"
+                  ? "border-sage bg-sage/12 text-forest shadow-2xs font-semibold"
                   : "border-sand bg-background/80 text-forest hover:border-sage/60 hover:bg-cream"
               }`}
             >
@@ -363,6 +406,39 @@ export function QuizClient({ questions }: { questions: PublicQuestion[] }) {
             </button>
           );
         })}
+      </div>
+
+      {/* Bottom Navigation Row */}
+      <div className="mt-6 flex items-center justify-between border-t border-sand/60 pt-4">
+        {index > 0 ? (
+          <button
+            type="button"
+            onClick={goBack}
+            className="inline-flex items-center gap-1.5 rounded-xl border border-sand bg-background/90 px-4 py-2.5 text-xs font-medium text-forest hover:bg-cream active:scale-95 transition"
+          >
+            <ArrowLeftIcon className="size-3.5 text-sage" />
+            <span>Pregunta anterior</span>
+          </button>
+        ) : (
+          <Link
+            href="/"
+            className="inline-flex items-center gap-1.5 rounded-xl border border-sand bg-background/90 px-4 py-2.5 text-xs font-medium text-mist hover:text-forest active:scale-95 transition"
+          >
+            <ArrowLeftIcon className="size-3.5" />
+            <span>Volver al inicio</span>
+          </Link>
+        )}
+
+        {hasCurrentAnswer ? (
+          <button
+            type="button"
+            onClick={goNext}
+            className="inline-flex items-center gap-1.5 rounded-xl bg-sage/15 px-4 py-2.5 text-xs font-semibold text-sage-dark hover:bg-sage/25 active:scale-95 transition"
+          >
+            <span>{index === total - 1 ? "Continuar" : "Siguiente"}</span>
+            <ArrowRightIcon className="size-3.5" />
+          </button>
+        ) : null}
       </div>
     </div>
   );
