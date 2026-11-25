@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { put } from "@vercel/blob";
 import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
+import { toPublicImageUrl } from "@/lib/media-url";
 
 const MAX_BYTES = 4.5 * 1024 * 1024; // ~4.5MB
 const ALLOWED = new Set([
@@ -48,11 +49,16 @@ export async function POST(request: Request) {
     const filename = `${Date.now()}-${safeFileName(file.name || "producto.jpg")}`;
 
     if (process.env.BLOB_READ_WRITE_TOKEN) {
+      // Store is private — upload private, expose via /api/media proxy
       const blob = await put(`products/${filename}`, file, {
-        access: "public",
+        access: "private",
         token: process.env.BLOB_READ_WRITE_TOKEN,
       });
-      return NextResponse.json({ url: blob.url });
+
+      return NextResponse.json({
+        url: blob.url,
+        displayUrl: toPublicImageUrl(blob.url),
+      });
     }
 
     // Local / non-Blob environments: save under public/uploads
@@ -70,13 +76,13 @@ export async function POST(request: Request) {
     await mkdir(uploadsDir, { recursive: true });
     const buffer = Buffer.from(await file.arrayBuffer());
     await writeFile(path.join(uploadsDir, filename), buffer);
+    const url = `/uploads/${filename}`;
 
-    return NextResponse.json({ url: `/uploads/${filename}` });
+    return NextResponse.json({ url, displayUrl: url });
   } catch (error) {
     console.error("upload failed", error);
-    return NextResponse.json(
-      { error: "No se pudo subir la imagen" },
-      { status: 500 },
-    );
+    const message =
+      error instanceof Error ? error.message : "No se pudo subir la imagen";
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }

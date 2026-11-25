@@ -4,6 +4,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { connection } from "next/server";
 import { SiteHeader } from "@/components/SiteHeader";
+import { toPublicImageUrl } from "@/lib/media-url";
 import { prisma } from "@/lib/prisma";
 
 type Analysis = {
@@ -58,10 +59,13 @@ async function ResultadoContent({
   const imageById = Object.fromEntries(
     fresh.map((product) => [product.id, product.imageUrl]),
   );
-  const products = storedProducts.map((product) => ({
-    ...product,
-    imageUrl: product.imageUrl || imageById[product.id] || null,
-  }));
+  const products = storedProducts.map((product) => {
+    const raw = product.imageUrl || imageById[product.id] || null;
+    return {
+      ...product,
+      imageUrl: toPublicImageUrl(raw),
+    };
+  });
 
   return (
     <main className="flex flex-1 flex-col">
@@ -106,7 +110,10 @@ async function ResultadoContent({
                       src={product.imageUrl}
                       alt={product.name}
                       fill
-                      unoptimized={product.imageUrl.endsWith(".svg")}
+                      unoptimized={
+                        product.imageUrl.includes(".svg") ||
+                        product.imageUrl.includes("/api/media")
+                      }
                       className="object-cover"
                       sizes="144px"
                     />

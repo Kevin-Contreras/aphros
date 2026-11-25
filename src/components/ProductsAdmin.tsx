@@ -1,6 +1,7 @@
 "use client";
 
 import { FormEvent, useEffect, useState, useTransition } from "react";
+import { toPublicImageUrl } from "@/lib/media-url";
 
 type Product = {
   id: string;
@@ -88,7 +89,11 @@ export function ProductsAdmin() {
       if (!response.ok) {
         throw new Error(data.error || "No se pudo subir la imagen");
       }
-      setForm((prev) => ({ ...prev, imageUrl: data.url }));
+      setForm((prev) => ({
+        ...prev,
+        // Persist the private blob URL (or local path); preview uses display helper
+        imageUrl: data.url,
+      }));
     } catch (err) {
       setError(err instanceof Error ? err.message : "Error al subir imagen");
     } finally {
@@ -206,7 +211,7 @@ export function ProductsAdmin() {
             {form.imageUrl ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img
-                src={form.imageUrl}
+                src={toPublicImageUrl(form.imageUrl) || form.imageUrl}
                 alt="Vista previa"
                 className="h-full w-full object-cover"
               />
@@ -311,7 +316,9 @@ export function ProductsAdmin() {
                     {product.imageUrl ? (
                       // eslint-disable-next-line @next/next/no-img-element
                       <img
-                        src={product.imageUrl}
+                        src={
+                          toPublicImageUrl(product.imageUrl) || product.imageUrl
+                        }
                         alt={product.name}
                         className="h-full w-full object-cover"
                       />

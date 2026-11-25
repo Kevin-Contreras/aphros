@@ -1,3 +1,4 @@
+import { getSiteOrigin, toPublicImageUrl } from "@/lib/media-url";
 import { withTimeout } from "@/lib/with-timeout";
 
 type RecommendedProduct = {
@@ -60,26 +61,11 @@ export async function sendRecommendationEmail(payload: RecommendationEmailPayloa
     };
   }
 
-  const siteUrl = (
-    process.env.NEXT_PUBLIC_SITE_URL ||
-    process.env.VERCEL_PROJECT_PRODUCTION_URL ||
-    process.env.VERCEL_URL ||
-    ""
-  ).replace(/\/$/, "");
-  const absoluteSite = siteUrl
-    ? siteUrl.startsWith("http")
-      ? siteUrl
-      : `https://${siteUrl}`
-    : "https://aphros.vercel.app";
+  const absoluteSite = getSiteOrigin() || "https://aphros.vercel.app";
 
   const productBlocks = payload.products
     .map((product) => {
-      const rawImage = product.imageUrl || "";
-      const imageSrc = rawImage
-        ? rawImage.startsWith("http")
-          ? rawImage
-          : `${absoluteSite}${rawImage}`
-        : "";
+      const imageSrc = toPublicImageUrl(product.imageUrl, absoluteSite) || "";
       const imageHtml = imageSrc
         ? `<img src="${escapeHtml(imageSrc)}" alt="${escapeHtml(product.name)}" width="96" height="96" style="display:block;width:96px;height:96px;object-fit:cover;border-radius:16px;border:1px solid #e8e2d6;background:#f7f3ea;" />`
         : "";
