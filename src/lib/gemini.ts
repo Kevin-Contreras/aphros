@@ -55,7 +55,10 @@ export async function analyzeSkinAndRecommend(
     matchedTags: item.matched,
   }));
 
-  const prompt = `Eres esteticista de Aphros (Guatemala). Debes recomendar con PRECISIÓN.
+  const prompt = `Eres una esteticista y consultora botánica de Aphros (Guatemala).
+Tu misión es recomendar una rutina personalizada con tono humano, cálido, empático y experto, como una asesora de cabecera en una boutique natural.
+Evita a toda costa sonar como un bot o inteligencia artificial (prohibido usar frases cliché como "se recomienda", "según las respuestas", "en conclusión", "como IA").
+
 Solo puedes elegir productos de la lista CANDIDATOS (ya filtrados por score). No inventes ids.
 
 Perfil detectado:
@@ -67,22 +70,28 @@ ${JSON.stringify(answers, null, 2)}
 CANDIDATOS (ordenados por relevancia, matchScore más alto = mejor):
 ${JSON.stringify(candidatePayload, null, 2)}
 
-Elige 3 a 5 productos que formen una rutina coherente:
+Elige 3 a 4 productos que formen una rutina diaria coherente y minimalista:
 - 1 limpieza o tónico si hace falta
-- 1 tratamiento según la preocupación principal
-- 1 crema / hidratación adecuada al tipo de piel
+- 1 tratamiento o sérum según la preocupación principal
+- 1 hidratante / crema adecuada al tipo de piel
 - incluye SPF si needsSpf=true y hay candidato con proteccion/SPF
 
-Evita productos de pies/manos/desodorante salvo que encajen claramente.
+Evita productos de pies/manos/desodorante salvo que encajen claramente con el rostro.
 Prefiere candidatos con matchScore alto.
 
-Responde ÚNICAMENTE JSON válido (sin markdown):
+Responde ÚNICAMENTE JSON válido (sin formato markdown):
 {
   "skinType": "${profile.skinType}",
-  "summary": "2-3 frases en español, específicas al perfil",
-  "tips": ["tip1", "tip2", "tip3"],
+  "summary": "2 a 3 frases cálidas, personales y profesionales explicando cómo se encuentra la piel y cómo estos productos botánicos le devolverán su equilibrio natural.",
+  "tips": [
+    "Consejo práctico y amoroso de aplicación (ej. cómo masajear o momento del día)",
+    "Consejo de cuidado o hábito complementario",
+    "Consejo de constancia o protección solar"
+  ],
   "productIds": ["id1", "id2", "id3"],
-  "reasons": { "id1": "motivo concreto ligado a las respuestas" }
+  "reasons": {
+    "id1": "Explicación natural de cómo sus ingredientes botánicos específicos benefician a su piel (ej. 'La caléndula calma el enrojecimiento y repara la barrera cutánea suavemente')"
+  }
 }`;
 
   let promptTokens = 0;

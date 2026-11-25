@@ -1,5 +1,12 @@
 import { Suspense } from "react";
-import { AdminNav } from "@/components/AdminNav";
+import { AdminSidebar } from "@/components/AdminSidebar";
+import { Separator } from "@/components/ui/separator";
+import {
+  SidebarInset,
+  SidebarProvider,
+  SidebarTrigger,
+} from "@/components/ui/sidebar";
+import { TooltipProvider } from "@/components/ui/tooltip";
 
 export default function DashboardLayout({
   children,
@@ -7,20 +14,20 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex min-h-screen w-full flex-col md:flex-row">
-      <Suspense
-        fallback={
-          <aside className="border-b border-sand bg-cream/90 px-5 py-6 md:min-h-screen md:w-60 md:border-b-0 md:border-r">
-            <p className="text-[11px] tracking-[0.28em] uppercase text-sage">Aphros</p>
-            <h1 className="font-[family-name:var(--font-display)] text-2xl text-forest">
-              Dashboard
-            </h1>
-          </aside>
-        }
-      >
-        <AdminNav />
-      </Suspense>
-      <div className="flex-1 px-5 py-8 md:px-8">{children}</div>
-    </div>
+    <TooltipProvider>
+      <SidebarProvider>
+        <Suspense fallback={null}>
+          <AdminSidebar />
+        </Suspense>
+        <SidebarInset>
+          <header className="flex h-14 shrink-0 items-center gap-2 border-b px-4">
+            <SidebarTrigger />
+            <Separator orientation="vertical" className="mr-1 h-4" />
+            <p className="text-sm text-muted-foreground">Panel Aphros</p>
+          </header>
+          <div className="flex flex-1 flex-col gap-6 p-4 md:p-6">{children}</div>
+        </SidebarInset>
+      </SidebarProvider>
+    </TooltipProvider>
   );
 }

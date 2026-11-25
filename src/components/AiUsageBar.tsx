@@ -1,4 +1,13 @@
 import type { AiUsageToday } from "@/lib/ai-usage";
+import { Badge } from "@/components/ui/badge";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Progress } from "@/components/ui/progress";
 
 function formatTokens(n: number) {
   if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(1)}M`;
@@ -7,51 +16,41 @@ function formatTokens(n: number) {
 }
 
 export function AiUsageBar({ usage }: { usage: AiUsageToday }) {
-  const tone =
+  const status =
     usage.percent >= 95
-      ? "bg-forest"
+      ? { label: "Crítico", variant: "destructive" as const }
       : usage.percent >= 80
-        ? "bg-clay"
-        : "bg-sage";
+        ? { label: "Alto", variant: "secondary" as const }
+        : { label: "OK", variant: "default" as const };
 
   return (
-    <section className="rounded-2xl border border-sand bg-cream p-5">
-      <div className="flex flex-wrap items-end justify-between gap-2">
-        <div>
-          <p className="text-[11px] tracking-[0.22em] uppercase text-sage">
-            Consumo de IA
-          </p>
-          <h2 className="mt-1 font-[family-name:var(--font-display)] text-2xl text-forest">
-            Hoy · Gemini
-          </h2>
+    <Card>
+      <CardHeader className="flex flex-row items-start justify-between gap-3">
+        <div className="flex flex-col gap-1">
+          <CardDescription>Consumo de IA</CardDescription>
+          <CardTitle className="font-heading text-2xl">Hoy · Gemini</CardTitle>
         </div>
-        <p className="text-sm text-mist">
-          <span className="font-medium text-forest">{usage.requests}</span>
-          {" / "}
-          {usage.limit} solicitudes
-        </p>
-      </div>
-
-      <div
-        className="mt-4 h-3 overflow-hidden rounded-full bg-ivory"
-        role="progressbar"
-        aria-valuenow={usage.requests}
-        aria-valuemin={0}
-        aria-valuemax={usage.limit}
-        aria-label="Solicitudes de IA usadas hoy"
-      >
-        <div
-          className={`h-full rounded-full transition-[width] ${tone}`}
-          style={{ width: `${Math.max(usage.percent, usage.requests > 0 ? 2 : 0)}%` }}
+        <Badge variant={status.variant}>{status.label}</Badge>
+      </CardHeader>
+      <CardContent className="flex flex-col gap-3">
+        <div className="flex flex-wrap items-end justify-between gap-2 text-sm">
+          <p className="text-muted-foreground">
+            <span className="font-medium text-foreground">{usage.requests}</span>
+            {" / "}
+            {usage.limit} solicitudes
+          </p>
+          <p className="text-muted-foreground">{usage.percent}% del cupo</p>
+        </div>
+        <Progress
+          value={Math.max(usage.percent, usage.requests > 0 ? 2 : 0)}
+          aria-label="Solicitudes de IA usadas hoy"
         />
-      </div>
-
-      <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-xs text-mist">
-        <span>{usage.percent}% del cupo diario</span>
-        <span>{usage.remaining} restantes</span>
-        <span>{formatTokens(usage.totalTokens)} tokens</span>
-        <span>{usage.successful} OK</span>
-      </div>
-    </section>
+        <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-muted-foreground">
+          <span>{usage.remaining} restantes</span>
+          <span>{formatTokens(usage.totalTokens)} tokens</span>
+          <span>{usage.successful} OK</span>
+        </div>
+      </CardContent>
+    </Card>
   );
 }

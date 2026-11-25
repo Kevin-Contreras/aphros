@@ -3,6 +3,7 @@ import { withTimeout } from "@/lib/with-timeout";
 
 type RecommendedProduct = {
   name: string;
+  category?: string;
   description: string;
   price: number;
   currency: string;
@@ -63,56 +64,202 @@ export async function sendRecommendationEmail(payload: RecommendationEmailPayloa
 
   const absoluteSite = getSiteOrigin() || "https://aphros.vercel.app";
 
-  const productBlocks = payload.products
-    .map((product) => {
+  const productCards = payload.products
+    .map((product, idx) => {
       const imageSrc = toPublicImageUrl(product.imageUrl, absoluteSite) || "";
       const imageHtml = imageSrc
-        ? `<img src="${escapeHtml(imageSrc)}" alt="${escapeHtml(product.name)}" width="96" height="96" style="display:block;width:96px;height:96px;object-fit:cover;border-radius:16px;border:1px solid #e8e2d6;background:#f7f3ea;" />`
+        ? `<td width="92" valign="top" style="padding-right:16px;">
+             <img src="${escapeHtml(imageSrc)}" alt="${escapeHtml(product.name)}" width="88" height="88" style="display:block;width:88px;height:88px;object-fit:cover;border-radius:14px;border:1px solid #e5ded2;background:#f8f6f0;" />
+           </td>`
         : "";
 
       return `
       <tr>
-        <td style="padding:16px 0;border-bottom:1px solid #e8e2d6;">
-          <table width="100%" cellpadding="0" cellspacing="0">
-            <tr>
-              ${imageHtml ? `<td width="112" valign="top" style="padding-right:16px;">${imageHtml}</td>` : ""}
-              <td valign="top">
-                <p style="margin:0 0 6px;font-size:16px;font-weight:600;color:#2f3d2c;">${escapeHtml(product.name)}</p>
-                <p style="margin:0 0 8px;font-size:14px;color:#5c6558;line-height:1.5;">${escapeHtml(product.description)}</p>
-                ${
-                  product.reason
-                    ? `<p style="margin:0 0 8px;font-size:13px;color:#7a6a4f;"><em>${escapeHtml(product.reason)}</em></p>`
-                    : ""
-                }
-                <p style="margin:0 0 10px;font-size:14px;color:#2f3d2c;">${escapeHtml(product.currency)}${product.price.toFixed(2)}</p>
-                <a href="${escapeHtml(product.buyUrl)}" style="display:inline-block;padding:10px 16px;background:#6b8f71;color:#fff;text-decoration:none;border-radius:999px;font-size:13px;">Ver en Pacifiko</a>
-              </td>
-            </tr>
-          </table>
+        <td style="padding-bottom:16px;">
+          <div style="background:#ffffff;border:1px solid #e6ded1;border-radius:18px;padding:18px 20px;">
+            <!-- Step Tag & Price -->
+            <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:8px;">
+              <tr>
+                <td>
+                  <span style="display:inline-block;background:#edf3ee;color:#46654c;font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;padding:3px 10px;border-radius:12px;">
+                    Paso ${idx + 1} · ${escapeHtml(product.category || "Cuidado botánico")}
+                  </span>
+                </td>
+                <td align="right" style="font-size:15px;font-weight:700;color:#232e21;">
+                  ${escapeHtml(product.currency)} ${product.price.toFixed(2)}
+                </td>
+              </tr>
+            </table>
+
+            <!-- Product info with optional photo -->
+            <table width="100%" cellpadding="0" cellspacing="0">
+              <tr>
+                ${imageHtml}
+                <td valign="top">
+                  <h4 style="margin:0 0 6px;font-family:Georgia,serif;font-size:18px;font-weight:normal;color:#222d20;line-height:1.25;">
+                    ${escapeHtml(product.name)}
+                  </h4>
+                  <p style="margin:0 0 10px;font-size:13px;color:#5a6755;line-height:1.55;">
+                    ${escapeHtml(product.description)}
+                  </p>
+                </td>
+              </tr>
+            </table>
+
+            <!-- Botanical Rationale / Why it works -->
+            ${
+              product.reason
+                ? `<div style="margin-top:10px;background:#f7f9f7;border-left:3px solid #5d8163;border-radius:0 10px 10px 0;padding:9px 13px;font-size:12.5px;color:#354c39;line-height:1.5;">
+                     <strong style="color:#2a3e2d;">¿Por qué este producto?</strong> ${escapeHtml(product.reason)}
+                   </div>`
+                : ""
+            }
+
+            <!-- CTA button -->
+            <div style="margin-top:14px;text-align:right;">
+              <a href="${escapeHtml(product.buyUrl)}" style="display:inline-block;padding:9px 18px;background:#56775c;color:#ffffff;text-decoration:none;border-radius:999px;font-size:12.5px;font-weight:600;letter-spacing:0.02em;">
+                Ver en Pacifiko →
+              </a>
+            </div>
+          </div>
         </td>
       </tr>`;
     })
     .join("");
 
-  const tips = payload.tips
-    .map((tip) => `<li style="margin:0 0 8px;">${escapeHtml(tip)}</li>`)
+  const tipsList = payload.tips
+    .map(
+      (tip) => `
+      <div style="margin-bottom:10px;display:flex;align-items:flex-start;">
+        <span style="display:inline-block;width:18px;color:#56775c;font-size:15px;line-height:1.4;">🌿</span>
+        <span style="font-size:13.5px;color:#4f5c4b;line-height:1.55;">${escapeHtml(tip)}</span>
+      </div>`,
+    )
     .join("");
 
   const htmlContent = `
-  <div style="font-family:Georgia,serif;background:#f7f3ea;padding:32px 16px;">
-    <div style="max-width:560px;margin:0 auto;background:#fffdf8;border:1px solid #e8e2d6;padding:32px;">
-      <p style="margin:0 0 4px;letter-spacing:0.18em;text-transform:uppercase;font-size:12px;color:#6b8f71;">Aphros</p>
-      <h1 style="margin:0 0 16px;font-size:28px;color:#2f3d2c;">Tu rutina de cuidado</h1>
-      <p style="margin:0 0 12px;font-size:15px;color:#5c6558;">Hola ${escapeHtml(payload.toName)},</p>
-      <p style="margin:0 0 16px;font-size:15px;color:#5c6558;line-height:1.6;">${escapeHtml(payload.summary)}</p>
-      <p style="margin:0 0 24px;font-size:14px;color:#2f3d2c;"><strong>Tipo de piel estimado:</strong> ${escapeHtml(payload.skinType)}</p>
-      <h2 style="margin:0 0 8px;font-size:18px;color:#2f3d2c;">Productos recomendados</h2>
-      <table width="100%" cellpadding="0" cellspacing="0">${productBlocks}</table>
-      <h2 style="margin:28px 0 8px;font-size:18px;color:#2f3d2c;">Tips Aphros</h2>
-      <ul style="padding-left:18px;color:#5c6558;font-size:14px;line-height:1.5;">${tips}</ul>
-      <p style="margin:28px 0 0;font-size:12px;color:#8a8376;">Cosmética artesanal guatemalteca · Aphros</p>
-    </div>
-  </div>`;
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tu ritual botánico Aphros</title>
+</head>
+<body style="margin:0;padding:0;background-color:#f6f3eb;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased;">
+  <!-- Gmail teaser preview text -->
+  <div style="display:none;font-size:1px;color:#fefefe;line-height:1px;max-height:0px;max-width:0px;opacity:0;overflow:hidden;">
+    Hola ${escapeHtml(payload.toName)}, aquí tienes tu diagnóstico y ritual botánico personalizado preparado por Aphros.
+  </div>
+
+  <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#f6f3eb;padding:32px 12px;">
+    <tr>
+      <td align="center">
+        <!-- Main Card Wrapper -->
+        <table width="100%" cellpadding="0" cellspacing="0" style="max-width:580px;background:#ffffff;border:1px solid #e7dfd1;border-radius:24px;overflow:hidden;box-shadow:0 4px 20px rgba(35,46,33,0.04);">
+          
+          <!-- Header Banner -->
+          <tr>
+            <td style="background-color:#263423;padding:36px 24px 30px;text-align:center;">
+              <p style="margin:0 0 6px;font-size:10.5px;letter-spacing:0.32em;text-transform:uppercase;color:#b6cbb7;font-weight:600;">
+                Cosmética Botánica · Guatemala
+              </p>
+              <h1 style="margin:0;font-family:Georgia,'Times New Roman',serif;font-size:32px;font-weight:normal;color:#fdfbf7;letter-spacing:0.06em;">
+                APHROS
+              </h1>
+            </td>
+          </tr>
+
+          <!-- Main Content -->
+          <tr>
+            <td style="padding:32px 26px 24px;">
+
+              <!-- Greeting -->
+              <p style="margin:0 0 12px;font-size:17px;font-weight:600;color:#222d20;">
+                Hola, ${escapeHtml(payload.toName)}
+              </p>
+              <p style="margin:0 0 22px;font-size:14.5px;color:#505e4c;line-height:1.65;">
+                Diseñamos esta rutina artesanal con mucho cuidado para acompañar tu cuidado diario y restaurar el balance natural de tu piel con ingredientes botánicos puros.
+              </p>
+
+              <!-- Diagnostic Sheet Card -->
+              <div style="background:#f7f4ed;border:1px solid #e3dcce;border-radius:18px;padding:22px;margin-bottom:28px;">
+                <p style="margin:0 0 4px;font-size:11px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:#507256;">
+                  Diagnóstico personal
+                </p>
+                <h2 style="margin:0 0 10px;font-family:Georgia,serif;font-size:22px;font-weight:normal;color:#222d20;text-transform:capitalize;">
+                  Piel ${escapeHtml(payload.skinType)}
+                </h2>
+                <p style="margin:0;font-size:14px;color:#4f5e4c;line-height:1.65;">
+                  ${escapeHtml(payload.summary)}
+                </p>
+              </div>
+
+              <!-- Routine Title -->
+              <div style="margin-bottom:18px;">
+                <h3 style="margin:0 0 4px;font-family:Georgia,serif;font-size:20px;font-weight:normal;color:#222d20;">
+                  Tu Ritual Recomendado
+                </h3>
+                <p style="margin:0;font-size:13px;color:#707e6c;">
+                  Aplica estos productos en el orden sugerido para obtener los mejores resultados:
+                </p>
+              </div>
+
+              <!-- Product Cards Table -->
+              <table width="100%" cellpadding="0" cellspacing="0">
+                ${productCards}
+              </table>
+
+              <!-- Tips Section -->
+              <div style="margin-top:16px;background:#fbfaf6;border:1px solid #e7e0d3;border-radius:18px;padding:20px 22px;">
+                <h3 style="margin:0 0 12px;font-family:Georgia,serif;font-size:18px;font-weight:normal;color:#222d20;">
+                  Consejos para tu ritual
+                </h3>
+                <div>
+                  ${tipsList}
+                </div>
+              </div>
+
+            </td>
+          </tr>
+
+          <!-- Personal Consultation Support -->
+          <tr>
+            <td style="background-color:#f9f8f4;border-top:1px solid #e9e2d6;padding:26px 28px;text-align:center;">
+              <p style="margin:0 0 6px;font-size:15px;font-weight:600;color:#222d20;">
+                ¿Tienes dudas sobre cómo empezar tu rutina?
+              </p>
+              <p style="margin:0 0 16px;font-size:13px;color:#61705d;line-height:1.5;max-width:440px;margin-left:auto;margin-right:auto;">
+                Puedes responder a este correo o escribirnos a nuestro WhatsApp para recibir asesoría personalizada sobre la aplicación de tus productos.
+              </p>
+              <a href="https://wa.me/50255555555" style="display:inline-block;padding:10px 22px;background:#25d366;color:#ffffff;text-decoration:none;border-radius:999px;font-size:13px;font-weight:600;">
+                Consultar por WhatsApp
+              </a>
+            </td>
+          </tr>
+
+          <!-- Footer Signature -->
+          <tr>
+            <td style="padding:24px;text-align:center;font-size:11.5px;color:#859282;background-color:#f3efe7;">
+              <p style="margin:0 0 4px;font-weight:600;color:#465744;font-size:12px;letter-spacing:0.04em;">
+                Aphros · Cosmética Artesanal
+              </p>
+              <p style="margin:0 0 8px;line-height:1.5;">
+                Formulaciones botánicas conscientes elaboradas en Guatemala.
+              </p>
+              <p style="margin:0;">
+                <a href="${absoluteSite}" style="color:#507256;text-decoration:none;font-weight:500;">Visitar sitio web</a>
+                &nbsp;·&nbsp;
+                <a href="https://www.pacifiko.com/marketplace/aphros" style="color:#507256;text-decoration:none;font-weight:500;">Catálogo en Pacifiko</a>
+              </p>
+            </td>
+          </tr>
+
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>`;
 
   try {
     const response = await withTimeout(
@@ -126,7 +273,7 @@ export async function sendRecommendationEmail(payload: RecommendationEmailPayloa
         body: JSON.stringify({
           sender: { name: senderName, email: senderEmail },
           to: [{ email: payload.toEmail, name: payload.toName }],
-          subject: "Tu rutina Aphros según tu piel",
+          subject: `${payload.toName}, aquí tienes tu ritual botánico Aphros`,
           htmlContent,
         }),
       }),

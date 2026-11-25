@@ -2,6 +2,30 @@ import { Suspense } from "react";
 import Link from "next/link";
 import { connection } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Empty,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyTitle,
+} from "@/components/ui/empty";
+import { Skeleton } from "@/components/ui/skeleton";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 
 type SkinAnalysis = {
   skinType?: string;
@@ -14,11 +38,9 @@ type RecommendedProduct = {
 
 function EnviosFallback() {
   return (
-    <div>
-      <h1 className="font-[family-name:var(--font-display)] text-4xl text-forest">
-        Envíos
-      </h1>
-      <p className="mt-2 text-sm text-mist">Cargando…</p>
+    <div className="flex flex-col gap-6">
+      <Skeleton className="h-9 w-36" />
+      <Skeleton className="h-64 w-full" />
     </div>
   );
 }
@@ -30,84 +52,123 @@ async function EnviosContent() {
   });
 
   return (
-    <div>
-      <h1 className="font-[family-name:var(--font-display)] text-4xl text-forest">
-        Envíos
-      </h1>
-      <p className="mt-2 text-sm text-mist">
-        Historial de personas que completaron el quiz de piel.
-      </p>
-
-      <div className="mt-8 overflow-hidden rounded-2xl border border-sand bg-cream">
-        {submissions.length === 0 ? (
-          <p className="p-5 text-sm text-mist">Aún no hay envíos.</p>
-        ) : (
-          <ul className="divide-y divide-sand">
-            {submissions.map((item) => {
-              let analysis: SkinAnalysis = {};
-              let products: RecommendedProduct[] = [];
-              try {
-                analysis = JSON.parse(item.skinAnalysis) as SkinAnalysis;
-              } catch {
-                analysis = {};
-              }
-              try {
-                products = JSON.parse(item.recommendedProducts) as RecommendedProduct[];
-              } catch {
-                products = [];
-              }
-
-              return (
-                <li key={item.id} className="px-5 py-5">
-                  <div className="flex flex-col gap-2 md:flex-row md:items-start md:justify-between">
-                    <div>
-                      <p className="font-medium text-forest">{item.name}</p>
-                      <p className="text-sm text-mist">{item.email}</p>
-                      {item.whatsapp ? (
-                        <a
-                          href={`https://wa.me/${item.whatsapp.replace(/\D/g, "")}`}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="mt-1 inline-block text-sm text-sage hover:text-sage-dark"
-                        >
-                          WhatsApp: {item.whatsapp}
-                        </a>
-                      ) : null}
-                      <p className="mt-2 text-sm text-forest">
-                        Tipo de piel: {analysis.skinType || "—"}
-                      </p>
-                      {analysis.summary ? (
-                        <p className="mt-1 max-w-2xl text-sm text-mist">
-                          {analysis.summary}
-                        </p>
-                      ) : null}
-                      {products.length > 0 ? (
-                        <p className="mt-2 text-xs text-mist">
-                          Recomendados: {products.map((p) => p.name).join(" · ")}
-                        </p>
-                      ) : null}
-                    </div>
-                    <div className="shrink-0 text-left md:text-right">
-                      <p className="text-xs text-mist">
-                        {new Date(item.createdAt).toLocaleString("es-GT")}
-                      </p>
-                      <p className="mt-1 text-xs text-mist">
-                        Email: {item.emailSent ? "enviado" : "no enviado"}
-                      </p>
-                      <Link
-                        href={`/resultado/${item.id}`}
-                        className="mt-2 inline-block text-xs text-sage hover:text-sage-dark"
-                      >
-                        Ver resultado →
-                      </Link>
-                    </div>
-                  </div>
-                </li>
-              );
-            })}
-          </ul>
-        )}
+    <div className="flex flex-col gap-6">
+      <div className="flex flex-col gap-1">
+        <h1 className="font-heading text-3xl font-medium tracking-tight">
+          Envíos
+        </h1>
+        <p className="text-sm text-muted-foreground">
+          Historial de personas que completaron el quiz de piel.
+        </p>
       </div>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Historial</CardTitle>
+          <CardDescription>
+            {submissions.length}{" "}
+            {submissions.length === 1 ? "envío" : "envíos"} registrados
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          {submissions.length === 0 ? (
+            <Empty className="border">
+              <EmptyHeader>
+                <EmptyTitle>Aún no hay envíos</EmptyTitle>
+                <EmptyDescription>
+                  Completa el quiz público para ver el primero aquí.
+                </EmptyDescription>
+              </EmptyHeader>
+            </Empty>
+          ) : (
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Persona</TableHead>
+                  <TableHead>Análisis</TableHead>
+                  <TableHead>Estado</TableHead>
+                  <TableHead className="text-right">Acciones</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {submissions.map((item) => {
+                  let analysis: SkinAnalysis = {};
+                  let products: RecommendedProduct[] = [];
+                  try {
+                    analysis = JSON.parse(item.skinAnalysis) as SkinAnalysis;
+                  } catch {
+                    analysis = {};
+                  }
+                  try {
+                    products = JSON.parse(
+                      item.recommendedProducts,
+                    ) as RecommendedProduct[];
+                  } catch {
+                    products = [];
+                  }
+
+                  return (
+                    <TableRow key={item.id}>
+                      <TableCell>
+                        <div className="flex flex-col gap-1">
+                          <span className="font-medium">{item.name}</span>
+                          <span className="text-muted-foreground">
+                            {item.email}
+                          </span>
+                          {item.whatsapp ? (
+                            <a
+                              href={`https://wa.me/${item.whatsapp.replace(/\D/g, "")}`}
+                              target="_blank"
+                              rel="noreferrer"
+                              className="text-primary hover:underline"
+                            >
+                              WA {item.whatsapp}
+                            </a>
+                          ) : null}
+                          <span className="text-xs text-muted-foreground">
+                            {new Date(item.createdAt).toLocaleString("es-GT")}
+                          </span>
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex max-w-md flex-col gap-1">
+                          <Badge variant="secondary" className="w-fit">
+                            {analysis.skinType || "—"}
+                          </Badge>
+                          {analysis.summary ? (
+                            <p className="line-clamp-2 text-muted-foreground">
+                              {analysis.summary}
+                            </p>
+                          ) : null}
+                          {products.length > 0 ? (
+                            <p className="text-xs text-muted-foreground">
+                              {products.map((p) => p.name).join(" · ")}
+                            </p>
+                          ) : null}
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <Badge
+                          variant={item.emailSent ? "default" : "outline"}
+                        >
+                          {item.emailSent ? "Email enviado" : "Sin email"}
+                        </Badge>
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <Button asChild variant="outline" size="sm">
+                          <Link href={`/resultado/${item.id}`}>
+                            Ver resultado
+                          </Link>
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
+              </TableBody>
+            </Table>
+          )}
+        </CardContent>
+      </Card>
     </div>
   );
 }

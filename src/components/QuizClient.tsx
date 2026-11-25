@@ -1,6 +1,16 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import {
+  ArrowLeftIcon,
+  ArrowRightIcon,
+  CheckIcon,
+  LockIcon,
+  MailIcon,
+  MessageCircleIcon,
+  SparklesIcon,
+  UserIcon,
+} from "lucide-react";
 import type { PublicQuestion, QuizAnswerPayload } from "@/lib/types";
 
 type Step = "questions" | "contact" | "submitting";
@@ -13,17 +23,32 @@ export function QuizClient({ questions }: { questions: PublicQuestion[] }) {
   const [email, setEmail] = useState("");
   const [whatsapp, setWhatsapp] = useState("");
   const [error, setError] = useState<string | null>(null);
+  const [selectedOptionId, setSelectedOptionId] = useState<string | null>(null);
+  const [loadingPhraseIndex, setLoadingPhraseIndex] = useState(0);
 
   const current = questions[index];
-  const progress =
-    questions.length === 0 ? 0 : Math.round((index / questions.length) * 100);
+  const total = questions.length;
+  const progressPercent = total === 0 ? 0 : Math.round(((index + 1) / total) * 100);
 
+  // Rotate loading phrases while analyzing
   useEffect(() => {
-    setError(null);
-  }, [index, step]);
+    if (step !== "submitting") return;
+    const phrases = [
+      "Analizando las necesidades de tu piel…",
+      "Consultando formulaciones botánicas Aphros…",
+      "Calculando la rutina exacta para ti…",
+      "Casi listo…",
+    ];
+    const timer = setInterval(() => {
+      setLoadingPhraseIndex((prev) => (prev + 1) % phrases.length);
+    }, 2400);
+    return () => clearInterval(timer);
+  }, [step]);
 
   function selectOption(option: PublicQuestion["options"][number]) {
     if (!current) return;
+    setSelectedOptionId(option.id);
+    setError(null);
 
     const nextAnswer: QuizAnswerPayload = {
       questionId: current.id,
@@ -37,29 +62,32 @@ export function QuizClient({ questions }: { questions: PublicQuestion[] }) {
     const nextAnswers = [...withoutCurrent, nextAnswer];
     setAnswers(nextAnswers);
 
-    if (index < questions.length - 1) {
-      setIndex((value) => value + 1);
-      return;
-    }
-
-    setStep("contact");
+    // Short visual feedback before advancing to give tactile mobile feel
+    setTimeout(() => {
+      setSelectedOptionId(null);
+      if (index < total - 1) {
+        setIndex((val) => val + 1);
+      } else {
+        setStep("contact");
+      }
+    }, 180);
   }
 
   async function submit() {
     setError(null);
     if (name.trim().length < 2) {
-      setError("Escribe tu nombre.");
+      setError("Por favor ingresa tu nombre completo.");
       return;
     }
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      setError("Escribe un correo válido.");
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
+      setError("Ingresa un correo electrónico válido.");
       return;
     }
 
     const phoneDigits = whatsapp.replace(/[^\d+]/g, "");
     const phoneOnlyDigits = phoneDigits.replace(/\D/g, "");
     if (phoneOnlyDigits.length < 8) {
-      setError("Escribe un WhatsApp válido (mínimo 8 dígitos).");
+      setError("Ingresa un número de WhatsApp válido (mínimo 8 dígitos).");
       return;
     }
 
@@ -91,15 +119,14 @@ export function QuizClient({ questions }: { questions: PublicQuestion[] }) {
         throw new Error("No recibimos el resultado. Intenta de nuevo.");
       }
 
-      // Hard navigation avoids staying stuck on the analyzing screen
       window.location.assign(`/resultado/${data.id}`);
     } catch (err) {
       const message =
         err instanceof Error && err.name === "AbortError"
-          ? "La consulta tardó demasiado. Intenta de nuevo."
+          ? "El análisis tomó demasiado tiempo. Por favor intenta de nuevo."
           : err instanceof Error
             ? err.message
-            : "Error inesperado";
+            : "Ocurrió un error inesperado al procesar tu solicitud.";
       setStep("contact");
       setError(message);
     } finally {
@@ -109,142 +136,234 @@ export function QuizClient({ questions }: { questions: PublicQuestion[] }) {
 
   if (questions.length === 0) {
     return (
-      <p className="rounded-2xl border border-sand bg-cream/80 p-6 text-mist">
-        Aún no hay preguntas activas. Vuelve pronto.
-      </p>
+      <div className="rounded-3xl border border-sand bg-cream/90 p-6 text-center text-mist">
+        Aún no hay preguntas activas en el sistema.
+      </div>
     );
   }
 
+  // Submitting Screen
   if (step === "submitting") {
+    const loadingPhrases = [
+      "Analizando las necesidades de tu piel…",
+      "Consultando formulaciones botánicas Aphros…",
+      "Calculando la rutina exacta para ti…",
+      "Casi listo…",
+    ];
+
     return (
-      <div className="rounded-3xl border border-sand bg-cream/90 p-10 text-center shadow-sm">
-        <p className="text-xs tracking-[0.25em] uppercase text-sage">Aphros</p>
-        <h2 className="mt-3 font-[family-name:var(--font-display)] text-3xl text-forest">
-          Analizando tu piel…
-        </h2>
-        <p className="mt-3 text-sm text-mist">
-          Estamos preparando tu rutina personalizada.
+      <div className="flex min-h-[420px] flex-col items-center justify-center rounded-3xl border border-sand bg-cream/95 p-6 text-center shadow-xs">
+        <div className="relative mb-6 flex size-20 items-center justify-center rounded-full bg-sage/15 text-sage">
+          <SparklesIcon className="size-10 animate-spin transition-all" style={{ animationDuration: "6s" }} />
+          <div className="absolute inset-0 rounded-full border-2 border-sage border-t-transparent animate-spin" />
+        </div>
+
+        <p className="text-xs font-semibold tracking-[0.25em] uppercase text-sage">
+          Diagnóstico en curso
         </p>
-        <div className="mx-auto mt-6 h-1.5 w-40 overflow-hidden rounded-full bg-sand">
-          <div className="h-full w-1/2 animate-pulse rounded-full bg-sage" />
+
+        <h2 className="mt-2 font-[family-name:var(--font-display)] text-2xl text-forest sm:text-3xl">
+          Personalizando tu rutina Aphros
+        </h2>
+
+        <p className="mt-3 min-h-[24px] text-sm text-mist transition-all">
+          {loadingPhrases[loadingPhraseIndex]}
+        </p>
+
+        <div className="mt-8 h-2 w-52 overflow-hidden rounded-full bg-sand">
+          <div className="h-full w-2/3 animate-pulse rounded-full bg-sage" />
         </div>
       </div>
     );
   }
 
+  // Contact Form Screen
   if (step === "contact") {
     return (
-      <div className="rounded-3xl border border-sand bg-cream/90 p-8 shadow-sm md:p-10">
-        <p className="text-xs tracking-[0.25em] uppercase text-sage">Último paso</p>
-        <h2 className="mt-2 font-[family-name:var(--font-display)] text-3xl text-forest">
-          ¿Dónde te enviamos tu rutina?
-        </h2>
-        <p className="mt-2 text-sm text-mist">
-          Verás el resultado en pantalla, te llega por correo y queda tu WhatsApp
-          para seguimiento.
-        </p>
-
-        <div className="mt-8 space-y-4">
-          <label className="block">
-            <span className="mb-1.5 block text-sm text-forest">Nombre</span>
-            <input
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              className="w-full rounded-xl border border-sand bg-ivory/60 px-4 py-3 text-forest outline-none focus:border-sage"
-              placeholder="Tu nombre"
-            />
-          </label>
-          <label className="block">
-            <span className="mb-1.5 block text-sm text-forest">Correo</span>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full rounded-xl border border-sand bg-ivory/60 px-4 py-3 text-forest outline-none focus:border-sage"
-              placeholder="tu@correo.com"
-            />
-          </label>
-          <label className="block">
-            <span className="mb-1.5 block text-sm text-forest">WhatsApp</span>
-            <input
-              type="tel"
-              inputMode="tel"
-              value={whatsapp}
-              onChange={(e) => setWhatsapp(e.target.value)}
-              className="w-full rounded-xl border border-sand bg-ivory/60 px-4 py-3 text-forest outline-none focus:border-sage"
-              placeholder="+502 5555 5555"
-            />
-          </label>
-        </div>
-
-        {error ? <p className="mt-4 text-sm text-red-700">{error}</p> : null}
-
-        <div className="mt-8 flex flex-wrap gap-3">
+      <div className="flex flex-col rounded-3xl border border-sand bg-cream/95 p-5 shadow-xs sm:p-8">
+        {/* Top Navigation */}
+        <div className="mb-4 flex items-center justify-between">
           <button
             type="button"
             onClick={() => {
               setStep("questions");
-              setIndex(questions.length - 1);
+              setIndex(total - 1);
             }}
-            className="rounded-full border border-sand px-5 py-2.5 text-sm text-forest"
+            className="inline-flex items-center gap-1.5 rounded-full py-1.5 pr-3 text-xs font-medium text-mist hover:text-forest active:scale-95"
           >
-            Volver
+            <ArrowLeftIcon className="size-3.5" />
+            <span>Volver a preguntas</span>
           </button>
+          <span className="text-xs font-medium text-sage">Paso final</span>
+        </div>
+
+        <div>
+          <p className="text-[11px] font-semibold tracking-[0.25em] uppercase text-sage">
+            Tu diagnóstico está listo
+          </p>
+          <h2 className="mt-1 font-[family-name:var(--font-display)] text-2xl text-forest sm:text-3xl leading-tight">
+            ¿A dónde enviamos tu rutina?
+          </h2>
+          <p className="mt-1.5 text-xs sm:text-sm text-mist leading-relaxed">
+            Verás tus resultados al instante en pantalla y recibirás un respaldo en tu correo.
+          </p>
+        </div>
+
+        {/* Inputs (16px base font size prevents unwanted iOS Safari zoom) */}
+        <div className="mt-6 flex flex-col gap-3.5">
+          <div>
+            <label className="mb-1 block text-xs font-medium text-forest">
+              Nombre completo
+            </label>
+            <div className="relative flex items-center">
+              <UserIcon className="pointer-events-none absolute left-3.5 size-4 text-mist" />
+              <input
+                type="text"
+                autoComplete="name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="Ej. Sofía Morales"
+                className="h-13 w-full rounded-2xl border border-sand bg-background/90 pl-10 pr-4 text-base text-forest outline-none transition focus:border-sage focus:ring-2 focus:ring-sage/20 placeholder:text-mist/60"
+              />
+            </div>
+          </div>
+
+          <div>
+            <label className="mb-1 block text-xs font-medium text-forest">
+              Correo electrónico
+            </label>
+            <div className="relative flex items-center">
+              <MailIcon className="pointer-events-none absolute left-3.5 size-4 text-mist" />
+              <input
+                type="email"
+                autoComplete="email"
+                inputMode="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="tu@correo.com"
+                className="h-13 w-full rounded-2xl border border-sand bg-background/90 pl-10 pr-4 text-base text-forest outline-none transition focus:border-sage focus:ring-2 focus:ring-sage/20 placeholder:text-mist/60"
+              />
+            </div>
+          </div>
+
+          <div>
+            <label className="mb-1 flex items-center justify-between text-xs font-medium text-forest">
+              <span>WhatsApp</span>
+              <span className="text-[11px] text-sage font-normal">Para asesoría directa</span>
+            </label>
+            <div className="relative flex items-center">
+              <MessageCircleIcon className="pointer-events-none absolute left-3.5 size-4 text-emerald-600 dark:text-emerald-400" />
+              <input
+                type="tel"
+                autoComplete="tel"
+                inputMode="tel"
+                value={whatsapp}
+                onChange={(e) => setWhatsapp(e.target.value)}
+                placeholder="+502 5555 5555"
+                className="h-13 w-full rounded-2xl border border-sand bg-background/90 pl-10 pr-4 text-base text-forest outline-none transition focus:border-sage focus:ring-2 focus:ring-sage/20 placeholder:text-mist/60"
+              />
+            </div>
+          </div>
+        </div>
+
+        {error ? (
+          <div className="mt-4 rounded-xl border border-red-200 bg-red-50/80 p-3 text-xs text-red-700">
+            {error}
+          </div>
+        ) : null}
+
+        {/* Submit Button */}
+        <div className="mt-6 flex flex-col gap-3">
           <button
             type="button"
             onClick={submit}
-            className="rounded-full bg-sage px-6 py-2.5 text-sm font-semibold text-cream hover:bg-sage-dark"
+            className="flex h-13 w-full items-center justify-center gap-2 rounded-2xl bg-sage text-base font-semibold text-cream shadow-sm transition hover:bg-sage-dark active:scale-[0.98]"
           >
-            Ver mi rutina
+            <span>Ver mi rutina personalizada</span>
+            <ArrowRightIcon className="size-4" />
           </button>
+
+          <p className="flex items-center justify-center gap-1.5 text-center text-[11px] text-mist">
+            <LockIcon className="size-3 text-sage" />
+            <span>Tus datos son 100% confidenciales. Sin spam.</span>
+          </p>
         </div>
       </div>
     );
   }
 
+  // Questions Screen
   return (
-    <div className="rounded-3xl border border-sand bg-cream/90 p-8 shadow-sm md:p-10">
-      <div className="mb-6">
-        <div className="mb-2 flex items-center justify-between text-xs text-mist">
-          <span>
-            Pregunta {index + 1} de {questions.length}
-          </span>
-          <span>{progress}%</span>
-        </div>
-        <div className="h-1.5 overflow-hidden rounded-full bg-sand">
-          <div
-            className="h-full rounded-full bg-sage transition-all duration-500"
-            style={{ width: `${Math.max(progress, 8)}%` }}
-          />
-        </div>
-      </div>
-
-      <h2 className="font-[family-name:var(--font-display)] text-3xl leading-tight text-forest md:text-4xl">
-        {current.text}
-      </h2>
-
-      <div className="mt-8 grid gap-3">
-        {current.options.map((option) => (
+    <div className="flex flex-col rounded-3xl border border-sand bg-cream/95 p-5 shadow-xs sm:p-8">
+      {/* Top Header Bar */}
+      <div className="mb-5 flex items-center justify-between">
+        {index > 0 ? (
           <button
-            key={option.id}
             type="button"
-            onClick={() => selectOption(option)}
-            className="rounded-2xl border border-sand bg-ivory/50 px-5 py-4 text-left text-sm text-forest transition hover:border-sage hover:bg-cream"
+            onClick={() => setIndex((val) => val - 1)}
+            className="inline-flex items-center gap-1 rounded-full py-1 pr-2.5 text-xs font-medium text-mist hover:text-forest active:scale-95"
           >
-            {option.label}
+            <ArrowLeftIcon className="size-3.5" />
+            <span>Anterior</span>
           </button>
-        ))}
+        ) : (
+          <span className="text-[11px] font-semibold tracking-wider uppercase text-sage">
+            Aphros Skincare
+          </span>
+        )}
+
+        <span className="rounded-full bg-sand/50 px-2.5 py-0.5 text-xs font-medium text-mist">
+          {index + 1} de {total}
+        </span>
       </div>
 
-      {index > 0 ? (
-        <button
-          type="button"
-          onClick={() => setIndex((value) => value - 1)}
-          className="mt-6 text-sm text-mist hover:text-forest"
-        >
-          ← Pregunta anterior
-        </button>
-      ) : null}
+      {/* Progress Bar */}
+      <div className="mb-6 h-1.5 w-full overflow-hidden rounded-full bg-sand/60">
+        <div
+          className="h-full rounded-full bg-sage transition-all duration-300 ease-out"
+          style={{ width: `${Math.max(progressPercent, 6)}%` }}
+        />
+      </div>
+
+      {/* Question Title */}
+      <div className="mb-6">
+        <h2 className="font-[family-name:var(--font-display)] text-2xl font-medium leading-snug text-forest sm:text-3xl">
+          {current.text}
+        </h2>
+        <p className="mt-1 text-xs text-mist">
+          Selecciona la opción que mejor describe tu situación:
+        </p>
+      </div>
+
+      {/* Option Cards: large tap targets for mobile thumbs */}
+      <div className="flex flex-col gap-2.5">
+        {current.options.map((option) => {
+          const isSelected = selectedOptionId === option.id;
+          return (
+            <button
+              key={option.id}
+              type="button"
+              onClick={() => selectOption(option)}
+              className={`group flex min-h-[58px] w-full items-center justify-between rounded-2xl border px-4 py-3.5 text-left text-sm font-medium transition-all duration-150 active:scale-[0.98] ${
+                isSelected
+                  ? "border-sage bg-sage/10 text-forest shadow-2xs"
+                  : "border-sand bg-background/80 text-forest hover:border-sage/60 hover:bg-cream"
+              }`}
+            >
+              <span className="pr-3 leading-snug">{option.label}</span>
+              <div
+                className={`flex size-5 shrink-0 items-center justify-center rounded-full border transition-all ${
+                  isSelected
+                    ? "border-sage bg-sage text-cream"
+                    : "border-sand bg-cream group-hover:border-sage/60"
+                }`}
+              >
+                {isSelected ? <CheckIcon className="size-3" /> : null}
+              </div>
+            </button>
+          );
+        })}
+      </div>
     </div>
   );
 }

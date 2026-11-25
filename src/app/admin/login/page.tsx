@@ -2,6 +2,23 @@
 
 import { FormEvent, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Field,
+  FieldGroup,
+  FieldLabel,
+} from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
+import { Spinner } from "@/components/ui/spinner";
 
 export default function AdminLoginPage() {
   const router = useRouter();
@@ -30,39 +47,45 @@ export default function AdminLoginPage() {
 
   return (
     <main className="flex min-h-screen items-center justify-center px-6">
-      <form
-        onSubmit={onSubmit}
-        className="w-full max-w-md rounded-3xl border border-sand bg-cream p-8 shadow-sm"
-      >
-        <p className="text-xs tracking-[0.28em] uppercase text-sage">Aphros</p>
-        <h1 className="mt-2 font-[family-name:var(--font-display)] text-3xl text-forest">
-          Acceso admin
-        </h1>
-        <p className="mt-2 text-sm text-mist">
-          Ingresa la contraseña definida en tu archivo .env
-        </p>
-
-        <label className="mt-8 block">
-          <span className="mb-1.5 block text-sm text-forest">Contraseña</span>
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="w-full rounded-xl border border-sand bg-ivory/70 px-4 py-3 outline-none focus:border-sage"
-            required
-          />
-        </label>
-
-        {error ? <p className="mt-3 text-sm text-red-700">{error}</p> : null}
-
-        <button
-          type="submit"
-          disabled={isPending}
-          className="mt-6 w-full rounded-full bg-sage py-3 text-sm font-semibold text-cream hover:bg-sage-dark disabled:opacity-60"
-        >
-          {isPending ? "Entrando…" : "Entrar"}
-        </button>
-      </form>
+      <Card className="w-full max-w-md">
+        <CardHeader>
+          <CardDescription className="tracking-[0.28em] uppercase">
+            Aphros
+          </CardDescription>
+          <CardTitle className="font-heading text-3xl">Acceso admin</CardTitle>
+          <CardDescription>
+            Ingresa la contraseña definida en tu archivo .env
+          </CardDescription>
+        </CardHeader>
+        <form onSubmit={onSubmit}>
+          <CardContent>
+            <FieldGroup>
+              <Field data-invalid={Boolean(error) || undefined}>
+                <FieldLabel htmlFor="password">Contraseña</FieldLabel>
+                <Input
+                  id="password"
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  aria-invalid={Boolean(error) || undefined}
+                  required
+                />
+              </Field>
+              {error ? (
+                <Alert variant="destructive">
+                  <AlertDescription>{error}</AlertDescription>
+                </Alert>
+              ) : null}
+            </FieldGroup>
+          </CardContent>
+          <CardFooter>
+            <Button type="submit" className="w-full" disabled={isPending}>
+              {isPending ? <Spinner data-icon="inline-start" /> : null}
+              {isPending ? "Entrando…" : "Entrar"}
+            </Button>
+          </CardFooter>
+        </form>
+      </Card>
     </main>
   );
 }
