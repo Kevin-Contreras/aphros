@@ -19,15 +19,6 @@ export function SiteHeader({ isQuiz = false }: SiteHeaderProps) {
         </Link>
 
         <nav className="flex items-center gap-2.5 sm:gap-4">
-          <a
-            href="https://www.pacifiko.com/marketplace/aphros"
-            target="_blank"
-            rel="noreferrer"
-            className="text-xs sm:text-sm font-medium text-mist hover:text-forest transition px-2.5 py-2 rounded-lg"
-          >
-            Tienda
-          </a>
-
           {!isQuiz ? (
             <Link
               href="/quiz"

@@ -3,7 +3,6 @@ import {
   ArrowRightIcon,
   CheckCircle2Icon,
   ClockIcon,
-  ExternalLinkIcon,
   HeartIcon,
   LeafIcon,
   ShieldCheckIcon,
@@ -42,7 +41,7 @@ export default function HomePage() {
           </p>
 
           {/* CTAs */}
-          <div className="fade-up-delay mt-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-center">
+          <div className="fade-up-delay mt-6 flex justify-center">
             <Link
               href="/quiz"
               className="inline-flex h-13 w-full items-center justify-center gap-2 rounded-2xl bg-sage px-6 text-base font-semibold tracking-wide text-cream shadow-sm transition hover:bg-sage-dark active:scale-[0.98] sm:w-auto sm:px-8"
@@ -50,16 +49,6 @@ export default function HomePage() {
               <span>Empezar test gratis</span>
               <ArrowRightIcon className="size-4" />
             </Link>
-
-            <a
-              href="https://www.pacifiko.com/marketplace/aphros"
-              target="_blank"
-              rel="noreferrer"
-              className="inline-flex h-12 w-full items-center justify-center gap-1.5 rounded-2xl border border-sand bg-cream/70 px-5 text-sm font-medium text-forest transition hover:border-sage active:scale-[0.98] sm:w-auto"
-            >
-              <span>Ver tienda en Pacifiko</span>
-              <ExternalLinkIcon className="size-3.5 text-mist" />
-            </a>
           </div>
 
           {/* Mobile Trust Signals */}
