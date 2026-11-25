@@ -17,16 +17,17 @@ const products = [
   {
     name: "Serum Facial de Vitamina C",
     description:
-      "Hidratante aclarante y antiedad. Ideal para unificar tono y dar luminosidad.",
+      "Sérum antioxidante de textura ligera y rápida absorción con vitamina C. Ayuda a atenuar manchas solares, unificar el tono, aportar luminosidad y prevenir líneas finas. Ideal para piel mixta, seca, normal o madura; aplicar de mañana antes del protector solar o de noche.",
     category: "Serum",
-    skinTags: "mixta,seca,madura,aclarante,antiedad",
+    skinTags: "mixta,seca,madura,normal,aclarante,antiedad",
     price: 61.6,
     imageUrl: "/products/serum-vitamina-c.svg",
     buyUrl: MARKETPLACE,
   },
   {
     name: "Crema Facial Hamamelis",
-    description: "Control de grasa para piel grasa. Equilibra y matifica.",
+    description:
+      "Crema matificante de textura ligera con extracto de hamamelis astringente natural. Regula el exceso de sebo, minimiza el brillo en zona T y mantiene los poros limpios sin sensación pesada. Ideal para piel grasa o mixta de uso diario; evitar en piel muy seca.",
     category: "Crema facial",
     skinTags: "grasa,mixta,acne",
     price: 72,
@@ -36,7 +37,7 @@ const products = [
   {
     name: "Jabón Facial Antiacné",
     description:
-      "Semilla de girasol, melocotón, Omega 6 y vitamina E. Limpieza para piel con acné.",
+      "Limpiador facial artesanal con aceite de semilla de girasol, melocotón, Omega 6 y vitamina E. Limpia a profundidad poros obstruidos, reduce exceso de grasa y ayuda a controlar puntos negros y brotes sin resecar en exceso. Uso mañana y noche para piel grasa, mixta o con tendencia al acné.",
     category: "Jabón",
     skinTags: "acne,grasa,mixta",
     price: 65,
@@ -45,7 +46,8 @@ const products = [
   },
   {
     name: "Crema Facial Anti Acné",
-    description: "Tratamiento facial para reducir brotes e impurezas.",
+    description:
+      "Tratamiento facial ligero enfocado en calmar brotes activos, disminuir impurezas y equilibrar la producción de grasa. Se absorbe rápido sin obstruir poros. Recomendada de día y noche para piel grasa o mixta con acné frecuente u ocasional; evitar en piel seca sin brotes.",
     category: "Crema facial",
     skinTags: "acne,grasa,mixta",
     price: 68,
@@ -54,7 +56,8 @@ const products = [
   },
   {
     name: "Crema Hidratante para Manos Coco",
-    description: "Con aloe vera y vitamina E. Nutre e hidrata manos secas.",
+    description:
+      "Crema corporal nutritiva para manos con aceite de coco, aloe vera y vitamina E. Repara resequedad, grietas y aspereza dejando las manos suaves sin sensación grasosa.",
     category: "Manos",
     skinTags: "seca,sensible,hidratante",
     price: 50,
@@ -63,7 +66,8 @@ const products = [
   },
   {
     name: "Bálsamo Labial de Fresa",
-    description: "Hidratante regenerador y nutritivo para labios.",
+    description:
+      "Bálsamo hidratante, regenerador y nutritivo para labios resecos o agrietados, con suave aroma natural a fresa.",
     category: "Labios",
     skinTags: "seca,hidratante",
     price: 30,
@@ -73,25 +77,27 @@ const products = [
   {
     name: "Crema Facial Macadamia",
     description:
-      "Baba de caracol, colágeno y vitamina E. Pensada para piel madura.",
+      "Crema facial nutritiva antiedad con aceite de macadamia, baba de caracol, colágeno y vitamina E. Mejora la firmeza, elasticidad y suaviza líneas de expresión mientras nutre profundamente la barrera cutánea. Ideal para piel madura, seca o normal (uso nocturno o diario); evitar en piel muy grasa con brotes.",
     category: "Crema facial",
-    skinTags: "madura,seca,antiedad,hidratante",
+    skinTags: "madura,seca,normal,antiedad,hidratante",
     price: 68,
     imageUrl: "/products/crema-macadamia.svg",
     buyUrl: MARKETPLACE,
   },
   {
     name: "Crema Facial con Filtro Solar SPF 45",
-    description: "Aceite de jojoba y vitamina E. Protección diaria.",
+    description:
+      "Protector solar facial diario SPF 45 con aceite de jojoba y vitamina E. Protege contra rayos UV, previene manchas solares y envejecimiento prematuro sin dejar capa blanca pesada. Apto para todo tipo de piel, incluyendo grasa, mixta y sensible; aplicar cada mañana como último paso.",
     category: "Protector solar",
-    skinTags: "todos,grasa,seca,mixta,sensible,proteccion",
+    skinTags: "todos,grasa,seca,mixta,sensible,normal,proteccion",
     price: 59.5,
     imageUrl: "/products/crema-spf45.svg",
     buyUrl: MARKETPLACE,
   },
   {
     name: "Exfoliante Labial Semilla de Fresa",
-    description: "Almendras y vitamina E. Suaviza e hidrata los labios.",
+    description:
+      "Exfoliante suave para labios con semillas de fresa, aceite de almendras y vitamina E. Retira pellejitos secos y deja los labios lisos e hidratados.",
     category: "Labios",
     skinTags: "seca,exfoliante",
     price: 30,
@@ -100,43 +106,48 @@ const products = [
   },
   {
     name: "Agua Micelar Artesanal",
-    description: "Desmaquillante hidratante con extractos naturales.",
+    description:
+      "Limpiador y desmaquillante suave con extractos botánicos naturales que remueve maquillaje, protector solar e impurezas del día sin irritar ni resecar. Apto para todo tipo de piel, excelente primer paso diario incluso en pieles sensibles o deshidratadas.",
     category: "Limpieza",
-    skinTags: "todos,sensible,mixta,seca,grasa",
+    skinTags: "todos,sensible,mixta,seca,grasa,normal",
     price: 49.5,
     imageUrl: "/products/agua-micelar.svg",
     buyUrl: MARKETPLACE,
   },
   {
     name: "Jabón Facial de Miel y Avena",
-    description: "Nutritivo y calmante para piel sensible.",
+    description:
+      "Jabón facial artesanal extra suave con miel pura y avena calmante. Limpia delicadamente sin alterar la barrera cutánea, alivia tirantez, descamación y enrojecimiento. Ideal para piel sensible, seca o irritada; uso diario mañana y noche.",
     category: "Jabón",
-    skinTags: "sensible,seca,calmante",
+    skinTags: "sensible,seca,calmante,hidratante",
     price: 65,
     imageUrl: "/products/jabon-miel-avena.svg",
     buyUrl: MARKETPLACE,
   },
   {
     name: "Agua de Rosas Artesanal",
-    description: "Hidratante y suavizante para piel con acné o rosácea.",
+    description:
+      "Tónico facial botánico refrescante que equilibra el pH, calma rojeces, rosácea e inflamación y aporta hidratación ligera tras la limpieza. Ideal para piel sensible, con rosácea, mixta o con brotes ocasionales; aplicar en bruma o a toquecitos mañana y noche.",
     category: "Tónico",
-    skinTags: "acne,sensible,rosacea,mixta",
+    skinTags: "acne,sensible,rosacea,mixta,calmante,normal",
     price: 49.5,
     imageUrl: "/products/agua-rosas.svg",
     buyUrl: MARKETPLACE,
   },
   {
     name: "Combo Rosas",
-    description: "Rutina con agua de rosas y complementos Aphros.",
+    description:
+      "Set calmante y equilibrante con Agua de Rosas Artesanal y complementos botánicos Aphros. Diseñado para reducir enrojecimiento, aliviar piel reactiva o con rosácea y mantener frescura diaria sin irritación. Ideal para piel sensible o con brotes leves.",
     category: "Combo",
-    skinTags: "acne,sensible,rosacea",
+    skinTags: "acne,sensible,rosacea,calmante",
     price: 93.5,
     imageUrl: "/products/combo-rosas.svg",
     buyUrl: MARKETPLACE,
   },
   {
     name: "Crema Exfoliante para Pies Menta Piperita y Luffa",
-    description: "Calmante e hidratante. Presentación 250 mL.",
+    description:
+      "Exfoliante corporal para pies con menta piperita refrescante y luffa natural que suaviza asperezas y talones resecos. Presentación 250 mL.",
     category: "Pies",
     skinTags: "seca,exfoliante,hidratante",
     price: 110.5,
@@ -145,16 +156,18 @@ const products = [
   },
   {
     name: "Protege y Aclara",
-    description: "Combo crema con filtro solar + serum vitamina C.",
+    description:
+      "Combo dúo de día que incluye Crema Facial con Filtro Solar SPF 45 + Serum Facial de Vitamina C. Combina luminosidad, corrección de manchas y protección solar diaria en un solo set. Ideal para piel mixta, seca o normal expuesta al sol que busca unificar el tono.",
     category: "Combo",
-    skinTags: "mixta,seca,aclarante,proteccion,antiedad",
+    skinTags: "mixta,seca,normal,aclarante,proteccion,antiedad",
     price: 140,
     imageUrl: "/products/protege-aclara.svg",
     buyUrl: MARKETPLACE,
   },
   {
     name: "Combo Anti Acné",
-    description: "Set para controlar grasa e impurezas.",
+    description:
+      "Set facial completo para controlar exceso de sebo, limpiar poros y reducir brotes persistentes e impurezas. Incluye rutina antiacné coordinada para piel grasa o mixta con acné constante; evitar en piel seca o muy sensible.",
     category: "Combo",
     skinTags: "acne,grasa,mixta",
     price: 176,
@@ -163,25 +176,28 @@ const products = [
   },
   {
     name: "Kit Mascarilla de Miel",
-    description: "Mascarilla nutritiva y calmante.",
+    description:
+      "Mascarilla facial artesanal nutritiva y reconfortante a base de miel natural. Aporta hidratación intensa, calma irritación y devuelve suavidad a pieles tirantes o expuestas a aire acondicionado. Uso 1 a 2 veces por semana en piel seca, sensible o deshidratada.",
     category: "Mascarilla",
-    skinTags: "sensible,seca,calmante,hidratante",
+    skinTags: "sensible,seca,calmante,hidratante,normal",
     price: 70.4,
     imageUrl: "/products/kit-mascarilla-miel.svg",
     buyUrl: MARKETPLACE,
   },
   {
     name: "Crema Facial Aclarante",
-    description: "Baba de caracol, concha nácar y vitamina E.",
+    description:
+      "Crema facial renovadora con baba de caracol, concha nácar y vitamina E. Ayuda a desvanecer manchas oscuras, marcas post-brotes y tono desigual mientras hidrata suavemente. Ideal para piel mixta, seca, normal o madura; usar preferiblemente de noche junto con SPF de día.",
     category: "Crema facial",
-    skinTags: "aclarante,mixta,seca,madura",
+    skinTags: "aclarante,mixta,seca,madura,normal",
     price: 68,
     imageUrl: "/products/crema-aclarante.svg",
     buyUrl: MARKETPLACE,
   },
   {
     name: "Combo Hidratante de Manos",
-    description: "2 cremas hidratantes de manos Aphros.",
+    description:
+      "Dúo de 2 cremas hidratantes de manos Aphros con ingredientes botánicos para nutrir y proteger manos secas todo el día.",
     category: "Combo",
     skinTags: "seca,hidratante",
     price: 100,
@@ -190,25 +206,28 @@ const products = [
   },
   {
     name: "Crema Facial Humectante",
-    description: "Hidratación diaria para piel reseca o deshidratada.",
+    description:
+      "Crema hidratante diaria de textura cómoda que restaura la humedad perdida, elimina la tirantez y fortalece la barrera cutánea frente a clima seco o aire acondicionado. Ideal para piel seca, deshidratada, normal o mixta de uso mañana y noche.",
     category: "Crema facial",
-    skinTags: "seca,mixta,hidratante",
+    skinTags: "seca,mixta,normal,hidratante",
     price: 80,
     imageUrl: "/products/crema-humectante.svg",
     buyUrl: MARKETPLACE,
   },
   {
     name: "Crema Facial Exfoliante Rosa de Castilla",
-    description: "Con baba de caracol, aloe vera y vitamina E.",
+    description:
+      "Exfoliante facial cremoso con rosa de castilla, baba de caracol, aloe vera y vitamina E. Remueve células muertas, afina la textura y potencia la absorción de sérums y cremas. Uso 1 a 2 veces por semana de noche para piel mixta, normal, seca o madura; evitar en piel muy sensible o con rosácea.",
     category: "Crema facial",
-    skinTags: "mixta,seca,exfoliante,madura",
+    skinTags: "mixta,seca,normal,exfoliante,madura",
     price: 68,
     imageUrl: "/products/crema-exfoliante-rosa.svg",
     buyUrl: MARKETPLACE,
   },
   {
     name: "Crema Exfoliante para Pies Menta y Arroz",
-    description: "Calmante e hidratante. Presentación 100 mL.",
+    description:
+      "Exfoliante suave para pies con menta refrescante y polvo de arroz que hidrata y renueva la piel áspera. Presentación 100 mL.",
     category: "Pies",
     skinTags: "seca,exfoliante",
     price: 65,
@@ -217,7 +236,8 @@ const products = [
   },
   {
     name: "Desodorante Natural de Alumbre de Potasio",
-    description: "Piedra cristal para piel sensible. 100 g.",
+    description:
+      "Piedra mineral cristalina 100% natural libre de aluminio sintético y fragancias. Controla el mal olor respetando la transpiración natural, ideal para axilas sensibles. 100 g.",
     category: "Desodorante",
     skinTags: "sensible,todos",
     price: 185,

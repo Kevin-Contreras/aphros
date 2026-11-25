@@ -315,10 +315,19 @@ export function buildUserProfile(answers: AnswerForAi[]): UserProfile {
   };
 }
 
+function normalizeText(value: string) {
+  return value
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "");
+}
+
 export function scoreProduct(product: ProductForAi, profile: UserProfile) {
   const productTags = splitTags(product.skinTags);
-  const nameLower = product.name.toLowerCase();
-  const catLower = product.category.toLowerCase();
+  const nameLower = normalizeText(product.name);
+  const catLower = normalizeText(product.category);
+  const descLower = normalizeText(product.description);
+  const fullText = `${nameLower} ${descLower}`;
   let score = 0;
   const matched: string[] = [];
 
@@ -327,7 +336,7 @@ export function scoreProduct(product: ProductForAi, profile: UserProfile) {
     return { score: -20, matched: [] };
   }
 
-  // Skin type match
+  // Skin type match (tags + description)
   if (productTags.includes(profile.skinType)) {
     score += 4;
     matched.push(profile.skinType);
@@ -336,28 +345,38 @@ export function scoreProduct(product: ProductForAi, profile: UserProfile) {
     matched.push("todo tipo de piel");
   }
 
-  // Heavy bonus for the user's explicit PRIMARY GOAL
-  if (profile.primaryGoal === "manchas" && productTags.includes("aclarante")) {
+  // Description-based semantic scoring (ingredients, benefits, and texture)
+  const descAcne = /acne|brote|impureza|poro|punto negro|sebo/.test(descLower);
+  const descOilControl = /matific|control de grasa|exceso de grasa|brillo|hamamelis|astringente/.test(descLower);
+  const descHydration = /hidrat|humect|deshidrat|reseca|barrera|nutr|suaviza|aloe|miel/.test(descLower);
+  const descBrightening = /aclar|mancha|unific|luminos|vitamina c|concha nacar|tono/.test(descLower);
+  const descAntiAging = /antiedad|madura|colageno|firmeza|lineas|arruga|regenera|baba de caracol|elasticidad/.test(descLower);
+  const descCalming = /calm|sensible|rojec|enrojec|rosacea|irrit|avena|miel|rosas/.test(descLower);
+  const descSpf = /spf|filtro solar|proteccion solar|rayos uv|sol/.test(descLower);
+  const descExfoliant = /exfoli|celulas muertas|renova/.test(descLower);
+
+  // Heavy bonus for the user's explicit PRIMARY GOAL (tags + description)
+  if (profile.primaryGoal === "manchas" && (productTags.includes("aclarante") || descBrightening)) {
     score += 9;
     matched.push("aclarante");
   }
   if (
     profile.primaryGoal === "antiedad" &&
-    (productTags.includes("antiedad") || productTags.includes("madura"))
+    (productTags.includes("antiedad") || productTags.includes("madura") || descAntiAging)
   ) {
     score += 9;
     matched.push("antiedad");
   }
   if (
     profile.primaryGoal === "control_grasa" &&
-    (productTags.includes("grasa") || productTags.includes("acne"))
+    (productTags.includes("grasa") || productTags.includes("acne") || descOilControl)
   ) {
     score += 8;
     matched.push("control de grasa");
   }
   if (
     profile.primaryGoal === "hidratacion" &&
-    (productTags.includes("hidratante") || nameLower.includes("humectante"))
+    (productTags.includes("hidratante") || nameLower.includes("humectante") || descHydration)
   ) {
     score += 8;
     matched.push("hidratante");
@@ -366,61 +385,76 @@ export function scoreProduct(product: ProductForAi, profile: UserProfile) {
     profile.primaryGoal === "calmar" &&
     (productTags.includes("calmante") ||
       productTags.includes("sensible") ||
-      productTags.includes("rosacea"))
+      productTags.includes("rosacea") ||
+      descCalming)
   ) {
     score += 9;
     matched.push("calmante");
   }
-  if (profile.primaryGoal === "proteccion" && productTags.includes("proteccion")) {
+  if (profile.primaryGoal === "proteccion" && (productTags.includes("proteccion") || descSpf)) {
     score += 9;
     matched.push("protección solar");
   }
 
-  // Secondary concern bonuses
-  if (profile.acneLevel === "constante" && productTags.includes("acne")) {
+  // Secondary concern bonuses (tags + description)
+  if (profile.acneLevel === "constante" && (productTags.includes("acne") || descAcne)) {
     score += 6;
     matched.push("acné");
-  } else if (profile.acneLevel === "ocasional" && productTags.includes("acne")) {
+  } else if (profile.acneLevel === "ocasional" && (productTags.includes("acne") || descAcne)) {
     score += 3;
     matched.push("brotes ocasionales");
   }
 
-  if (profile.sensitivityLevel === "alta" && (productTags.includes("calmante") || productTags.includes("sensible"))) {
+  if (
+    profile.sensitivityLevel === "alta" &&
+    (productTags.includes("calmante") || productTags.includes("sensible") || descCalming)
+  ) {
     score += 5;
     matched.push("sensible");
-  } else if (profile.sensitivityLevel === "media" && productTags.includes("sensible")) {
+  } else if (profile.sensitivityLevel === "media" && (productTags.includes("sensible") || descCalming)) {
     score += 2;
     matched.push("sensible");
   }
 
-  if (profile.prefersHydration && productTags.includes("hidratante")) {
+  if (profile.prefersHydration && (productTags.includes("hidratante") || descHydration)) {
     score += 3;
     matched.push("hidratación");
   }
-  if (profile.prefersOilControl && productTags.includes("grasa")) {
+  if (profile.prefersOilControl && (productTags.includes("grasa") || descOilControl)) {
     score += 3;
     matched.push("control de brillo");
   }
-  if (profile.prefersBrightening && productTags.includes("aclarante")) {
+  if (profile.prefersBrightening && (productTags.includes("aclarante") || descBrightening)) {
     score += 4;
     matched.push("luminosidad");
   }
-  if (profile.prefersAntiAging && (productTags.includes("antiedad") || productTags.includes("madura"))) {
+  if (profile.prefersAntiAging && (productTags.includes("antiedad") || productTags.includes("madura") || descAntiAging)) {
     score += 4;
     matched.push("antiedad");
   }
-  if (profile.needsSpf && productTags.includes("proteccion")) {
+  if (profile.needsSpf && (productTags.includes("proteccion") || descSpf)) {
     score += 5;
     matched.push("SPF");
   }
 
+  // Respect explicit contraindications written in product descriptions
+  if (profile.skinType === "seca" && /evitar en piel(es)? (muy )?seca|no recomendad[ao] para piel(es)? seca/.test(descLower)) {
+    score -= 8;
+  }
+  if (profile.skinType === "grasa" && /evitar en piel(es)? (muy )?grasa|no recomendad[ao] para piel(es)? grasa/.test(descLower)) {
+    score -= 8;
+  }
+  if (profile.sensitivityLevel === "alta" && /evitar en piel(es)? (muy )?sensible|no recomendad[ao] para piel(es)? sensible/.test(descLower)) {
+    score -= 8;
+  }
+
   // Strict mismatch penalties so irrelevant products don't repeat for every user
-  const isAntiAcneProduct = /anti\s*acn|antiacn/i.test(nameLower);
+  const isAntiAcneProduct = /anti\s*acn|antiacn/.test(nameLower);
   if (profile.acneLevel === "ninguno" && isAntiAcneProduct) {
     score -= 10;
   }
 
-  const isSpfProduct = /spf|filtro solar/i.test(nameLower) || catLower.includes("protector");
+  const isSpfProduct = /spf|filtro solar/.test(fullText) || catLower.includes("protector");
   if (!profile.needsSpf && isSpfProduct) {
     score -= 6;
   }
@@ -443,7 +477,7 @@ export function scoreProduct(product: ProductForAi, profile: UserProfile) {
     score -= 6;
   }
 
-  if (profile.sensitivityLevel === "alta" && productTags.includes("exfoliante")) {
+  if (profile.sensitivityLevel === "alta" && (productTags.includes("exfoliante") || descExfoliant)) {
     score -= 5;
   }
 

@@ -91,22 +91,22 @@ CATÁLOGO FACIAL COMPLETO DE APHROS (elige SOLO IDs exactos de esta lista):
 ${JSON.stringify(catalogPayload, null, 2)}
 
 REGLAS CLÍNICAS Y DE PRECISIÓN (OBLIGATORIAS):
-1. Elige entre 3 y 4 productos en ORDEN EXACTO DE APLICACIÓN: Limpieza/Jabón -> Exfoliante o Mascarilla (si aplica) -> Tónico -> Sérum/Tratamiento -> Crema facial -> Protector solar SPF (al final, solo si necesitaProtectorSolar=true).
-2. Diferencia bien cada perfil, NO repitas siempre los mismos productos:
+1. Lee a fondo la "description" de CADA producto del catálogo: usa sus ingredientes activos, beneficios específicos, textura, momento de uso (día/noche/semanal) y contraindicaciones para elegir la rutina más exacta.
+2. Elige entre 3 y 4 productos en ORDEN EXACTO DE APLICACIÓN: Limpieza/Jabón -> Exfoliante o Mascarilla (si aplica) -> Tónico -> Sérum/Tratamiento -> Crema facial -> Protector solar SPF (al final, solo si necesitaProtectorSolar=true).
+3. Diferencia bien cada perfil, NO repitas siempre los mismos productos:
    - Si objetivoPrincipal = "manchas": prioriza Serum Facial de Vitamina C y/o Crema Facial Aclarante (o Protege y Aclara si también necesita SPF).
    - Si objetivoPrincipal = "antiedad": prioriza Crema Facial Macadamia y/o Serum Facial de Vitamina C (y Crema Exfoliante Rosa de Castilla si no tiene sensibilidad alta).
    - Si objetivoPrincipal = "hidratacion" o piel seca: prioriza Crema Facial Humectante, Jabón Facial de Miel y Avena, Kit Mascarilla de Miel o Agua Micelar Artesanal.
    - Si objetivoPrincipal = "calmar" o sensibilidad alta: prioriza Jabón Facial de Miel y Avena, Agua de Rosas Artesanal (o Combo Rosas) y Kit Mascarilla de Miel; evita exfoliantes fuertes.
    - Si objetivoPrincipal = "control_grasa" o piel grasa: prioriza Crema Facial Hamamelis; solo incluye productos "Anti Acné" si nivelDeAcne es "constante" u "ocasional".
    - Si nivelDeAcne = "ninguno": PROHIBIDO recomendar Jabón Facial Antiacné, Crema Facial Anti Acné o Combo Anti Acné.
-   - Si piel = "seca": PROHIBIDO recomendar Crema Facial Hamamelis.
-   - Si piel = "grasa" con brotes: PROHIBIDO recomendar Crema Facial Macadamia.
+   - Respeta estrictamente cualquier contraindicación indicada en la descripción (por ejemplo, evitar productos matificantes en piel seca o texturas ricas/antiedad en piel grasa con acné).
    - Si rutinaActual = "completa", ofrece pasos más específicos (sérum, mascarilla, exfoliante o tratamiento puntual) en lugar de solo básicos genéricos.
-3. NUNCA dupliques un Combo con los productos individuales que ya incluye:
+4. NUNCA dupliques un Combo con los productos individuales que ya incluye:
    - "Protege y Aclara" ya incluye SPF 45 + Serum Vitamina C.
    - "Combo Rosas" ya incluye Agua de Rosas.
    - "Combo Anti Acné" ya incluye productos antiacné.
-4. En "reasons", explica de forma única por qué cada producto elegido responde a las respuestas concretas de esta persona y qué hace su ingrediente botánico.
+5. En "reasons", cita los ingredientes botánicos concretos de la descripción de cada producto y explica cómo benefician directamente las respuestas de esta persona (incluyendo si conviene usarlo de día, noche o semanalmente).
 
 Responde ÚNICAMENTE con JSON válido con esta estructura exacta:
 {
