@@ -182,13 +182,13 @@ export function QuizClient({ questions }: { questions: PublicQuestion[] }) {
     ];
 
     return (
-      <div className="flex min-h-[420px] flex-col items-center justify-center rounded-3xl border border-sand bg-cream/95 p-6 text-center shadow-xs">
-        <div className="relative mb-6 flex size-20 items-center justify-center rounded-full bg-sage/15 text-sage">
+      <div className="flex min-h-[420px] flex-col items-center justify-center rounded-3xl border border-blush-border bg-linear-to-b from-cream/95 to-blush/30 p-6 text-center shadow-xs">
+        <div className="relative mb-6 flex size-20 items-center justify-center rounded-full border border-blush-border bg-blush text-blush-dark">
           <SparklesIcon className="size-10 animate-spin transition-all" style={{ animationDuration: "6s" }} />
-          <div className="absolute inset-0 rounded-full border-2 border-sage border-t-transparent animate-spin" />
+          <div className="absolute inset-0 rounded-full border-2 border-blush-dark border-t-transparent animate-spin" />
         </div>
 
-        <p className="text-xs font-semibold tracking-[0.25em] uppercase text-sage">
+        <p className="text-xs font-semibold tracking-[0.25em] uppercase text-blush-dark">
           Diagnóstico en curso
         </p>
 
@@ -216,16 +216,18 @@ export function QuizClient({ questions }: { questions: PublicQuestion[] }) {
           <button
             type="button"
             onClick={goBack}
-            className="inline-flex items-center gap-1.5 rounded-full border border-sand/80 bg-background/80 px-3 py-1.5 text-xs font-medium text-forest hover:bg-cream active:scale-95 transition"
+            className="inline-flex items-center gap-1.5 rounded-full border border-blush-border bg-blush/60 px-3 py-1.5 text-xs font-medium text-blush-foreground hover:bg-blush active:scale-95 transition"
           >
             <ArrowLeftIcon className="size-3.5" />
             <span>← Regresar a preguntas</span>
           </button>
-          <span className="text-xs font-medium text-sage">Paso final</span>
+          <span className="rounded-full border border-blush-border bg-blush px-2.5 py-0.5 text-xs font-semibold text-blush-dark">
+            Paso final
+          </span>
         </div>
 
         <div>
-          <p className="text-[11px] font-semibold tracking-[0.25em] uppercase text-sage">
+          <p className="text-[11px] font-semibold tracking-[0.25em] uppercase text-blush-dark">
             Tu diagnóstico está listo
           </p>
           <h2 className="mt-1 font-[family-name:var(--font-display)] text-2xl text-forest sm:text-3xl leading-tight">
@@ -313,14 +315,14 @@ export function QuizClient({ questions }: { questions: PublicQuestion[] }) {
           <button
             type="button"
             onClick={goBack}
-            className="flex h-11 w-full items-center justify-center gap-1.5 rounded-xl border border-sand/80 bg-background/70 text-xs font-medium text-mist hover:text-forest transition active:scale-[0.98]"
+            className="flex h-11 w-full items-center justify-center gap-1.5 rounded-xl border border-blush-border bg-blush/80 text-xs font-semibold text-blush-foreground hover:bg-blush transition active:scale-[0.98]"
           >
             <RotateCcwIcon className="size-3.5" />
             <span>Revisar o cambiar respuestas</span>
           </button>
 
           <p className="flex items-center justify-center gap-1.5 text-center text-[11px] text-mist">
-            <LockIcon className="size-3 text-sage" />
+            <LockIcon className="size-3 text-blush-dark" />
             <span>Tus datos son 100% confidenciales. Sin spam.</span>
           </p>
         </div>
@@ -337,9 +339,9 @@ export function QuizClient({ questions }: { questions: PublicQuestion[] }) {
           <button
             type="button"
             onClick={goBack}
-            className="inline-flex items-center gap-1.5 rounded-full border border-sand/80 bg-background/80 px-3 py-1.5 text-xs font-medium text-forest hover:bg-cream active:scale-95 transition"
+            className="inline-flex items-center gap-1.5 rounded-full border border-blush-border bg-blush/60 px-3 py-1.5 text-xs font-medium text-blush-foreground hover:bg-blush active:scale-95 transition"
           >
-            <ArrowLeftIcon className="size-3.5 text-sage" />
+            <ArrowLeftIcon className="size-3.5 text-blush-dark" />
             <span>Anterior</span>
           </button>
         ) : (
@@ -352,7 +354,7 @@ export function QuizClient({ questions }: { questions: PublicQuestion[] }) {
           </Link>
         )}
 
-        <span className="rounded-full bg-sand/60 px-3 py-1 text-xs font-semibold text-forest">
+        <span className="rounded-full border border-blush-border bg-blush px-3 py-1 text-xs font-semibold text-blush-dark">
           {index + 1} de {total}
         </span>
       </div>
@@ -414,9 +416,9 @@ export function QuizClient({ questions }: { questions: PublicQuestion[] }) {
           <button
             type="button"
             onClick={goBack}
-            className="inline-flex items-center gap-1.5 rounded-xl border border-sand bg-background/90 px-4 py-2.5 text-xs font-medium text-forest hover:bg-cream active:scale-95 transition"
+            className="inline-flex items-center gap-1.5 rounded-xl border border-blush-border bg-blush/60 px-4 py-2.5 text-xs font-medium text-blush-foreground hover:bg-blush active:scale-95 transition"
           >
-            <ArrowLeftIcon className="size-3.5 text-sage" />
+            <ArrowLeftIcon className="size-3.5 text-blush-dark" />
             <span>Pregunta anterior</span>
           </button>
         ) : (
@@ -433,7 +435,7 @@ export function QuizClient({ questions }: { questions: PublicQuestion[] }) {
           <button
             type="button"
             onClick={goNext}
-            className="inline-flex items-center gap-1.5 rounded-xl bg-sage/15 px-4 py-2.5 text-xs font-semibold text-sage-dark hover:bg-sage/25 active:scale-95 transition"
+            className="inline-flex items-center gap-1.5 rounded-xl border border-blush-border bg-blush px-4 py-2.5 text-xs font-semibold text-blush-dark hover:bg-blush-hover active:scale-95 transition"
           >
             <span>{index === total - 1 ? "Continuar" : "Siguiente"}</span>
             <ArrowRightIcon className="size-3.5" />

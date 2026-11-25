@@ -18,14 +18,14 @@ export default function HomePage() {
       {/* Hero Section */}
       <section className="relative flex flex-col justify-center px-4 pt-6 pb-10 sm:px-8 sm:py-16">
         <div className="pointer-events-none absolute inset-0 overflow-hidden">
-          <div className="soft-pulse absolute -right-12 top-4 h-64 w-64 rounded-full bg-sage/15 blur-3xl" />
-          <div className="absolute -left-12 bottom-4 h-60 w-60 rounded-full bg-clay/10 blur-3xl" />
+          <div className="soft-pulse absolute -right-12 top-4 h-64 w-64 rounded-full bg-blush/80 blur-3xl" />
+          <div className="absolute -left-12 bottom-4 h-60 w-60 rounded-full bg-blush-hover/60 blur-3xl" />
         </div>
 
         <div className="relative mx-auto w-full max-w-xl text-center">
           {/* Badge */}
-          <div className="fade-up mx-auto inline-flex items-center gap-1.5 rounded-full border border-sand bg-cream/80 px-3.5 py-1 text-[11px] font-medium tracking-wider text-sage uppercase shadow-2xs">
-            <LeafIcon className="size-3 text-sage" />
+          <div className="fade-up mx-auto inline-flex items-center gap-1.5 rounded-full border border-blush-border bg-blush px-3.5 py-1 text-[11px] font-semibold tracking-wider text-blush-dark uppercase shadow-2xs">
+            <LeafIcon className="size-3 text-blush-dark" />
             <span>Guatemala · Cosmética botánica</span>
           </div>
 
@@ -73,7 +73,7 @@ export default function HomePage() {
       <section className="border-t border-sand/70 bg-cream/50 px-4 py-10 sm:px-8 sm:py-14">
         <div className="mx-auto max-w-xl">
           <div className="text-center">
-            <p className="text-xs font-semibold tracking-[0.2em] uppercase text-sage">
+            <p className="text-xs font-semibold tracking-[0.2em] uppercase text-blush-dark">
               Paso a paso
             </p>
             <h2 className="mt-1 font-[family-name:var(--font-display)] text-2xl text-forest sm:text-3xl">
@@ -103,7 +103,7 @@ export default function HomePage() {
                 key={item.step}
                 className="flex items-start gap-3.5 rounded-2xl border border-sand/80 bg-background/90 p-4 shadow-2xs"
               >
-                <div className="flex size-8 shrink-0 items-center justify-center rounded-xl bg-sage/15 font-heading text-sm font-semibold text-sage-dark">
+                <div className="flex size-8 shrink-0 items-center justify-center rounded-xl border border-blush-border bg-blush font-heading text-sm font-semibold text-blush-dark">
                   {item.step}
                 </div>
                 <div className="min-w-0 flex-1">
@@ -122,8 +122,8 @@ export default function HomePage() {
 
       {/* Why Aphros Section */}
       <section className="px-4 py-10 sm:px-8">
-        <div className="mx-auto max-w-xl rounded-3xl border border-sand bg-linear-to-b from-cream/90 to-ivory p-6 text-center shadow-xs sm:p-8">
-          <HeartIcon className="mx-auto size-7 text-sage" />
+        <div className="mx-auto max-w-xl rounded-3xl border border-blush-border bg-linear-to-b from-cream/90 to-blush/25 p-6 text-center shadow-xs sm:p-8">
+          <HeartIcon className="mx-auto size-7 text-blush-dark" />
           <h2 className="mt-3 font-[family-name:var(--font-display)] text-2xl text-forest sm:text-3xl">
             Cuidado consciente para tu piel
           </h2>

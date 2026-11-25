@@ -34,7 +34,7 @@ const leadsTrendConfig: ChartConfig = {
   },
   whatsapp: {
     label: "Con WhatsApp",
-    color: "#2f3d2c",
+    color: "#cc7f6b",
   },
 };
 
@@ -56,8 +56,8 @@ export function LeadsTrendChart({ data }: { data: DailyTrendPoint[] }) {
             <stop offset="95%" stopColor="#6b8f71" stopOpacity={0.0} />
           </linearGradient>
           <linearGradient id="fillWhatsapp" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="5%" stopColor="#2f3d2c" stopOpacity={0.3} />
-            <stop offset="95%" stopColor="#2f3d2c" stopOpacity={0.0} />
+            <stop offset="5%" stopColor="#cc7f6b" stopOpacity={0.4} />
+            <stop offset="95%" stopColor="#cc7f6b" stopOpacity={0.0} />
           </linearGradient>
         </defs>
         <CartesianGrid vertical={false} strokeDasharray="3 3" opacity={0.3} />
@@ -86,7 +86,7 @@ export function LeadsTrendChart({ data }: { data: DailyTrendPoint[] }) {
         <Area
           type="monotone"
           dataKey="whatsapp"
-          stroke="#2f3d2c"
+          stroke="#cc7f6b"
           strokeWidth={2}
           fill="url(#fillWhatsapp)"
         />
@@ -244,7 +244,7 @@ export function ContactChannelChart({ data }: { data: ContactChannelStat[] }) {
     );
   }
 
-  const colors = ["#6b8f71", "#d8cfc0"];
+  const colors = ["#6b8f71", "#cc7f6b"];
 
   return (
     <ChartContainer config={channelConfig} className="mx-auto h-72 w-full">

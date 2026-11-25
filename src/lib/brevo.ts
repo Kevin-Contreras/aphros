@@ -81,7 +81,7 @@ export async function sendRecommendationEmail(payload: RecommendationEmailPayloa
             <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:8px;">
               <tr>
                 <td>
-                  <span style="display:inline-block;background:#edf3ee;color:#46654c;font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;padding:3px 10px;border-radius:12px;">
+                  <span style="display:inline-block;background:#ffede7;color:#8e4f40;border:1px solid #f8d5ca;font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;padding:3px 10px;border-radius:12px;">
                     Paso ${idx + 1} · ${escapeHtml(product.category || "Cuidado botánico")}
                   </span>
                 </td>
@@ -109,8 +109,8 @@ export async function sendRecommendationEmail(payload: RecommendationEmailPayloa
             <!-- Botanical Rationale / Why it works -->
             ${
               product.reason
-                ? `<div style="margin-top:10px;background:#f7f9f7;border-left:3px solid #5d8163;border-radius:0 10px 10px 0;padding:9px 13px;font-size:12.5px;color:#354c39;line-height:1.5;">
-                     <strong style="color:#2a3e2d;">¿Por qué este producto?</strong> ${escapeHtml(product.reason)}
+                ? `<div style="margin-top:10px;background:#fff7f4;border-left:3px solid #e09d8c;border-radius:0 10px 10px 0;padding:10px 14px;font-size:12.5px;color:#4a2f27;line-height:1.5;">
+                     <strong style="color:#3d241d;">¿Por qué este producto?</strong> ${escapeHtml(product.reason)}
                    </div>`
                 : ""
             }
@@ -160,7 +160,7 @@ export async function sendRecommendationEmail(payload: RecommendationEmailPayloa
           <!-- Header Banner -->
           <tr>
             <td style="background-color:#263423;padding:36px 24px 30px;text-align:center;">
-              <p style="margin:0 0 6px;font-size:10.5px;letter-spacing:0.32em;text-transform:uppercase;color:#b6cbb7;font-weight:600;">
+              <p style="margin:0 0 6px;font-size:10.5px;letter-spacing:0.32em;text-transform:uppercase;color:#fcdfd5;font-weight:600;">
                 Cosmética Botánica · Guatemala
               </p>
               <h1 style="margin:0;font-family:Georgia,'Times New Roman',serif;font-size:32px;font-weight:normal;color:#fdfbf7;letter-spacing:0.06em;">
@@ -182,8 +182,8 @@ export async function sendRecommendationEmail(payload: RecommendationEmailPayloa
               </p>
 
               <!-- Diagnostic Sheet Card -->
-              <div style="background:#f7f4ed;border:1px solid #e3dcce;border-radius:18px;padding:22px;margin-bottom:28px;">
-                <p style="margin:0 0 4px;font-size:11px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:#507256;">
+              <div style="background:#fff9f7;border:1px solid #f8d5ca;border-radius:18px;padding:22px;margin-bottom:28px;">
+                <p style="margin:0 0 6px;font-size:11px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:#8e4f40;">
                   Diagnóstico personal
                 </p>
                 <h2 style="margin:0 0 10px;font-family:Georgia,serif;font-size:22px;font-weight:normal;color:#222d20;text-transform:capitalize;">
