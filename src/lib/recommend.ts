@@ -232,6 +232,12 @@ export function scoreProduct(product: ProductForAi, profile: UserProfile) {
   if (profile.isSensitive && productTags.some((t) => t.includes("sensible") || t.includes("calmante")))
     score += 3;
   if (profile.needsSpf && productTags.some((t) => t.includes("proteccion"))) score += 5;
+  if (
+    !profile.needsSpf &&
+    (/spf|solar/i.test(product.name) || product.category.toLowerCase().includes("protector"))
+  ) {
+    score -= 5;
+  }
 
   // Penalize irrelevant body products unless concern clearly matches
   if (isBodyOnlyProduct(product) && isFacialCore(product) === false) {
