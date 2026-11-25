@@ -32,6 +32,7 @@ export function ProductsAdmin() {
   const [form, setForm] = useState(emptyForm);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [uploading, setUploading] = useState(false);
   const [isPending, startTransition] = useTransition();
 
   async function load() {
@@ -72,6 +73,29 @@ export function ProductsAdmin() {
     setError(null);
   }
 
+  async function onUpload(file: File | null) {
+    if (!file) return;
+    setError(null);
+    setUploading(true);
+    try {
+      const body = new FormData();
+      body.append("file", file);
+      const response = await fetch("/api/admin/upload", {
+        method: "POST",
+        body,
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.error || "No se pudo subir la imagen");
+      }
+      setForm((prev) => ({ ...prev, imageUrl: data.url }));
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Error al subir imagen");
+    } finally {
+      setUploading(false);
+    }
+  }
+
   function onSubmit(event: FormEvent) {
     event.preventDefault();
     setError(null);
@@ -106,7 +130,9 @@ export function ProductsAdmin() {
         );
         const data = await response.json();
         if (!response.ok) {
-          throw new Error(data.error?.formErrors?.[0] || data.error || "No se pudo guardar");
+          throw new Error(
+            data.error?.formErrors?.[0] || data.error || "No se pudo guardar",
+          );
         }
         resetForm();
         await load();
@@ -120,7 +146,9 @@ export function ProductsAdmin() {
     if (!confirm("¿Eliminar este producto?")) return;
     startTransition(async () => {
       try {
-        const response = await fetch(`/api/admin/products/${id}`, { method: "DELETE" });
+        const response = await fetch(`/api/admin/products/${id}`, {
+          method: "DELETE",
+        });
         if (!response.ok) throw new Error("No se pudo eliminar");
         if (editingId === id) resetForm();
         await load();
@@ -157,7 +185,6 @@ export function ProductsAdmin() {
             ["price", "Precio", "number"],
             ["currency", "Moneda", "text"],
             ["buyUrl", "Link Pacifiko", "url"],
-            ["imageUrl", "URL imagen (opcional)", "url"],
           ] as const
         ).map(([key, label, type]) => (
           <label key={key} className="block text-sm">
@@ -165,18 +192,71 @@ export function ProductsAdmin() {
             <input
               type={type}
               value={form[key]}
-              onChange={(e) => setForm((prev) => ({ ...prev, [key]: e.target.value }))}
+              onChange={(e) =>
+                setForm((prev) => ({ ...prev, [key]: e.target.value }))
+              }
               className="w-full rounded-xl border border-sand bg-ivory/70 px-3 py-2 outline-none focus:border-sage"
-              required={key !== "imageUrl"}
+              required
             />
           </label>
         ))}
+
+        <div className="md:col-span-2 grid gap-4 sm:grid-cols-[160px_1fr]">
+          <div className="h-40 overflow-hidden rounded-2xl border border-sand bg-ivory">
+            {form.imageUrl ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={form.imageUrl}
+                alt="Vista previa"
+                className="h-full w-full object-cover"
+              />
+            ) : (
+              <div className="flex h-full items-center justify-center px-3 text-center text-xs text-mist">
+                Sin imagen
+              </div>
+            )}
+          </div>
+
+          <div className="space-y-3">
+            <label className="block text-sm">
+              <span className="mb-1.5 block text-forest">Subir imagen</span>
+              <input
+                type="file"
+                accept="image/jpeg,image/png,image/webp,image/gif,image/svg+xml"
+                disabled={uploading || isPending}
+                onChange={(e) => onUpload(e.target.files?.[0] || null)}
+                className="block w-full text-sm text-mist file:mr-3 file:rounded-full file:border-0 file:bg-sage file:px-4 file:py-2 file:text-sm file:font-semibold file:text-cream hover:file:bg-sage-dark"
+              />
+              <span className="mt-1.5 block text-xs text-mist">
+                JPG, PNG, WEBP o SVG · máx. 4.5 MB
+                {uploading ? " · Subiendo…" : ""}
+              </span>
+            </label>
+
+            <label className="block text-sm">
+              <span className="mb-1.5 block text-forest">
+                O URL / ruta de imagen
+              </span>
+              <input
+                type="text"
+                value={form.imageUrl}
+                onChange={(e) =>
+                  setForm((prev) => ({ ...prev, imageUrl: e.target.value }))
+                }
+                className="w-full rounded-xl border border-sand bg-ivory/70 px-3 py-2 outline-none focus:border-sage"
+                placeholder="/products/serum.svg o https://..."
+              />
+            </label>
+          </div>
+        </div>
 
         <label className="md:col-span-2 block text-sm">
           <span className="mb-1.5 block text-forest">Descripción</span>
           <textarea
             value={form.description}
-            onChange={(e) => setForm((prev) => ({ ...prev, description: e.target.value }))}
+            onChange={(e) =>
+              setForm((prev) => ({ ...prev, description: e.target.value }))
+            }
             rows={3}
             className="w-full rounded-xl border border-sand bg-ivory/70 px-3 py-2 outline-none focus:border-sage"
             required
@@ -187,7 +267,9 @@ export function ProductsAdmin() {
           <input
             type="checkbox"
             checked={form.active}
-            onChange={(e) => setForm((prev) => ({ ...prev, active: e.target.checked }))}
+            onChange={(e) =>
+              setForm((prev) => ({ ...prev, active: e.target.checked }))
+            }
           />
           Activo para recomendaciones
         </label>
@@ -197,7 +279,7 @@ export function ProductsAdmin() {
         <div className="md:col-span-2 flex flex-wrap gap-3">
           <button
             type="submit"
-            disabled={isPending}
+            disabled={isPending || uploading}
             className="rounded-full bg-sage px-5 py-2.5 text-sm font-semibold text-cream hover:bg-sage-dark disabled:opacity-60"
           >
             {isPending ? "Guardando…" : editingId ? "Actualizar" : "Crear"}

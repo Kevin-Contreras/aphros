@@ -45,6 +45,10 @@ yarn-error.log*
 *.db
 *.db-journal
 
+# uploaded product images (local only; production uses Vercel Blob)
+/public/uploads/*
+!/public/uploads/.gitignore
+
 # vercel
 .vercel
 
