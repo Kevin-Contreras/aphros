@@ -27,7 +27,7 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   title: "APHROS — Eres arte y queremos cuidarte",
   description:
-    "Test de piel Aphros: eres arte y queremos cuidarte. Responde unas preguntas y recibe tu rutina personalizada de amor propio y cosmética botánica.",
+    "Test de piel Aphros: eres arte y queremos cuidarte. Responde unas preguntas y recibe tu rutina personalizada de amor propio y cosmética natural artesanal.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

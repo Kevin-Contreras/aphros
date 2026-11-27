@@ -45,8 +45,7 @@ function ResultadoFallback() {
       <section className="mx-auto flex w-full max-w-xl flex-1 items-center justify-center px-4 py-10">
         <Card className="flex h-72 w-full flex-col items-center justify-center rounded-[2rem] border-border/80 bg-card/95 p-8 text-center shadow-xs ring-0">
           <AphrosShellMark
-            className="aphros-shell-breathe h-9 w-13 text-aphros-wine"
-            strokeWidth={2.2}
+            className="aphros-shell-breathe h-10 w-14"
           />
           <span className="mt-3 text-[10px] font-medium tracking-[0.26em] text-aphros-rose-deep uppercase">
             APHROS
@@ -117,8 +116,8 @@ async function ResultadoContent({
                 Diagnóstico facial
               </span>
               <AphrosShellMark
-                className="h-6 w-9 text-aphros-blush-200/85"
-                strokeWidth={2.2}
+                variant="light"
+                className="h-7 w-10"
               />
             </div>
 
@@ -176,7 +175,7 @@ async function ResultadoContent({
             <div className="flex items-center justify-between">
               <div>
                 <span className="text-[10px] font-medium tracking-[0.22em] text-aphros-rose-deep uppercase">
-                  Fórmulas botánicas ideales
+                  Fórmulas naturales ideales
                 </span>
                 <h2 className="mt-0.5 font-[family-name:var(--font-display)] text-2xl font-normal text-aphros-espresso sm:text-3xl">
                   Tu rutina recomendada
@@ -217,10 +216,7 @@ async function ResultadoContent({
                           />
                         ) : (
                           <div className="flex h-full flex-col items-center justify-center gap-1 text-aphros-rose-deep">
-                            <AphrosShellMark
-                              className="h-5 w-8"
-                              strokeWidth={2.2}
-                            />
+                            <AphrosShellMark className="h-6 w-9" />
                             <span className="text-[9px] tracking-[0.2em] uppercase">
                               Aphros
                             </span>
@@ -251,16 +247,6 @@ async function ResultadoContent({
                         </div>
                       </div>
                     </div>
-
-                    {/* Motivo personalizado */}
-                    {product.reason ? (
-                      <div className="mt-3.5 rounded-2xl border border-aphros-blush-300/70 bg-aphros-blush-50/90 p-3.5 text-xs leading-relaxed text-aphros-cocoa">
-                        <span className="font-medium text-aphros-wine">
-                          ¿Por qué este producto?{" "}
-                        </span>
-                        <span className="font-light">{product.reason}</span>
-                      </div>
-                    ) : null}
                   </CardContent>
                 </Card>
               </Reveal>
@@ -276,12 +262,12 @@ async function ResultadoContent({
             className="aphros-btn-luxury h-12 w-full rounded-full text-xs font-medium tracking-wide shadow-sm sm:text-sm"
           >
             <a
-              href={`https://wa.me/?text=${whatsappShareText}`}
+              href={`https://wa.me/50254222180?text=${whatsappShareText}`}
               target="_blank"
               rel="noreferrer"
             >
               <Share2Icon data-icon="inline-start" className="size-4" />
-              <span>Compartir mi rutina por WhatsApp</span>
+              <span>Consultar o enviar a WhatsApp (+502 5422-2180)</span>
             </a>
           </Button>
 
@@ -291,10 +277,10 @@ async function ResultadoContent({
               variant="secondary"
               className="h-11 rounded-full text-xs font-medium text-aphros-espresso transition-transform active:scale-[0.98]"
             >
-              <Link href="/quiz">
+              <a href="/quiz">
                 <RotateCcwIcon data-icon="inline-start" className="size-3.5" />
                 <span>Repetir test</span>
-              </Link>
+              </a>
             </Button>
 
             <Button

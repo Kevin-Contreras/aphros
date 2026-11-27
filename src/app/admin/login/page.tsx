@@ -2,7 +2,7 @@
 
 import { FormEvent, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { AphrosShellMark } from "@/components/AphrosShellMark";
+import { AphrosShellMark, AphrosWordmark } from "@/components/AphrosShellMark";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import {
@@ -50,14 +50,9 @@ export default function AdminLoginPage() {
     <main className="flex min-h-screen items-center justify-center px-6">
       <Card className="fade-up w-full max-w-md rounded-[2rem] border-border/80 bg-card/95 shadow-xs ring-0 [--card-spacing:--spacing(6)]">
         <CardHeader className="items-center text-center">
-          <AphrosShellMark
-            className="mb-1 h-9 w-13 text-aphros-espresso"
-            strokeWidth={2.2}
-          />
-          <CardDescription className="text-[11px] font-medium tracking-[0.28em] text-aphros-rose-deep uppercase">
-            APHROS
-          </CardDescription>
-          <CardTitle className="font-heading text-3xl font-normal text-aphros-espresso">
+          <AphrosShellMark className="mb-2 h-10 w-14" />
+          <AphrosWordmark className="mb-2 h-5 w-auto" />
+          <CardTitle className="font-heading text-2xl font-normal text-aphros-espresso">
             Acceso admin
           </CardTitle>
           <CardDescription className="font-light">

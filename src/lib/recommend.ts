@@ -568,7 +568,7 @@ export function preciseFallbackRecommendation(
       profile.needsSpf
         ? "Reaplica tu protector solar SPF 45 cada 3 a 4 horas si estás al aire libre o cerca de ventanas."
         : "Mantén una hidratación constante incluso los días que permaneces en interiores.",
-      "Dale a tu piel de 2 a 3 semanas de constancia para notar el equilibrio natural de los ingredientes botánicos.",
+      "Dale a tu piel de 2 a 3 semanas de constancia para notar el equilibrio natural de los ingredientes puros.",
     ],
     productIds: selected.map((item) => item.product.id),
     reasons,

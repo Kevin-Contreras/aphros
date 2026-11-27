@@ -1,12 +1,12 @@
 import Link from "next/link";
 import { ArrowRightIcon, SparklesIcon } from "lucide-react";
-import { AphrosShellMark } from "@/components/AphrosShellMark";
+import { AphrosShellMark, AphrosWordmark } from "@/components/AphrosShellMark";
 import { Reveal } from "@/components/Reveal";
 import { SiteHeader } from "@/components/SiteHeader";
 
 const STEPS = [
   { num: "01", title: "Responde", desc: "Cuéntanos cómo sientes tu piel." },
-  { num: "02", title: "Analizamos", desc: "Elegimos fórmulas botánicas puras." },
+  { num: "02", title: "Analizamos", desc: "Elegimos fórmulas naturales puras." },
   { num: "03", title: "Tu rutina", desc: "Recíbela al instante y en tu correo." },
 ];
 
@@ -38,7 +38,7 @@ export default function HomePage() {
             </h1>
 
             <p className="fade-up-delay-2 mt-5 max-w-md text-sm font-light leading-relaxed text-aphros-cocoa/85 sm:text-base">
-              Descubre en 2 minutos tu rutina artesanal y botánica pensada para
+              Descubre en 2 minutos tu rutina artesanal y natural pensada para
               tu piel.
             </p>
 
@@ -52,7 +52,7 @@ export default function HomePage() {
               </Link>
 
               <p className="text-[11px] font-light tracking-[0.16em] text-mist uppercase">
-                2 min · 100% botánico · Personalizado
+                2 min · 100% natural · Personalizado
               </p>
             </div>
           </div>
@@ -62,8 +62,8 @@ export default function HomePage() {
             <div className="aphros-editorial-dark relative flex min-h-[380px] flex-col justify-between overflow-hidden rounded-t-[10rem] rounded-b-[2rem] p-8 text-center text-aphros-blush-100 shadow-2xl sm:min-h-[450px] sm:p-10">
               <div className="relative z-10 flex justify-center pt-4">
                 <AphrosShellMark
-                  className="aphros-shell-breathe h-11 w-16 text-aphros-blush-200"
-                  strokeWidth={1.9}
+                  variant="light"
+                  className="aphros-shell-breathe h-12 w-16"
                 />
               </div>
 
@@ -122,13 +122,8 @@ export default function HomePage() {
       <footer className="border-t border-aphros-espresso/10 bg-aphros-blush-50/40 px-5 py-7 sm:px-10">
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-4">
           <div className="flex items-center gap-2.5">
-            <AphrosShellMark
-              className="h-5 w-8 text-aphros-espresso/80"
-              strokeWidth={2.2}
-            />
-            <span className="font-[family-name:var(--font-display)] text-sm tracking-[0.24em] text-aphros-espresso">
-              APHROS
-            </span>
+            <AphrosShellMark className="h-6 w-9" />
+            <AphrosWordmark className="h-4.5 w-auto" />
           </div>
           <p className="text-[11px] font-light text-mist">
             eres arte y queremos cuidarte

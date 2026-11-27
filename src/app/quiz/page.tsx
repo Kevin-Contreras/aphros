@@ -13,8 +13,7 @@ function QuizFallback() {
       <section className="mx-auto w-full max-w-xl flex-1 px-4 py-8 sm:px-6">
         <Card className="flex h-72 flex-col items-center justify-center rounded-[2rem] border-border/80 bg-card/95 p-8 text-center shadow-xs ring-0">
           <AphrosShellMark
-            className="aphros-shell-breathe h-9 w-13 text-aphros-wine"
-            strokeWidth={2.2}
+            className="aphros-shell-breathe h-10 w-14"
           />
           <span className="mt-3 text-[10px] font-medium tracking-[0.26em] text-aphros-rose-deep uppercase">
             APHROS

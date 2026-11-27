@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { ArrowUpRightIcon } from "lucide-react";
-import { AphrosShellMark } from "@/components/AphrosShellMark";
+import { AphrosShellMark, AphrosWordmark } from "@/components/AphrosShellMark";
 
 type SiteHeaderProps = {
   isQuiz?: boolean;
@@ -12,15 +12,16 @@ export function SiteHeader({ isQuiz = false }: SiteHeaderProps) {
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-5 sm:h-20 sm:px-10">
         <Link
           href="/"
-          className="group flex items-center gap-3 focus-visible:outline-none"
+          className="group flex items-center gap-2.5 focus-visible:outline-none"
         >
           <AphrosShellMark
-            className="h-7 w-10 text-aphros-espresso transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-105 group-hover:text-aphros-wine sm:h-8 sm:w-11"
-            strokeWidth={2.3}
+            priority
+            className="h-8 w-11 transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-105 sm:h-9 sm:w-12"
           />
-          <span className="font-[family-name:var(--font-display)] text-xl font-normal tracking-[0.26em] text-aphros-espresso transition-colors duration-300 group-hover:text-aphros-wine sm:text-2xl">
-            APHROS
-          </span>
+          <AphrosWordmark
+            priority
+            className="h-5 w-auto transition-opacity duration-300 group-hover:opacity-85 sm:h-6"
+          />
         </Link>
 
         <nav>

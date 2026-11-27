@@ -32,7 +32,7 @@ type Direction = "forward" | "back";
 
 const LOADING_PHRASES = [
   "Analizando las necesidades de tu piel…",
-  "Consultando formulaciones botánicas Aphros…",
+  "Consultando formulaciones naturales Aphros…",
   "Diseñando tu ritual de amor propio…",
   "Casi listo…",
 ];
@@ -167,7 +167,14 @@ export function QuizClient({ questions }: { questions: PublicQuestion[] }) {
         throw new Error("No recibimos el resultado. Intenta de nuevo.");
       }
 
-      router.push(`/resultado/${data.id}`);
+      const resultId = data.id;
+      router.push(`/resultado/${resultId}`);
+      // Limpiar estado para que al regresar a /quiz esté en la primera pregunta
+      setStep("questions");
+      setIndex(0);
+      setAnswers([]);
+      setSelectedOptionId(null);
+      setError(null);
     } catch (err) {
       const message =
         err instanceof Error && err.name === "AbortError"
@@ -196,8 +203,8 @@ export function QuizClient({ questions }: { questions: PublicQuestion[] }) {
       <Card className="fade-up aphros-editorial-dark relative flex min-h-[440px] flex-col items-center justify-center overflow-hidden rounded-[2rem] border-0 p-8 text-center text-aphros-blush-100 shadow-lg ring-0">
         <div className="relative mb-7 flex size-24 items-center justify-center rounded-full bg-aphros-blush-100/10 text-aphros-blush-100 backdrop-blur-xs">
           <AphrosShellMark
-            className="aphros-shell-breathe h-11 w-15"
-            strokeWidth={2}
+            variant="light"
+            className="aphros-shell-breathe h-12 w-16"
           />
           <div
             className="absolute inset-0 rounded-full border border-aphros-blush-200/35 border-t-aphros-blush-100 animate-spin"
@@ -346,7 +353,7 @@ export function QuizClient({ questions }: { questions: PublicQuestion[] }) {
                   inputMode="tel"
                   value={whatsapp}
                   onChange={(e) => setWhatsapp(e.target.value)}
-                  placeholder="+502 5555 5555"
+                  placeholder="+502 5422 2180"
                   className="h-11 rounded-2xl border-border/90 bg-aphros-blush-50/50 pl-10 text-sm transition-colors focus-visible:border-aphros-rose focus-visible:bg-card sm:text-base"
                 />
               </div>
