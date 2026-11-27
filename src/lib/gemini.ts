@@ -4,6 +4,7 @@ import { withTimeout } from "@/lib/with-timeout";
 import {
   buildUserProfile,
   isBodyOnlyProduct,
+  normalizeSkinType,
   preciseFallbackRecommendation,
   refineAiPicks,
   type AnswerForAi,
@@ -107,6 +108,13 @@ REGLAS CLÍNICAS Y DE PRECISIÓN (OBLIGATORIAS):
    - "Combo Rosas" ya incluye Agua de Rosas.
    - "Combo Anti Acné" ya incluye productos antiacné.
 5. En "reasons", cita los ingredientes naturales concretos de la descripción de cada producto y explica cómo benefician directamente las respuestas de esta persona (incluyendo si conviene usarlo de día, noche o semanalmente).
+6. CLASIFICACIÓN ESTRICTA DEL TIPO DE PIEL ("skinType"):
+   El campo "skinType" DEBE SER EXACTAMENTE UNO de estos 4 tipos (y NINGÚN OTRO):
+   - "grasosa" (piel con exceso de sebo, brillo o tendencia oleosa)
+   - "mixta" (piel con brillo en zona T y mejillas normales o secas, o equilibrada)
+   - "sensible" (piel reactiva, con enrojecimiento, tirantez reactiva o irritación fácil)
+   - "seca" (piel deshidratada, tirante, áspera o madura con falta de humectación)
+   ESTÁ TOTALMENTE PROHIBIDO responder con cualquier otro valor (como "normal", "madura", "grasa", "deshidratada"). La clasificación debe ser única y estrictamente una de las cuatro: grasosa, mixta, sensible o seca.
 
 Responde ÚNICAMENTE con JSON válido con esta estructura exacta:
 {
@@ -140,6 +148,7 @@ Responde ÚNICAMENTE con JSON válido con esta estructura exacta:
 
     const text = result.response.text();
     const parsed = extractJson(text);
+    parsed.skinType = normalizeSkinType(parsed.skinType || profile.skinType);
     const refined = refineAiPicks(parsed, answers, products);
     void recordAiUsage({
       model: modelName,

@@ -64,8 +64,10 @@ export async function sendRecommendationEmail(payload: RecommendationEmailPayloa
 
   const absoluteSite = getSiteOrigin() || "https://aphros.vercel.app";
   const logoLightUrl = `${absoluteSite}/brand/logo-full-light.png`;
+  const rawSkinType = payload.skinType || "mixta";
+  const displaySkinType = rawSkinType.toLowerCase().replace(/^piel\s+/, "").trim();
   const whatsappUrl = `https://wa.me/50254222180?text=${encodeURIComponent(
-    `¡Hola! Hice el test de piel Aphros para ${payload.toName} y mi diagnóstico es piel ${payload.skinType}. Me gustaría recibir asesoría sobre mis productos recomendados:`,
+    `¡Hola! Hice el test de piel Aphros para ${payload.toName} y mi diagnóstico es piel ${displaySkinType}. Me gustaría recibir asesoría sobre mis productos recomendados:`,
   )}`;
 
   const productCards = payload.products
@@ -165,7 +167,7 @@ export async function sendRecommendationEmail(payload: RecommendationEmailPayloa
                   Diagnóstico Personalizado
                 </span>
                 <h2 style="margin:0 0 12px;font-family:Georgia,serif;font-size:26px;font-weight:normal;color:#3b1820;text-transform:capitalize;">
-                  Piel ${escapeHtml(payload.skinType)}
+                  Piel ${escapeHtml(displaySkinType)}
                 </h2>
                 <div style="width:40px;height:1px;background:#bc8b87;margin:0 auto 12px;opacity:0.6;"></div>
                 <p style="margin:0;font-size:13.5px;color:#5c3b31;line-height:1.65;max-width:440px;margin-left:auto;margin-right:auto;">

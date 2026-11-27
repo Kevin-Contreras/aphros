@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+import { normalizeSkinType } from "@/lib/recommend";
 
 export type DailyTrendPoint = {
   date: string;
@@ -97,10 +98,9 @@ export async function getImpactMetrics(): Promise<ImpactMetrics> {
     try {
       const analysis = JSON.parse(item.skinAnalysis) as { skinType?: string };
       if (analysis?.skinType) {
-        const rawType = analysis.skinType.trim();
-        // Capitalize first letter
+        const canonical = normalizeSkinType(analysis.skinType);
         const normalized =
-          rawType.charAt(0).toUpperCase() + rawType.slice(1).toLowerCase();
+          canonical.charAt(0).toUpperCase() + canonical.slice(1).toLowerCase();
         skinTypeCounts[normalized] = (skinTypeCounts[normalized] || 0) + 1;
       }
     } catch {
