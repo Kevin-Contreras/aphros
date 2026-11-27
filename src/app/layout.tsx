@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Playfair_Display, Poppins } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
+import { Analytics } from "@vercel/analytics/next";
 
 const display = Playfair_Display({
   variable: "--font-display",
@@ -53,7 +54,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         "font-sans",
       )}
     >
-      <body className="min-h-full flex flex-col aphros-grain">{children}</body>
+      <body className="min-h-full flex flex-col aphros-grain">
+        {children}
+        <Analytics />
+      </body>
     </html>
   );
 }
