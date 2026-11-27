@@ -3,15 +3,7 @@ import Link from "next/link";
 import { ArrowRightIcon } from "lucide-react";
 import { AphrosHeroCarouselPlaceholder } from "@/components/AphrosHeroCarousel";
 import { HeroProductsCarousel } from "@/components/HeroProductsCarousel";
-import { AphrosShellMark, AphrosWordmark } from "@/components/AphrosShellMark";
-import { Reveal } from "@/components/Reveal";
 import { SiteHeader } from "@/components/SiteHeader";
-
-const STEPS = [
-  { num: "01", title: "Responde", desc: "Cuéntanos cómo sientes tu piel." },
-  { num: "02", title: "Analizamos", desc: "Elegimos fórmulas naturales puras." },
-  { num: "03", title: "Tu rutina", desc: "Recíbela al instante y en tu correo." },
-];
 
 export default function HomePage() {
   return (
@@ -41,8 +33,7 @@ export default function HomePage() {
             </h1>
 
             <p className="fade-up-delay-2 mt-5 max-w-md text-sm font-light leading-relaxed text-aphros-cocoa/85 sm:text-base">
-              Descubre en 2 minutos tu rutina artesanal y natural pensada para
-              tu piel.
+              Descubre en 2 minutos tu rutina ideal.
             </p>
 
             <div className="fade-up-delay-3 mt-8 flex w-full flex-col gap-5 sm:w-auto">
@@ -69,43 +60,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* BANDA COMPACTA DE 3 PASOS */}
-      <section className="border-t border-aphros-espresso/12 bg-aphros-blush-50/75">
-        <div className="mx-auto grid max-w-6xl grid-cols-1 divide-y divide-aphros-espresso/10 px-5 sm:px-10 md:grid-cols-3 md:divide-x md:divide-y-0">
-          {STEPS.map((step, idx) => (
-            <Reveal
-              key={step.num}
-              delay={idx * 90}
-              className="flex items-baseline gap-4 py-7 md:px-8 md:py-9 md:first:pl-0 md:last:pr-0"
-            >
-              <span className="font-[family-name:var(--font-display)] text-2xl text-aphros-rose">
-                {step.num}
-              </span>
-              <div>
-                <h2 className="font-[family-name:var(--font-display)] text-lg font-normal text-aphros-espresso">
-                  {step.title}
-                </h2>
-                <p className="mt-0.5 text-xs font-light text-mist">
-                  {step.desc}
-                </p>
-              </div>
-            </Reveal>
-          ))}
-        </div>
-      </section>
 
-      {/* FOOTER MÍNIMO */}
-      <footer className="border-t border-aphros-espresso/10 bg-aphros-blush-50/40 px-5 py-7 sm:px-10">
-        <div className="mx-auto flex max-w-6xl items-center justify-between gap-4">
-          <div className="flex items-center gap-2.5">
-            <AphrosShellMark className="h-6 w-9" />
-            <AphrosWordmark className="h-4.5 w-auto" />
-          </div>
-          <p className="text-[11px] font-light text-mist">
-            eres arte y queremos cuidarte
-          </p>
-        </div>
-      </footer>
     </main>
   );
 }

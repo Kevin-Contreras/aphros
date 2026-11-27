@@ -198,7 +198,7 @@ export async function sendRecommendationEmail(payload: RecommendationEmailPayloa
                 ¿Tienes dudas sobre cómo empezar tu rutina?
               </p>
               <p style="margin:0 0 16px;font-size:13px;color:#7d6159;line-height:1.55;max-width:440px;margin-left:auto;margin-right:auto;">
-                Escríbenos a nuestro WhatsApp oficial para recibir asesoría directa y resolver cualquier consulta sobre la aplicación de tus productos.
+                Escríbenos a nuestro WhatsApp oficial (+502 5422-2180) para recibir asesoría directa y resolver cualquier consulta sobre la aplicación de tus productos.
               </p>
               <a href="${escapeHtml(whatsappUrl)}" target="_blank" style="display:inline-block;padding:12px 28px;background:#52232d;color:#ffffff;text-decoration:none;border-radius:999px;font-size:13px;font-weight:600;letter-spacing:0.04em;">
                 Consultar por WhatsApp (+502 5422-2180)
