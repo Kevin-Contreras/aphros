@@ -95,9 +95,20 @@ async function ResultadoContent({
   const rawSkinType = analysis.skinType || "mixta";
   const displaySkinType = rawSkinType.toLowerCase().replace(/^piel\s+/, "").trim();
 
-  const whatsappShareText = encodeURIComponent(
-    `¡Hola! Hice el test de piel Aphros y mi diagnóstico es piel ${displaySkinType}. Te comparto mi rutina personalizada:`,
-  );
+  const productListText = products
+    .map((p) => `• ${p.name} (${p.currency || "Q"}${p.price.toFixed(2)})`)
+    .join("\n");
+
+  const whatsappMessage = [
+    `¡Hola! Hice el test de piel Aphros para ${submission.name} y mi diagnóstico es piel ${displaySkinType}.`,
+    "",
+    "Mis productos recomendados son:",
+    productListText,
+    "",
+    "¿Me podrían brindar asesoría sobre mi rutina y disponibilidad?",
+  ].join("\n");
+
+  const whatsappShareText = encodeURIComponent(whatsappMessage);
 
   return (
     <main className="relative flex min-h-screen flex-1 flex-col pb-16">

@@ -66,9 +66,21 @@ export async function sendRecommendationEmail(payload: RecommendationEmailPayloa
   const logoLightUrl = `${absoluteSite}/brand/logo-full-light.png`;
   const rawSkinType = payload.skinType || "mixta";
   const displaySkinType = rawSkinType.toLowerCase().replace(/^piel\s+/, "").trim();
-  const whatsappUrl = `https://wa.me/50254222180?text=${encodeURIComponent(
-    `¡Hola! Hice el test de piel Aphros para ${payload.toName} y mi diagnóstico es piel ${displaySkinType}. Me gustaría recibir asesoría sobre mis productos recomendados:`,
-  )}`;
+
+  const productListText = payload.products
+    .map((p) => `• ${p.name} (${p.currency || "Q"}${p.price.toFixed(2)})`)
+    .join("\n");
+
+  const whatsappMessage = [
+    `¡Hola! Hice el test de piel Aphros para ${payload.toName} y mi diagnóstico es piel ${displaySkinType}.`,
+    "",
+    "Mis productos recomendados son:",
+    productListText,
+    "",
+    "¿Me podrían brindar asesoría sobre mi rutina y disponibilidad?",
+  ].join("\n");
+
+  const whatsappUrl = `https://wa.me/50254222180?text=${encodeURIComponent(whatsappMessage)}`;
 
   const productCards = payload.products
     .map((product) => {
