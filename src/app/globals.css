@@ -5,54 +5,73 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  --ivory: #faf6f0;
-  --cream: #fffdfa;
-  --terracotta: #b85d43;
-  --terracotta-dark: #964731;
-  --sage: #b85d43;
-  --sage-dark: #964731;
-  --forest: #2b1f1c;
-  --mist: #786661;
-  --sand: #f0e4db;
-  --clay: #a66a5b;
-  --background: #fdfaf6;
-  --foreground: #2b1f1c;
-  --card: #fffdfa;
-  --card-foreground: #2b1f1c;
-  --popover: #fffdfa;
-  --popover-foreground: #2b1f1c;
-  --primary: #b85d43;
-  --primary-foreground: #fffdfa;
-  --secondary: #ffede7;
-  --secondary-foreground: #38231c;
-  --blush: #ffede7;
-  --blush-light: #fff8f5;
-  --blush-hover: #fcdfd5;
-  --blush-border: #f8d5ca;
-  --blush-dark: #8e4f40;
-  --blush-foreground: #38231c;
-  --muted: #f7ede8;
-  --muted-foreground: #786661;
-  --accent: #ffede7;
-  --accent-foreground: #38231c;
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: #f0e4db;
-  --input: #f0e4db;
-  --ring: #b85d43;
-  --chart-1: #b85d43;
-  --chart-2: #cc7f6b;
-  --chart-3: #8e4f40;
-  --chart-4: #e8a595;
-  --chart-5: #38231c;
-  --radius: 0.75rem;
-  --sidebar: #fffdfa;
-  --sidebar-foreground: #2b1f1c;
-  --sidebar-primary: #b85d43;
-  --sidebar-primary-foreground: #fffdfa;
-  --sidebar-accent: #fdfaf6;
-  --sidebar-accent-foreground: #2b1f1c;
-  --sidebar-border: #f0e4db;
-  --sidebar-ring: #b85d43;
+  /* Renovación Aphros — Paleta oficial */
+  --aphros-blush-50: #fff9f6;
+  --aphros-blush-100: #fcece6;
+  --aphros-blush-200: #f4ddd5;
+  --aphros-blush-300: #e8cabf;
+  --aphros-rose: #bc8b87;
+  --aphros-rose-deep: #a0726f;
+  --aphros-wine: #52232d;
+  --aphros-wine-deep: #3b1820;
+  --aphros-cocoa: #5c3b31;
+  --aphros-espresso: #42281f;
+
+  /* Compatibilidad con tokens existentes */
+  --ivory: #fcece6;
+  --cream: #fff9f6;
+  --terracotta: #52232d;
+  --terracotta-dark: #3b1820;
+  --sage: #a0726f;
+  --sage-dark: #52232d;
+  --forest: #42281f;
+  --mist: #7d6159;
+  --sand: #ebd1c7;
+  --clay: #bc8b87;
+
+  /* Tokens shadcn */
+  --background: #fcece6;
+  --foreground: #42281f;
+  --card: #fffdfb;
+  --card-foreground: #42281f;
+  --popover: #fffdfb;
+  --popover-foreground: #42281f;
+  --primary: #52232d;
+  --primary-foreground: #fff9f6;
+  --secondary: #f4ddd5;
+  --secondary-foreground: #42281f;
+  --blush: #f4ddd5;
+  --blush-light: #fff6f2;
+  --blush-hover: #ecd0c6;
+  --blush-border: #e6c6bb;
+  --blush-dark: #8c5c58;
+  --blush-foreground: #42281f;
+  --muted: #f6e4dd;
+  --muted-foreground: #7d6159;
+  --accent: #f4ddd5;
+  --accent-foreground: #42281f;
+  --destructive: #a6343c;
+  --border: #ead2c8;
+  --input: #ead2c8;
+  --ring: #bc8b87;
+  --chart-1: #52232d;
+  --chart-2: #bc8b87;
+  --chart-3: #5c3b31;
+  --chart-4: #a0726f;
+  --chart-5: #42281f;
+  --radius: 0.85rem;
+  --sidebar: #fffdfb;
+  --sidebar-foreground: #42281f;
+  --sidebar-primary: #52232d;
+  --sidebar-primary-foreground: #fff9f6;
+  --sidebar-accent: #fcece6;
+  --sidebar-accent-foreground: #42281f;
+  --sidebar-border: #ead2c8;
+  --sidebar-ring: #bc8b87;
+
+  /* Curvas de animación editorial */
+  --ease-luxury: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-silk: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 @theme inline {
@@ -68,7 +87,18 @@
   --color-mist: var(--mist);
   --color-sand: var(--sand);
   --color-clay: var(--clay);
+  --color-aphros-blush-50: var(--aphros-blush-50);
+  --color-aphros-blush-100: var(--aphros-blush-100);
+  --color-aphros-blush-200: var(--aphros-blush-200);
+  --color-aphros-blush-300: var(--aphros-blush-300);
+  --color-aphros-rose: var(--aphros-rose);
+  --color-aphros-rose-deep: var(--aphros-rose-deep);
+  --color-aphros-wine: var(--aphros-wine);
+  --color-aphros-wine-deep: var(--aphros-wine-deep);
+  --color-aphros-cocoa: var(--aphros-cocoa);
+  --color-aphros-espresso: var(--aphros-espresso);
   --font-sans: var(--font-sans);
+  --font-body: var(--font-sans);
   --font-display: var(--font-display);
   --font-heading: var(--font-display);
   --color-sidebar-ring: var(--sidebar-ring);
@@ -126,94 +156,309 @@ html {
 }
 
 body {
-  font-family: var(--font-body), Georgia, serif;
+  font-family: var(--font-sans), system-ui, -apple-system, sans-serif;
   min-height: 100vh;
   touch-action: manipulation;
+  text-rendering: optimizeLegibility;
 }
 
 ::selection {
-  background: var(--secondary);
-  color: var(--secondary-foreground);
+  background: var(--aphros-rose);
+  color: #fff9f6;
 }
 
+/* Fondo editorial cálido inspirado en la renovación Aphros */
 .aphros-grain {
+  background-color: #fcece6;
+  position: relative;
+}
+
+.aphros-grain::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -20;
+  pointer-events: none;
+  background-color: #fcece6;
   background-image:
-    radial-gradient(circle at 12% 18%, rgba(184, 93, 67, 0.07), transparent 42%),
-    radial-gradient(circle at 88% 12%, rgba(255, 237, 231, 0.7), transparent 36%),
-    linear-gradient(180deg, #fdfaf6 0%, #faf4ed 48%, #f6efe6 100%);
+    radial-gradient(circle at 14% 12%, rgba(255, 253, 251, 0.95), transparent 48%),
+    radial-gradient(circle at 86% 18%, rgba(188, 139, 135, 0.22), transparent 44%),
+    radial-gradient(circle at 50% 92%, rgba(244, 221, 213, 0.85), transparent 56%),
+    linear-gradient(180deg, #fff8f5 0%, #fcece6 46%, #f8e5de 100%);
 }
 
-.fade-up {
-  animation: fadeUp 0.7s ease both;
+/* Tarjeta editorial oscura (borgoña vino del manual de marca) */
+.aphros-editorial-dark {
+  background-color: #3b1820;
+  background-image:
+    radial-gradient(circle at 85% 15%, rgba(188, 139, 135, 0.2), transparent 46%),
+    radial-gradient(circle at 10% 90%, rgba(92, 59, 49, 0.3), transparent 50%),
+    linear-gradient(155deg, #4b1f29 0%, #3b1820 55%, #2f1219 100%);
 }
 
-.fade-up-delay {
-  animation: fadeUp 0.9s ease 0.12s both;
-}
-
+/* Animaciones suaves y premium */
 @keyframes fadeUp {
   from {
     opacity: 0;
-    transform: translateY(14px);
+    transform: translateY(18px);
+    filter: blur(3px);
   }
   to {
     opacity: 1;
     transform: translateY(0);
+    filter: blur(0);
   }
 }
 
-@keyframes softPulse {
+@keyframes aphrosFloat {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(0, -10px, 0) scale(1.035);
+  }
+}
+
+@keyframes aphrosFloatReverse {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(0, 10px, 0) scale(0.97);
+  }
+}
+
+@keyframes aphrosStepIn {
+  from {
+    opacity: 0;
+    transform: translate3d(18px, 0, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes aphrosStepBack {
+  from {
+    opacity: 0;
+    transform: translate3d(-18px, 0, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes aphrosPop {
+  0% {
+    opacity: 0;
+    transform: scale(0.65);
+  }
+  70% {
+    opacity: 1;
+    transform: scale(1.08);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes aphrosShellBreathe {
   0%,
   100% {
     transform: scale(1);
+    opacity: 0.9;
   }
   50% {
-    transform: scale(1.03);
+    transform: scale(1.06);
+    opacity: 1;
   }
+}
+
+@keyframes aphrosShimmer {
+  0% {
+    transform: translateX(-120%) skewX(-18deg);
+  }
+  100% {
+    transform: translateX(220%) skewX(-18deg);
+  }
+}
+
+@keyframes aphrosMarquee {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  100% {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+.aphros-marquee-track {
+  display: flex;
+  width: max-content;
+  animation: aphrosMarquee 36s linear infinite;
+}
+
+.aphros-marquee-track:hover {
+  animation-play-state: paused;
+}
+
+.aphros-hairline {
+  border-color: rgba(66, 40, 31, 0.14);
+}
+
+.fade-up {
+  animation: fadeUp 0.85s var(--ease-luxury) both;
+}
+
+.fade-up-delay {
+  animation: fadeUp 0.95s var(--ease-luxury) 0.14s both;
+}
+
+.fade-up-delay-2 {
+  animation: fadeUp 1s var(--ease-luxury) 0.28s both;
+}
+
+.fade-up-delay-3 {
+  animation: fadeUp 1.05s var(--ease-luxury) 0.4s both;
 }
 
 .soft-pulse {
-  animation: softPulse 4.5s ease-in-out infinite;
+  animation: aphrosFloat 9s ease-in-out infinite;
+}
+
+.soft-pulse-reverse {
+  animation: aphrosFloatReverse 11s ease-in-out infinite;
+}
+
+.aphros-step-in {
+  animation: aphrosStepIn 0.45s var(--ease-luxury) both;
+}
+
+.aphros-step-back {
+  animation: aphrosStepBack 0.45s var(--ease-luxury) both;
+}
+
+.aphros-pop {
+  animation: aphrosPop 0.32s var(--ease-silk) both;
+}
+
+.aphros-shell-breathe {
+  animation: aphrosShellBreathe 3.8s ease-in-out infinite;
+}
+
+/* Superficies interactivas con sensación táctil premium */
+.aphros-card-luxury {
+  transition:
+    transform 0.5s var(--ease-luxury),
+    box-shadow 0.5s var(--ease-luxury),
+    border-color 0.4s ease,
+    background-color 0.4s ease;
+}
+
+.aphros-card-luxury:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 18px 40px -24px rgba(66, 40, 31, 0.26);
+  border-color: rgba(188, 139, 135, 0.65);
+}
+
+.aphros-btn-luxury {
+  position: relative;
+  overflow: hidden;
+  transition:
+    transform 0.45s var(--ease-luxury),
+    box-shadow 0.45s var(--ease-luxury),
+    background-color 0.35s ease;
+}
+
+.aphros-btn-luxury::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  width: 45%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 249, 246, 0.24),
+    transparent
+  );
+  transform: translateX(-140%) skewX(-18deg);
+  pointer-events: none;
+}
+
+.aphros-btn-luxury:hover {
+  transform: translateY(-1.5px);
+  box-shadow: 0 14px 30px -14px rgba(59, 24, 32, 0.48);
+}
+
+.aphros-btn-luxury:hover::after {
+  animation: aphrosShimmer 0.9s var(--ease-luxury);
+}
+
+.aphros-btn-luxury:active {
+  transform: translateY(0) scale(0.985);
+}
+
+/* Marca de agua editorial sutil como en el manual */
+.aphros-watermark {
+  letter-spacing: 0.16em;
+  user-select: none;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
 
 .dark {
-  --background: #1c1514;
-  --foreground: #fcf9f7;
-  --card: #251d1b;
-  --card-foreground: #fcf9f7;
-  --popover: #251d1b;
-  --popover-foreground: #fcf9f7;
-  --primary: #d47a61;
-  --primary-foreground: #1c1514;
-  --secondary: #3b2520;
-  --secondary-foreground: #ffede7;
-  --blush: #3b2520;
-  --blush-light: #482f29;
-  --blush-hover: #543730;
-  --blush-border: #613f37;
-  --blush-dark: #f0ada0;
-  --blush-foreground: #ffede7;
-  --muted: #2d211e;
-  --muted-foreground: #a6918a;
-  --accent: #3b2520;
-  --accent-foreground: #ffede7;
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: #3b2a26;
-  --input: #3b2a26;
-  --ring: #d47a61;
-  --chart-1: #d47a61;
-  --chart-2: #f0ada0;
-  --chart-3: #b86b57;
-  --chart-4: #8a4e3e;
-  --chart-5: #ffede7;
-  --sidebar: #251d1b;
-  --sidebar-foreground: #fcf9f7;
-  --sidebar-primary: #d47a61;
-  --sidebar-primary-foreground: #1c1514;
-  --sidebar-accent: #2d211e;
-  --sidebar-accent-foreground: #fcf9f7;
-  --sidebar-border: #3b2a26;
-  --sidebar-ring: #d47a61;
+  --background: #231116;
+  --foreground: #fcece6;
+  --card: #2d161c;
+  --card-foreground: #fcece6;
+  --popover: #2d161c;
+  --popover-foreground: #fcece6;
+  --primary: #d9a7a2;
+  --primary-foreground: #231116;
+  --secondary: #3f1e27;
+  --secondary-foreground: #fcece6;
+  --blush: #3f1e27;
+  --blush-light: #4b252f;
+  --blush-hover: #582c38;
+  --blush-border: #6a3845;
+  --blush-dark: #e6bdb8;
+  --blush-foreground: #fcece6;
+  --muted: #351a21;
+  --muted-foreground: #caa9a3;
+  --accent: #3f1e27;
+  --accent-foreground: #fcece6;
+  --destructive: #d45d66;
+  --border: #4a2630;
+  --input: #4a2630;
+  --ring: #bc8b87;
+  --chart-1: #d9a7a2;
+  --chart-2: #bc8b87;
+  --chart-3: #8c5c58;
+  --chart-4: #f4ddd5;
+  --chart-5: #fcece6;
+  --sidebar: #2d161c;
+  --sidebar-foreground: #fcece6;
+  --sidebar-primary: #d9a7a2;
+  --sidebar-primary-foreground: #231116;
+  --sidebar-accent: #351a21;
+  --sidebar-accent-foreground: #fcece6;
+  --sidebar-border: #4a2630;
+  --sidebar-ring: #bc8b87;
 }
 
 @layer base {

@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { SparklesIcon } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { ArrowUpRightIcon } from "lucide-react";
+import { AphrosShellMark } from "@/components/AphrosShellMark";
 
 type SiteHeaderProps = {
   isQuiz?: boolean;
@@ -8,31 +8,37 @@ type SiteHeaderProps = {
 
 export function SiteHeader({ isQuiz = false }: SiteHeaderProps) {
   return (
-    <header className="sticky top-0 z-40 border-b border-sand/60 bg-ivory/85 backdrop-blur-md px-4 py-3 sm:px-8">
-      <div className="mx-auto flex max-w-5xl items-center justify-between">
-        <Link href="/" className="group flex flex-col">
-          <span className="text-[10px] tracking-[0.26em] uppercase text-blush-dark font-medium">
-            Cosmética natural
-          </span>
-          <span className="font-[family-name:var(--font-display)] text-2xl font-medium tracking-tight text-forest transition group-hover:text-sage-dark">
-            Aphros
+    <header className="sticky top-0 z-40 border-b border-aphros-espresso/10 bg-aphros-blush-50/75 backdrop-blur-xl">
+      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-5 sm:h-20 sm:px-10">
+        <Link
+          href="/"
+          className="group flex items-center gap-3 focus-visible:outline-none"
+        >
+          <AphrosShellMark
+            className="h-7 w-10 text-aphros-espresso transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-105 group-hover:text-aphros-wine sm:h-8 sm:w-11"
+            strokeWidth={2.3}
+          />
+          <span className="font-[family-name:var(--font-display)] text-xl font-normal tracking-[0.26em] text-aphros-espresso transition-colors duration-300 group-hover:text-aphros-wine sm:text-2xl">
+            APHROS
           </span>
         </Link>
 
-        <nav className="flex items-center gap-2.5 sm:gap-4">
+        <nav>
           {!isQuiz ? (
-            <Button asChild size="sm" className="h-9 rounded-full px-4 shadow-2xs font-semibold">
-              <Link href="/quiz">
-                <SparklesIcon data-icon="inline-start" />
-                <span>Hacer test</span>
-              </Link>
-            </Button>
+            <Link
+              href="/quiz"
+              className="aphros-btn-luxury group inline-flex h-10 items-center gap-2 rounded-full bg-aphros-wine px-5 text-xs font-medium tracking-[0.12em] text-aphros-blush-50 uppercase shadow-xs sm:h-11 sm:px-6"
+            >
+              <span>Hacer test</span>
+              <ArrowUpRightIcon className="size-3.5 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+            </Link>
           ) : (
-            <Button asChild variant="ghost" size="sm" className="text-xs sm:text-sm text-mist hover:text-forest">
-              <Link href="/">
-                Inicio
-              </Link>
-            </Button>
+            <Link
+              href="/"
+              className="text-xs font-normal tracking-[0.16em] text-aphros-cocoa/80 uppercase transition-colors duration-300 hover:text-aphros-wine"
+            >
+              Inicio
+            </Link>
           )}
         </nav>
       </div>

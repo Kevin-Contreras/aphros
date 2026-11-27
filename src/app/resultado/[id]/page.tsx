@@ -6,28 +6,24 @@ import { connection } from "next/server";
 import {
   ArrowRightIcon,
   CheckCircle2Icon,
-  LightbulbIcon,
   RotateCcwIcon,
   Share2Icon,
   ShoppingBagIcon,
   SparklesIcon,
 } from "lucide-react";
+import { AphrosShellMark } from "@/components/AphrosShellMark";
+import { Reveal } from "@/components/Reveal";
 import { SiteHeader } from "@/components/SiteHeader";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { toPublicImageUrl } from "@/lib/media-url";
 import { prisma } from "@/lib/prisma";
 
 type Analysis = {
   skinType: string;
   summary: string;
-  tips: string[];
+  tips?: string[];
   reasons?: Record<string, string>;
 };
 
@@ -44,14 +40,22 @@ type RecommendedProduct = {
 
 function ResultadoFallback() {
   return (
-    <main className="flex flex-1 flex-col">
+    <main className="relative flex min-h-screen flex-1 flex-col">
       <SiteHeader />
-      <section className="mx-auto w-full max-w-xl flex-1 px-4 py-8">
-        <Card className="flex h-64 flex-col items-center justify-center p-6 text-center">
-          <Badge variant="secondary" className="uppercase tracking-[0.25em]">Aphros</Badge>
-          <p className="mt-2 font-heading text-2xl text-forest">Cargando tu diagnóstico…</p>
-          <div className="mt-4 h-1.5 w-32 overflow-hidden rounded-full bg-muted">
-            <div className="h-full w-1/2 animate-pulse rounded-full bg-primary" />
+      <section className="mx-auto flex w-full max-w-xl flex-1 items-center justify-center px-4 py-10">
+        <Card className="flex h-72 w-full flex-col items-center justify-center rounded-[2rem] border-border/80 bg-card/95 p-8 text-center shadow-xs ring-0">
+          <AphrosShellMark
+            className="aphros-shell-breathe h-9 w-13 text-aphros-wine"
+            strokeWidth={2.2}
+          />
+          <span className="mt-3 text-[10px] font-medium tracking-[0.26em] text-aphros-rose-deep uppercase">
+            APHROS
+          </span>
+          <p className="mt-1.5 font-[family-name:var(--font-display)] text-2xl font-normal text-aphros-espresso">
+            Cargando tu diagnóstico…
+          </p>
+          <div className="mt-5 h-1.5 w-36 overflow-hidden rounded-full bg-aphros-blush-200">
+            <div className="h-full w-1/2 animate-pulse rounded-full bg-aphros-wine" />
           </div>
         </Card>
       </section>
@@ -74,7 +78,6 @@ async function ResultadoContent({
     submission.recommendedProducts,
   ) as RecommendedProduct[];
 
-  // Enrich with current catalog images
   const fresh = await prisma.product.findMany({
     where: { id: { in: storedProducts.map((p) => p.id) } },
     select: { id: true, imageUrl: true },
@@ -95,166 +98,189 @@ async function ResultadoContent({
   );
 
   return (
-    <main className="flex flex-1 flex-col pb-16">
+    <main className="relative flex min-h-screen flex-1 flex-col pb-16">
       <SiteHeader />
 
-      <section className="mx-auto w-full max-w-xl flex-1 px-4 py-6 sm:px-6 sm:py-10">
-        {/* Diagnostic Hero Card using shadcn Card */}
-        <Card className="rounded-3xl border-border bg-linear-to-b from-card to-secondary/35 shadow-xs [--card-spacing:--spacing(5)] sm:[--card-spacing:--spacing(7)]">
-          <CardHeader className="gap-3">
-            <div className="flex items-center justify-between gap-2">
-              <Badge variant="secondary" className="h-auto gap-1.5 px-3 py-1 uppercase tracking-wider font-semibold">
-                <SparklesIcon data-icon="inline-start" />
-                <span>Diagnóstico Facial</span>
-              </Badge>
-              <span className="text-[11px] text-muted-foreground font-medium">Aphros Lab</span>
+      {/* Auras de fondo continuas que se desvanecen suavemente sin cortes duros */}
+      <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
+        <div className="soft-pulse absolute -right-24 top-16 h-[420px] w-[420px] rounded-full bg-radial from-aphros-rose/25 via-aphros-rose/10 to-transparent blur-3xl" />
+        <div className="soft-pulse-reverse absolute -left-28 -bottom-16 h-[460px] w-[460px] rounded-full bg-radial from-aphros-blush-200/95 via-aphros-blush-200/40 to-transparent blur-3xl" />
+      </div>
+
+      <section className="mx-auto w-full max-w-xl flex-1 px-4 py-8 sm:px-6 sm:py-12">
+        {/* TARJETA HERO EDITORIAL: TIPO DE PIEL COMO PROTAGONISTA ABSOLUTO */}
+        <div className="fade-up aphros-editorial-dark relative overflow-hidden rounded-[2.25rem] p-7 text-aphros-blush-100 shadow-xl sm:p-10">
+          <div className="relative z-10 flex flex-col gap-6 text-center">
+            {/* Cabecera con isotipo */}
+            <div className="flex items-center justify-between">
+              <span className="text-[11px] font-medium tracking-[0.24em] text-aphros-blush-200/80 uppercase">
+                Diagnóstico facial
+              </span>
+              <AphrosShellMark
+                className="h-6 w-9 text-aphros-blush-200/85"
+                strokeWidth={2.2}
+              />
             </div>
 
-            <CardTitle className="font-[family-name:var(--font-display)] text-3xl font-medium text-forest sm:text-4xl leading-tight">
-              Hola, {submission.name}
-            </CardTitle>
-          </CardHeader>
-
-          <CardContent className="flex flex-col gap-4">
-            <div className="rounded-2xl border border-border bg-secondary/50 p-4">
-              <p className="text-[11px] font-semibold uppercase tracking-wider text-secondary-foreground/80">
-                Tipo de piel detectado
-              </p>
-              <p className="mt-0.5 font-[family-name:var(--font-display)] text-2xl font-semibold capitalize text-secondary-foreground">
-                Piel {analysis.skinType}
+            {/* Saludo personal */}
+            <div>
+              <p className="text-xs font-light tracking-[0.16em] text-aphros-blush-200/85 uppercase">
+                Para {submission.name}
               </p>
             </div>
 
-            <p className="text-xs sm:text-sm leading-relaxed text-muted-foreground">
-              {analysis.summary}
-            </p>
+            {/* TIPO DE PIEL DESTACADO COMO PROTAGONISTA */}
+            <div className="flex flex-col items-center py-2">
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-aphros-blush-200/30 bg-aphros-blush-100/10 px-4 py-1 text-[11px] font-medium tracking-[0.2em] text-aphros-blush-100 uppercase backdrop-blur-xs">
+                <SparklesIcon className="size-3 text-aphros-blush-200" />
+                <span>Tu tipo de piel detectado</span>
+              </span>
 
-            <div className="border-t border-border/70 pt-3 text-xs">
+              <h1 className="mt-4 font-[family-name:var(--font-display)] text-4xl font-normal leading-tight text-aphros-blush-50 capitalize sm:text-6xl">
+                Piel <span className="italic text-aphros-blush-200">{analysis.skinType}</span>
+              </h1>
+
+              <div className="mt-4 h-px w-14 bg-aphros-blush-200/40" />
+
+              <p className="mt-4 max-w-md text-xs font-light leading-relaxed text-aphros-blush-100/90 sm:text-sm">
+                {analysis.summary}
+              </p>
+            </div>
+
+            {/* Confirmación del correo */}
+            <div className="border-t border-aphros-blush-200/15 pt-4 text-xs">
               {submission.emailSent ? (
-                <p className="flex items-center gap-1.5 text-primary font-medium">
-                  <CheckCircle2Icon className="size-3.5 shrink-0" />
-                  <span>Enviamos una copia con tus recomendaciones a {submission.email}.</span>
+                <p className="flex items-center justify-center gap-2 font-normal text-aphros-blush-200">
+                  <CheckCircle2Icon className="size-3.5 shrink-0 text-aphros-blush-100" />
+                  <span>Enviamos una copia de tu rutina a {submission.email}.</span>
                 </p>
               ) : (
-                <p className="text-muted-foreground">
-                  Tu diagnóstico está guardado. Guarda este enlace para consultarlo cuando desees.
+                <p className="font-light text-aphros-blush-200/80">
+                  Tu diagnóstico está guardado. Conserva este enlace para consultarlo cuando desees.
                 </p>
               )}
             </div>
-          </CardContent>
-        </Card>
-
-        {/* Recommended Products */}
-        <div className="mt-8">
-          <div className="flex items-center justify-between">
-            <div>
-              <h2 className="font-[family-name:var(--font-display)] text-2xl font-medium text-forest sm:text-3xl">
-                Productos Recomendados
-              </h2>
-              <p className="text-xs text-muted-foreground">
-                {products.length} {products.length === 1 ? "producto seleccionado" : "productos seleccionados"} para ti
-              </p>
-            </div>
-            <ShoppingBagIcon className="size-5 text-primary" />
           </div>
 
-          <div className="mt-4 flex flex-col gap-4">
-            {products.map((product) => (
-              <Card
-                key={product.id}
-                className="overflow-hidden rounded-3xl border-border bg-card shadow-2xs [--card-spacing:--spacing(4)] sm:[--card-spacing:--spacing(5)]"
-              >
-                <CardContent>
-                  <div className="flex gap-4">
-                    {/* Thumbnail */}
-                    <div className="relative size-24 shrink-0 overflow-hidden rounded-2xl border border-border bg-background sm:size-28">
-                      {product.imageUrl ? (
-                        <Image
-                          src={product.imageUrl}
-                          alt={product.name}
-                          fill
-                          unoptimized={
-                            product.imageUrl.includes(".svg") ||
-                            product.imageUrl.includes("/api/media")
-                          }
-                          className="object-cover"
-                          sizes="(max-width: 640px) 96px, 112px"
-                        />
-                      ) : (
-                        <div className="flex h-full items-center justify-center text-[10px] tracking-[0.2em] uppercase text-muted-foreground">
-                          Aphros
-                        </div>
-                      )}
-                    </div>
+          <div
+            aria-hidden="true"
+            className="aphros-watermark pointer-events-none absolute -bottom-5 left-1/2 -translate-x-1/2 font-[family-name:var(--font-display)] text-7xl text-aphros-blush-100/[0.04] sm:text-8xl"
+          >
+            APHROS
+          </div>
+        </div>
 
-                    {/* Details */}
-                    <div className="flex min-w-0 flex-1 flex-col justify-between">
-                      <div>
-                        <div className="flex items-center justify-between gap-1">
-                          <Badge variant="secondary" className="h-auto px-2.5 py-0.5 text-[10px] uppercase font-semibold">
-                            Recomendado
-                          </Badge>
-                          <span className="font-semibold text-sm text-foreground">
-                            {product.currency} {product.price.toFixed(2)}
-                          </span>
+        {/* PRODUCTOS RECOMENDADOS */}
+        <div className="mt-10">
+          <Reveal>
+            <div className="flex items-center justify-between">
+              <div>
+                <span className="text-[10px] font-medium tracking-[0.22em] text-aphros-rose-deep uppercase">
+                  Fórmulas botánicas ideales
+                </span>
+                <h2 className="mt-0.5 font-[family-name:var(--font-display)] text-2xl font-normal text-aphros-espresso sm:text-3xl">
+                  Tu rutina recomendada
+                </h2>
+                <p className="text-xs font-light text-mist">
+                  {products.length}{" "}
+                  {products.length === 1
+                    ? "producto seleccionado"
+                    : "productos seleccionados"}{" "}
+                  para piel {analysis.skinType}
+                </p>
+              </div>
+              <div className="flex size-10 items-center justify-center rounded-2xl bg-aphros-blush-200/75 text-aphros-wine">
+                <ShoppingBagIcon className="size-4.5" />
+              </div>
+            </div>
+          </Reveal>
+
+          <div className="mt-5 flex flex-col gap-4">
+            {products.map((product, idx) => (
+              <Reveal key={product.id} delay={idx * 80}>
+                <Card className="aphros-card-luxury group overflow-hidden rounded-3xl border-border/80 bg-card/95 shadow-2xs ring-0 [--card-spacing:--spacing(4)] sm:[--card-spacing:--spacing(5)]">
+                  <CardContent>
+                    <div className="flex gap-4">
+                      {/* Imagen */}
+                      <div className="relative size-24 shrink-0 overflow-hidden rounded-2xl border border-border/80 bg-aphros-blush-50 sm:size-28">
+                        {product.imageUrl ? (
+                          <Image
+                            src={product.imageUrl}
+                            alt={product.name}
+                            fill
+                            unoptimized={
+                              product.imageUrl.includes(".svg") ||
+                              product.imageUrl.includes("/api/media")
+                            }
+                            className="object-cover transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-105"
+                            sizes="(max-width: 640px) 96px, 112px"
+                          />
+                        ) : (
+                          <div className="flex h-full flex-col items-center justify-center gap-1 text-aphros-rose-deep">
+                            <AphrosShellMark
+                              className="h-5 w-8"
+                              strokeWidth={2.2}
+                            />
+                            <span className="text-[9px] tracking-[0.2em] uppercase">
+                              Aphros
+                            </span>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Detalles */}
+                      <div className="flex min-w-0 flex-1 flex-col justify-between">
+                        <div>
+                          <div className="flex items-center justify-between gap-2">
+                            <Badge
+                              variant="secondary"
+                              className="h-auto rounded-full px-2.5 py-0.5 text-[10px] font-medium tracking-wide text-aphros-wine uppercase"
+                            >
+                              Recomendado
+                            </Badge>
+                            <span className="text-sm font-semibold text-aphros-espresso">
+                              {product.currency} {product.price.toFixed(2)}
+                            </span>
+                          </div>
+                          <h3 className="mt-1.5 font-[family-name:var(--font-display)] text-lg font-medium leading-tight text-aphros-espresso sm:text-xl">
+                            {product.name}
+                          </h3>
+                          <p className="mt-1 line-clamp-2 text-xs font-light leading-relaxed text-mist">
+                            {product.description}
+                          </p>
                         </div>
-                        <h3 className="mt-1 font-[family-name:var(--font-display)] text-lg font-medium leading-tight text-forest sm:text-xl">
-                          {product.name}
-                        </h3>
-                        <p className="mt-1 line-clamp-2 text-xs leading-relaxed text-muted-foreground">
-                          {product.description}
-                        </p>
                       </div>
                     </div>
-                  </div>
 
-                  {/* AI Reason Callout */}
-                  {product.reason ? (
-                    <div className="mt-3.5 rounded-2xl border border-border bg-secondary/60 p-3 text-xs leading-relaxed text-secondary-foreground">
-                      <span className="font-semibold">¿Por qué este producto? </span>
-                      <span>{product.reason}</span>
-                    </div>
-                  ) : null}
-                </CardContent>
-              </Card>
+                    {/* Motivo personalizado */}
+                    {product.reason ? (
+                      <div className="mt-3.5 rounded-2xl border border-aphros-blush-300/70 bg-aphros-blush-50/90 p-3.5 text-xs leading-relaxed text-aphros-cocoa">
+                        <span className="font-medium text-aphros-wine">
+                          ¿Por qué este producto?{" "}
+                        </span>
+                        <span className="font-light">{product.reason}</span>
+                      </div>
+                    ) : null}
+                  </CardContent>
+                </Card>
+              </Reveal>
             ))}
           </div>
         </div>
 
-        {/* Tips Section with shadcn Card */}
-        {analysis.tips?.length ? (
-          <Card className="mt-8 rounded-3xl border-border bg-secondary/30 [--card-spacing:--spacing(5)] sm:[--card-spacing:--spacing(6)]">
-            <CardHeader>
-              <div className="flex items-center gap-2">
-                <LightbulbIcon className="size-4 text-secondary-foreground" />
-                <CardTitle className="font-[family-name:var(--font-display)] text-xl font-medium text-forest">
-                  Consejos de Cuidado Aphros
-                </CardTitle>
-              </div>
-            </CardHeader>
-            <CardContent>
-              <ul className="space-y-2.5 text-xs sm:text-sm text-muted-foreground">
-                {analysis.tips.map((tip, i) => (
-                  <li key={i} className="flex items-start gap-2 leading-relaxed">
-                    <span className="font-semibold text-secondary-foreground">•</span>
-                    <span>{tip}</span>
-                  </li>
-                ))}
-              </ul>
-            </CardContent>
-          </Card>
-        ) : null}
-
-        {/* Mobile Action Buttons using shadcn Buttons */}
-        <div className="mt-8 flex flex-col gap-3">
+        {/* ACCIONES FINALES */}
+        <Reveal delay={120} className="mt-8 flex flex-col gap-3">
           <Button
             asChild
-            variant="secondary"
             size="lg"
-            className="h-12 w-full rounded-2xl text-xs sm:text-sm font-semibold shadow-2xs active:scale-[0.98]"
+            className="aphros-btn-luxury h-12 w-full rounded-full text-xs font-medium tracking-wide shadow-sm sm:text-sm"
           >
-            <a href={`https://wa.me/?text=${whatsappShareText}`} target="_blank" rel="noreferrer">
-              <Share2Icon data-icon="inline-start" />
+            <a
+              href={`https://wa.me/?text=${whatsappShareText}`}
+              target="_blank"
+              rel="noreferrer"
+            >
+              <Share2Icon data-icon="inline-start" className="size-4" />
               <span>Compartir mi rutina por WhatsApp</span>
             </a>
           </Button>
@@ -263,25 +289,26 @@ async function ResultadoContent({
             <Button
               asChild
               variant="secondary"
-              className="h-11 rounded-xl text-xs font-medium active:scale-[0.98]"
+              className="h-11 rounded-full text-xs font-medium text-aphros-espresso transition-transform active:scale-[0.98]"
             >
               <Link href="/quiz">
-                <RotateCcwIcon data-icon="inline-start" />
+                <RotateCcwIcon data-icon="inline-start" className="size-3.5" />
                 <span>Repetir test</span>
               </Link>
             </Button>
 
             <Button
               asChild
-              className="h-11 rounded-xl text-xs font-semibold shadow-2xs active:scale-[0.98]"
+              variant="outline"
+              className="h-11 rounded-full border-border/90 bg-card/85 text-xs font-medium text-aphros-espresso hover:bg-aphros-blush-50"
             >
               <Link href="/">
                 <span>Volver al inicio</span>
-                <ArrowRightIcon data-icon="inline-end" />
+                <ArrowRightIcon data-icon="inline-end" className="size-3.5" />
               </Link>
             </Button>
           </div>
-        </div>
+        </Reveal>
       </section>
     </main>
   );

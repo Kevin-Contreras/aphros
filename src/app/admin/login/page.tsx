@@ -2,6 +2,7 @@
 
 import { FormEvent, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
+import { AphrosShellMark } from "@/components/AphrosShellMark";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import {
@@ -47,13 +48,19 @@ export default function AdminLoginPage() {
 
   return (
     <main className="flex min-h-screen items-center justify-center px-6">
-      <Card className="w-full max-w-md">
-        <CardHeader>
-          <CardDescription className="tracking-[0.28em] uppercase">
-            Aphros
+      <Card className="fade-up w-full max-w-md rounded-[2rem] border-border/80 bg-card/95 shadow-xs ring-0 [--card-spacing:--spacing(6)]">
+        <CardHeader className="items-center text-center">
+          <AphrosShellMark
+            className="mb-1 h-9 w-13 text-aphros-espresso"
+            strokeWidth={2.2}
+          />
+          <CardDescription className="text-[11px] font-medium tracking-[0.28em] text-aphros-rose-deep uppercase">
+            APHROS
           </CardDescription>
-          <CardTitle className="font-heading text-3xl">Acceso admin</CardTitle>
-          <CardDescription>
+          <CardTitle className="font-heading text-3xl font-normal text-aphros-espresso">
+            Acceso admin
+          </CardTitle>
+          <CardDescription className="font-light">
             Ingresa la contraseña definida en tu archivo .env
           </CardDescription>
         </CardHeader>
@@ -68,18 +75,23 @@ export default function AdminLoginPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   aria-invalid={Boolean(error) || undefined}
+                  className="h-11 rounded-2xl bg-aphros-blush-50/50"
                   required
                 />
               </Field>
               {error ? (
-                <Alert variant="destructive">
+                <Alert variant="destructive" className="rounded-2xl">
                   <AlertDescription>{error}</AlertDescription>
                 </Alert>
               ) : null}
             </FieldGroup>
           </CardContent>
-          <CardFooter>
-            <Button type="submit" className="w-full" disabled={isPending}>
+          <CardFooter className="border-border/60 bg-aphros-blush-50/70">
+            <Button
+              type="submit"
+              className="aphros-btn-luxury h-11 w-full rounded-full font-medium"
+              disabled={isPending}
+            >
               {isPending ? <Spinner data-icon="inline-start" /> : null}
               {isPending ? "Entrando…" : "Entrar"}
             </Button>
