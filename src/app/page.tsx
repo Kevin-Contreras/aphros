@@ -19,7 +19,7 @@ export default function HomePage() {
 
         <div className="grid w-full grid-cols-1 items-center lg:grid-cols-2">
           {/* Mitad Izquierda: Titular limpio + CTA */}
-          <div className="flex flex-col items-start px-5 py-10 sm:px-10 sm:py-16 lg:py-12 lg:pr-10 lg:pl-[max(2.5rem,calc((100vw-72rem)/2+1.5rem))]">
+          <div className="flex flex-col items-start px-5 py-14 sm:px-10 sm:py-20 lg:py-12 lg:pr-10 lg:pl-[max(2.5rem,calc((100vw-72rem)/2+1.5rem))]">
             <div className="fade-up flex items-center gap-3">
               <span className="h-px w-8 bg-aphros-wine/50" />
               <span className="text-[11px] font-medium tracking-[0.26em] text-aphros-rose-deep uppercase">
@@ -51,8 +51,8 @@ export default function HomePage() {
             </div>
           </div>
 
-          {/* Mitad Derecha: Liquid Glass Carousel ocupando 50% de la pantalla sin fondo/marco */}
-          <div className="fade-up-delay-2 w-full">
+          {/* Mitad Derecha: Liquid Glass Carousel solo en desktop */}
+          <div className="fade-up-delay-2 hidden w-full lg:block">
             <Suspense fallback={<AphrosHeroCarouselPlaceholder />}>
               <HeroProductsCarousel />
             </Suspense>

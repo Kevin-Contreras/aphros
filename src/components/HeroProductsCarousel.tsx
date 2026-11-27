@@ -1,6 +1,5 @@
 import { connection } from "next/server";
-import { AphrosHeroCarousel } from "@/components/AphrosHeroCarousel";
-import type { LiquidGlassCarouselItem } from "@/components/ui/liquid-glass-carousel";
+import { AphrosHeroCarousel, type HeroCarouselItem } from "@/components/AphrosHeroCarousel";
 import { toPublicImageUrl } from "@/lib/media-url";
 import { prisma } from "@/lib/prisma";
 
@@ -13,13 +12,31 @@ export async function HeroProductsCarousel() {
   const products = await prisma.product.findMany({
     where: { active: true, imageUrl: { not: null } },
     orderBy: { createdAt: "asc" },
-    select: { name: true, imageUrl: true },
+    select: {
+      id: true,
+      name: true,
+      imageUrl: true,
+      price: true,
+      currency: true,
+      category: true,
+    },
     take: MAX_ITEMS,
   });
 
-  const items: LiquidGlassCarouselItem[] = products.flatMap((product) => {
+  const items: HeroCarouselItem[] = products.flatMap((product) => {
     const src = toPublicImageUrl(product.imageUrl);
-    return src ? [{ title: product.name, src }] : [];
+    return src
+      ? [
+          {
+            id: product.id,
+            title: product.name,
+            src,
+            price: product.price,
+            currency: product.currency,
+            category: product.category,
+          },
+        ]
+      : [];
   });
 
   return <AphrosHeroCarousel items={items} />;

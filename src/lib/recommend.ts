@@ -16,11 +16,19 @@ export type AnswerForAi = {
   answer?: string;
 };
 
-export type AllowedSkinType = "grasosa" | "mixta" | "sensible" | "seca";
+export type AllowedSkinType =
+  | "grasosa"
+  | "mixta"
+  | "sensible"
+  | "seca"
+  | "con tendencia a acné";
 
 export function normalizeSkinType(raw?: string | null): AllowedSkinType {
   if (!raw) return "mixta";
   const s = raw.toLowerCase().trim().replace(/^piel\s+/, "");
+  if (s.includes("acne") || s.includes("acné") || s.includes("brote") || s.includes("grano")) {
+    return "con tendencia a acné";
+  }
   if (s.includes("gras") || s.includes("oleos") || s.includes("sebo")) return "grasosa";
   if (s.includes("sensib") || s.includes("irrit") || s.includes("roj") || s.includes("calmar")) return "sensible";
   if (s.includes("sec") || s.includes("deshidrat") || s.includes("tirant") || s.includes("asper") || s.includes("madur")) return "seca";
@@ -150,19 +158,38 @@ export function buildUserProfile(answers: AnswerForAi[]): UserProfile {
 
   const text = textBits.join(" | ");
 
-  // 1. Skin type — strictly classify into 1 of the 4 official Aphros categories: grasosa, mixta, sensible, seca
+  // 1. Skin type — strictly classify into 1 of the 5 official Aphros categories:
+  // grasosa, mixta, sensible, seca, con tendencia a acné
   let skinType: AllowedSkinType = "mixta";
-  if (exactTags.has("grasa") || exactTags.has("grasosa")) skinType = "grasosa";
-  else if (exactTags.has("seca")) skinType = "seca";
-  else if (exactTags.has("mixta")) skinType = "mixta";
-  else if (exactTags.has("sensible")) skinType = "sensible";
-  else if (exactTags.has("madura")) skinType = "seca";
-  else if (exactTags.has("normal")) skinType = "mixta";
-  else if (/tirante|áspero|deshidrat/.test(text)) skinType = "seca";
-  else if (/enrojecer|irritar/.test(text)) skinType = "sensible";
-  else if (/frente\/nariz|zona t/.test(text)) skinType = "mixta";
-  else if (/exceso de grasa|brilloso/.test(text)) skinType = "grasosa";
-  else if (/cómodo y equilibrado/.test(text)) skinType = "mixta";
+  if (
+    exactTags.has("acne_constante") ||
+    exactTags.has("acne") ||
+    /casi siempre tengo brotes|tendencia a acne|tendencia a acné/.test(text)
+  ) {
+    skinType = "con tendencia a acné";
+  } else if (exactTags.has("grasa") || exactTags.has("grasosa")) {
+    skinType = "grasosa";
+  } else if (exactTags.has("seca")) {
+    skinType = "seca";
+  } else if (exactTags.has("mixta")) {
+    skinType = "mixta";
+  } else if (exactTags.has("sensible")) {
+    skinType = "sensible";
+  } else if (exactTags.has("madura")) {
+    skinType = "seca";
+  } else if (exactTags.has("normal")) {
+    skinType = "mixta";
+  } else if (/tirante|áspero|deshidrat/.test(text)) {
+    skinType = "seca";
+  } else if (/enrojecer|irritar/.test(text)) {
+    skinType = "sensible";
+  } else if (/frente\/nariz|zona t/.test(text)) {
+    skinType = "mixta";
+  } else if (/exceso de grasa|brilloso/.test(text)) {
+    skinType = "grasosa";
+  } else if (/cómodo y equilibrado/.test(text)) {
+    skinType = "mixta";
+  }
 
   // 2. Shine level
   let shineLevel: UserProfile["shineLevel"] = "unknown";
@@ -233,6 +260,7 @@ export function buildUserProfile(answers: AnswerForAi[]): UserProfile {
   const prefersOilControl =
     primaryGoal === "control_grasa" ||
     skinType === "grasosa" ||
+    skinType === "con tendencia a acné" ||
     shineLevel === "alto" ||
     acneLevel === "constante";
   const prefersBrightening =
@@ -249,6 +277,7 @@ export function buildUserProfile(answers: AnswerForAi[]): UserProfile {
   const tags = unique([
     skinType,
     ...(skinType === "grasosa" ? ["grasa"] : []),
+    ...(skinType === "con tendencia a acné" ? ["grasa", "acne"] : []),
     ...(hasAcne ? ["acne"] : []),
     ...(isSensitive ? ["sensible", "calmante"] : []),
     ...(prefersHydration ? ["hidratante", ...(skinType === "seca" ? ["seca"] : [])] : []),
@@ -317,16 +346,6 @@ export function scoreProduct(product: ProductForAi, profile: UserProfile) {
     return { score: -20, matched: [] };
   }
 
-  // Skin type match (tags + description)
-  const isSkinMatch =
-    productTags.includes(profile.skinType) ||
-    (profile.skinType === "grasosa" && (productTags.includes("grasa") || productTags.includes("grasosa"))) ||
-    productTags.includes("todos");
-  if (isSkinMatch) {
-    score += 4;
-    matched.push(profile.skinType === "grasosa" ? "piel grasosa" : `piel ${profile.skinType}`);
-  }
-
   // Description-based semantic scoring (ingredients, benefits, and texture)
   const descAcne = /acne|brote|impureza|poro|punto negro|sebo/.test(descLower);
   const descOilControl = /matific|control de grasa|exceso de grasa|brillo|hamamelis|astringente/.test(descLower);
@@ -336,6 +355,23 @@ export function scoreProduct(product: ProductForAi, profile: UserProfile) {
   const descCalming = /calm|sensible|rojec|enrojec|rosacea|irrit|avena|miel|rosas/.test(descLower);
   const descSpf = /spf|filtro solar|proteccion solar|rayos uv|sol/.test(descLower);
   const descExfoliant = /exfoli|celulas muertas|renova/.test(descLower);
+
+  // Skin type match (tags + description)
+  const isSkinMatch =
+    productTags.includes(profile.skinType) ||
+    (profile.skinType === "grasosa" && (productTags.includes("grasa") || productTags.includes("grasosa"))) ||
+    (profile.skinType === "con tendencia a acné" && (productTags.includes("acne") || productTags.includes("grasa") || descAcne)) ||
+    productTags.includes("todos");
+  if (isSkinMatch) {
+    score += 4;
+    matched.push(
+      profile.skinType === "grasosa"
+        ? "piel grasosa"
+        : profile.skinType === "con tendencia a acné"
+        ? "piel con tendencia a acné"
+        : `piel ${profile.skinType}`,
+    );
+  }
 
   // Heavy bonus for the user's explicit PRIMARY GOAL (tags + description)
   if (profile.primaryGoal === "manchas" && (productTags.includes("aclarante") || descBrightening)) {
@@ -423,7 +459,10 @@ export function scoreProduct(product: ProductForAi, profile: UserProfile) {
   if (profile.skinType === "seca" && /evitar en piel(es)? (muy )?seca|no recomendad[ao] para piel(es)? seca/.test(descLower)) {
     score -= 8;
   }
-  if (profile.skinType === "grasosa" && /evitar en piel(es)? (muy )?grasa|no recomendad[ao] para piel(es)? grasa/.test(descLower)) {
+  if (
+    (profile.skinType === "grasosa" || profile.skinType === "con tendencia a acné") &&
+    /evitar en piel(es)? (muy )?grasa|no recomendad[ao] para piel(es)? grasa/.test(descLower)
+  ) {
     score -= 8;
   }
   if (profile.sensitivityLevel === "alta" && /evitar en piel(es)? (muy )?sensible|no recomendad[ao] para piel(es)? sensible/.test(descLower)) {
@@ -442,10 +481,11 @@ export function scoreProduct(product: ProductForAi, profile: UserProfile) {
   }
 
   if (
-    profile.skinType === "grasosa" &&
+    (profile.skinType === "grasosa" || profile.skinType === "con tendencia a acné") &&
     productTags.includes("seca") &&
     !productTags.includes("grasa") &&
     !productTags.includes("grasosa") &&
+    !productTags.includes("acne") &&
     !productTags.includes("mixta")
   ) {
     score -= 6;

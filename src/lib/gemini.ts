@@ -109,12 +109,13 @@ REGLAS CLÍNICAS Y DE PRECISIÓN (OBLIGATORIAS):
    - "Combo Anti Acné" ya incluye productos antiacné.
 5. En "reasons", cita los ingredientes naturales concretos de la descripción de cada producto y explica cómo benefician directamente las respuestas de esta persona (incluyendo si conviene usarlo de día, noche o semanalmente).
 6. CLASIFICACIÓN ESTRICTA DEL TIPO DE PIEL ("skinType"):
-   El campo "skinType" DEBE SER EXACTAMENTE UNO de estos 4 tipos (y NINGÚN OTRO):
-   - "grasosa" (piel con exceso de sebo, brillo o tendencia oleosa)
+   El campo "skinType" DEBE SER EXACTAMENTE UNO de estos 5 tipos (y NINGÚN OTRO):
+   - "grasosa" (piel con exceso de sebo, brillo o tendencia oleosa sin brotes severos)
    - "mixta" (piel con brillo en zona T y mejillas normales o secas, o equilibrada)
    - "sensible" (piel reactiva, con enrojecimiento, tirantez reactiva o irritación fácil)
    - "seca" (piel deshidratada, tirante, áspera o madura con falta de humectación)
-   ESTÁ TOTALMENTE PROHIBIDO responder con cualquier otro valor (como "normal", "madura", "grasa", "deshidratada"). La clasificación debe ser única y estrictamente una de las cuatro: grasosa, mixta, sensible o seca.
+   - "con tendencia a acné" (piel con brotes frecuentes o constantes de acné, espinillas o poros congestionados)
+   ESTÁ TOTALMENTE PROHIBIDO responder con cualquier otro valor (como "normal", "madura", "grasa", "deshidratada"). La clasificación debe ser única y estrictamente una de las cinco: grasosa, mixta, sensible, seca o con tendencia a acné.
 
 Responde ÚNICAMENTE con JSON válido con esta estructura exacta:
 {

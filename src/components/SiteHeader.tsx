@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { ArrowUpRightIcon } from "lucide-react";
 import { AphrosShellMark, AphrosWordmark } from "@/components/AphrosShellMark";
 
 type SiteHeaderProps = {
@@ -25,23 +24,21 @@ export function SiteHeader({ isQuiz = false }: SiteHeaderProps) {
           />
         </Link>
 
-        <nav>
-          {!isQuiz ? (
-            <Link
-              href="/quiz"
-              className="aphros-btn-luxury group inline-flex h-10 items-center gap-2 rounded-full bg-aphros-wine px-5 text-xs font-medium tracking-[0.12em] text-aphros-blush-50 uppercase shadow-xs sm:h-11 sm:px-6"
-            >
-              <span>Hacer test</span>
-              <ArrowUpRightIcon className="size-3.5 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-            </Link>
-          ) : (
+        <nav className="flex items-center gap-5 sm:gap-6">
+          <Link
+            href="/productos"
+            className="text-xs font-medium tracking-[0.16em] text-aphros-espresso/80 uppercase transition-colors duration-200 hover:text-aphros-wine"
+          >
+            Productos
+          </Link>
+          {isQuiz ? (
             <Link
               href="/"
               className="text-xs font-normal tracking-[0.16em] text-aphros-cocoa/80 uppercase transition-colors duration-300 hover:text-aphros-wine"
             >
               Inicio
             </Link>
-          )}
+          ) : null}
         </nav>
       </div>
     </header>
