@@ -380,9 +380,14 @@ export function ProductsWheelExplorer({ products }: ProductsWheelExplorerProps) 
           </p>
         </div>
 
-        {/* Rejilla de productos filtrados */}
+        {/* Rejilla de productos filtrados con animaciones interactivas */}
         {filteredProducts.length === 0 ? (
-          <div className="flex flex-col items-center justify-center rounded-3xl border border-dashed border-aphros-espresso/20 bg-white/40 py-16 px-4 text-center">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.96 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.3 }}
+            className="flex flex-col items-center justify-center rounded-3xl border border-dashed border-aphros-espresso/20 bg-white/40 py-16 px-4 text-center"
+          >
             <p className="font-[family-name:var(--font-display)] text-xl text-aphros-wine">
               No se encontraron productos
             </p>
@@ -395,90 +400,107 @@ export function ProductsWheelExplorer({ products }: ProductsWheelExplorerProps) 
                 setSearchQuery("");
                 setSelectedCategory("Todos");
               }}
-              className="mt-4 inline-flex items-center gap-1.5 rounded-full bg-aphros-wine px-5 py-2 text-xs font-medium text-aphros-blush-50 uppercase tracking-wider hover:opacity-90 transition-opacity"
+              className="mt-4 inline-flex items-center gap-1.5 rounded-full bg-aphros-wine px-5 py-2 text-xs font-medium text-aphros-blush-50 uppercase tracking-wider hover:opacity-90 active:scale-95 transition-all"
             >
               Ver todos los productos
             </button>
-          </div>
+          </motion.div>
         ) : (
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-            {filteredProducts.map((product) => {
-              const isCurrent = currentProduct?.id === product.id;
-              const imgSrc =
-                toPublicImageUrl(product.imageUrl) ||
-                "/products/serum-vitamina-c.svg";
+          <motion.div
+            layout
+            className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
+          >
+            <AnimatePresence mode="popLayout">
+              {filteredProducts.map((product, idx) => {
+                const isCurrent = currentProduct?.id === product.id;
+                const imgSrc =
+                  toPublicImageUrl(product.imageUrl) ||
+                  "/products/serum-vitamina-c.svg";
 
-              return (
-                <div
-                  key={product.id}
-                  className={`group relative flex flex-col justify-between overflow-hidden rounded-[1.75rem] border bg-white/80 p-5 transition-all duration-300 hover:shadow-lg ${
-                    isCurrent
-                      ? "border-aphros-wine ring-2 ring-aphros-wine/30"
-                      : "border-aphros-espresso/10 hover:border-aphros-wine/30"
-                  }`}
-                >
-                  {/* Imagen del producto */}
-                  <div className="relative mb-4 flex aspect-square w-full items-center justify-center overflow-hidden rounded-2xl bg-aphros-blush-100/60 p-4">
-                    <Image
-                      src={imgSrc}
-                      alt={product.name}
-                      width={200}
-                      height={200}
-                      unoptimized
-                      className="max-h-full max-w-full object-contain transition-transform duration-500 group-hover:scale-105"
-                    />
-                    <span className="absolute top-3 left-3 rounded-full bg-aphros-blush-50/90 px-2.5 py-0.5 text-[10px] font-medium tracking-[0.1em] text-aphros-wine uppercase backdrop-blur-xs">
-                      {product.category}
-                    </span>
-                  </div>
-
-                  {/* Info */}
-                  <div className="flex flex-1 flex-col justify-between">
-                    <div>
-                      <h4 className="font-[family-name:var(--font-display)] text-lg font-normal leading-snug text-aphros-wine">
-                        {product.name}
-                      </h4>
-                      <p className="mt-1 line-clamp-2 text-xs font-light text-aphros-espresso/70">
-                        {product.description}
-                      </p>
+                return (
+                  <motion.div
+                    key={product.id}
+                    layout
+                    initial={{ opacity: 0, y: 22, scale: 0.97 }}
+                    whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                    viewport={{ once: true, margin: "-20px" }}
+                    exit={{ opacity: 0, scale: 0.92, transition: { duration: 0.2 } }}
+                    transition={{
+                      duration: 0.38,
+                      delay: Math.min((idx % 4) * 0.06, 0.24),
+                      ease: [0.22, 1, 0.36, 1],
+                    }}
+                    whileTap={{ scale: 0.985 }}
+                    className={`group relative flex flex-col justify-between overflow-hidden rounded-[1.75rem] border bg-white/80 p-5 shadow-xs transition-all duration-300 hover:shadow-lg active:shadow-sm ${
+                      isCurrent
+                        ? "border-aphros-wine ring-2 ring-aphros-wine/30"
+                        : "border-aphros-espresso/10 hover:border-aphros-wine/30"
+                    }`}
+                  >
+                    {/* Imagen del producto con micro-zoom interactivo */}
+                    <div className="relative mb-4 flex aspect-square w-full items-center justify-center overflow-hidden rounded-2xl bg-aphros-blush-100/60 p-4 transition-colors duration-300 group-hover:bg-aphros-blush-100/90">
+                      <Image
+                        src={imgSrc}
+                        alt={product.name}
+                        width={200}
+                        height={200}
+                        unoptimized
+                        className="max-h-full max-w-full object-contain transition-transform duration-500 will-change-transform group-hover:scale-105 group-active:scale-95"
+                      />
+                      <span className="absolute top-3 left-3 rounded-full bg-aphros-blush-50/90 px-2.5 py-0.5 text-[10px] font-medium tracking-[0.1em] text-aphros-wine uppercase backdrop-blur-xs transition-transform duration-300 group-hover:scale-105">
+                        {product.category}
+                      </span>
                     </div>
 
-                    <div className="mt-4 pt-3 border-t border-aphros-espresso/10">
-                      <div className="flex items-center justify-between mb-3">
-                        <span className="font-[family-name:var(--font-display)] text-xl font-semibold text-aphros-wine">
-                          {product.currency || "Q"}
-                          {product.price.toFixed(2)}
-                        </span>
+                    {/* Info */}
+                    <div className="flex flex-1 flex-col justify-between">
+                      <div>
+                        <h4 className="font-[family-name:var(--font-display)] text-lg font-normal leading-snug text-aphros-wine transition-colors duration-200 group-hover:text-aphros-rose-deep">
+                          {product.name}
+                        </h4>
+                        <p className="mt-1 line-clamp-2 text-xs font-light text-aphros-espresso/70">
+                          {product.description}
+                        </p>
                       </div>
 
-                      <div className="flex items-center gap-2">
-                        {/* Botón ruleta: SOLO visible en desktop (oculto en responsive) */}
-                        <button
-                          onClick={() => handleFocusProduct(product)}
-                          className="hidden lg:inline-flex h-9 flex-1 items-center justify-center gap-1.5 rounded-full border border-aphros-wine/30 bg-aphros-blush-50 px-3 text-[11px] font-medium tracking-[0.1em] text-aphros-wine uppercase transition-colors hover:bg-aphros-wine hover:text-aphros-blush-50"
-                        >
-                          <RotateCwIcon className="size-3" />
-                          <span>Ver en rueda</span>
-                        </button>
+                      <div className="mt-4 pt-3 border-t border-aphros-espresso/10">
+                        <div className="flex items-center justify-between mb-3">
+                          <span className="font-[family-name:var(--font-display)] text-xl font-semibold text-aphros-wine">
+                            {product.currency || "Q"}
+                            {product.price.toFixed(2)}
+                          </span>
+                        </div>
 
-                        {/* Botón WhatsApp: ancho completo con texto en responsive, circular en desktop */}
-                        <a
-                          href={getWhatsAppUrl(product)}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          aria-label={`Comprar ${product.name} por WhatsApp`}
-                          className="inline-flex h-9 flex-1 lg:flex-none lg:size-9 items-center justify-center gap-1.5 rounded-full bg-aphros-wine px-3 text-[11px] font-medium text-aphros-blush-50 uppercase shadow-xs transition-transform hover:scale-105 active:scale-95"
-                        >
-                          <MessageCircleIcon className="size-3.5" />
-                          <span className="lg:hidden">Pedir por WhatsApp</span>
-                        </a>
+                        <div className="flex items-center gap-2">
+                          {/* Botón ruleta: SOLO visible en desktop (oculto en responsive) */}
+                          <button
+                            onClick={() => handleFocusProduct(product)}
+                            className="hidden lg:inline-flex h-9 flex-1 items-center justify-center gap-1.5 rounded-full border border-aphros-wine/30 bg-aphros-blush-50 px-3 text-[11px] font-medium tracking-[0.1em] text-aphros-wine uppercase transition-colors hover:bg-aphros-wine hover:text-aphros-blush-50"
+                          >
+                            <RotateCwIcon className="size-3" />
+                            <span>Ver en rueda</span>
+                          </button>
+
+                          {/* Botón WhatsApp animado al tap */}
+                          <motion.a
+                            href={getWhatsAppUrl(product)}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            aria-label={`Comprar ${product.name} por WhatsApp`}
+                            whileTap={{ scale: 0.94 }}
+                            className="inline-flex h-9 flex-1 lg:flex-none lg:size-9 items-center justify-center gap-1.5 rounded-full bg-aphros-wine px-3 text-[11px] font-medium text-aphros-blush-50 uppercase shadow-xs transition-all hover:bg-aphros-rose-deep hover:shadow-md"
+                          >
+                            <MessageCircleIcon className="size-3.5" />
+                            <span className="lg:hidden">Pedir por WhatsApp</span>
+                          </motion.a>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
+                  </motion.div>
+                );
+              })}
+            </AnimatePresence>
+          </motion.div>
         )}
       </section>
     </div>
