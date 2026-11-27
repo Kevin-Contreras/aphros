@@ -21,7 +21,8 @@ export type AllowedSkinType =
   | "mixta"
   | "sensible"
   | "seca"
-  | "con tendencia a acné";
+  | "con tendencia a acné"
+  | "madura";
 
 export function normalizeSkinType(raw?: string | null): AllowedSkinType {
   if (!raw) return "mixta";
@@ -29,9 +30,12 @@ export function normalizeSkinType(raw?: string | null): AllowedSkinType {
   if (s.includes("acne") || s.includes("acné") || s.includes("brote") || s.includes("grano")) {
     return "con tendencia a acné";
   }
+  if (s.includes("madur") || s.includes("antiedad") || s.includes("arruga") || s.includes("firmeza")) {
+    return "madura";
+  }
   if (s.includes("gras") || s.includes("oleos") || s.includes("sebo")) return "grasosa";
   if (s.includes("sensib") || s.includes("irrit") || s.includes("roj") || s.includes("calmar")) return "sensible";
-  if (s.includes("sec") || s.includes("deshidrat") || s.includes("tirant") || s.includes("asper") || s.includes("madur")) return "seca";
+  if (s.includes("sec") || s.includes("deshidrat") || s.includes("tirant") || s.includes("asper")) return "seca";
   return "mixta";
 }
 
@@ -158,8 +162,8 @@ export function buildUserProfile(answers: AnswerForAi[]): UserProfile {
 
   const text = textBits.join(" | ");
 
-  // 1. Skin type — strictly classify into 1 of the 5 official Aphros categories:
-  // grasosa, mixta, sensible, seca, con tendencia a acné
+  // 1. Skin type — strictly classify into 1 of the 6 official Aphros categories:
+  // grasosa, mixta, sensible, seca, con tendencia a acné, madura
   let skinType: AllowedSkinType = "mixta";
   if (
     exactTags.has("acne_constante") ||
@@ -167,6 +171,12 @@ export function buildUserProfile(answers: AnswerForAi[]): UserProfile {
     /casi siempre tengo brotes|tendencia a acne|tendencia a acné/.test(text)
   ) {
     skinType = "con tendencia a acné";
+  } else if (
+    exactTags.has("madura") ||
+    (exactTags.has("antiedad") && !exactTags.has("grasa") && !exactTags.has("grasosa")) ||
+    /signos de edad|líneas de expresión|arrugas/.test(text)
+  ) {
+    skinType = "madura";
   } else if (exactTags.has("grasa") || exactTags.has("grasosa")) {
     skinType = "grasosa";
   } else if (exactTags.has("seca")) {
@@ -175,8 +185,6 @@ export function buildUserProfile(answers: AnswerForAi[]): UserProfile {
     skinType = "mixta";
   } else if (exactTags.has("sensible")) {
     skinType = "sensible";
-  } else if (exactTags.has("madura")) {
-    skinType = "seca";
   } else if (exactTags.has("normal")) {
     skinType = "mixta";
   } else if (/tirante|áspero|deshidrat/.test(text)) {
@@ -266,7 +274,9 @@ export function buildUserProfile(answers: AnswerForAi[]): UserProfile {
   const prefersBrightening =
     primaryGoal === "manchas" || exactTags.has("aclarante");
   const prefersAntiAging =
-    primaryGoal === "antiedad" || exactTags.has("madura");
+    primaryGoal === "antiedad" ||
+    skinType === "madura" ||
+    exactTags.has("madura");
   const needsSpf =
     primaryGoal === "proteccion" ||
     exactTags.has("sol_alto") ||
@@ -278,6 +288,7 @@ export function buildUserProfile(answers: AnswerForAi[]): UserProfile {
     skinType,
     ...(skinType === "grasosa" ? ["grasa"] : []),
     ...(skinType === "con tendencia a acné" ? ["grasa", "acne"] : []),
+    ...(skinType === "madura" ? ["madura", "antiedad", "hidratante"] : []),
     ...(hasAcne ? ["acne"] : []),
     ...(isSensitive ? ["sensible", "calmante"] : []),
     ...(prefersHydration ? ["hidratante", ...(skinType === "seca" ? ["seca"] : [])] : []),
@@ -361,6 +372,7 @@ export function scoreProduct(product: ProductForAi, profile: UserProfile) {
     productTags.includes(profile.skinType) ||
     (profile.skinType === "grasosa" && (productTags.includes("grasa") || productTags.includes("grasosa"))) ||
     (profile.skinType === "con tendencia a acné" && (productTags.includes("acne") || productTags.includes("grasa") || descAcne)) ||
+    (profile.skinType === "madura" && (productTags.includes("madura") || productTags.includes("antiedad") || descAntiAging)) ||
     productTags.includes("todos");
   if (isSkinMatch) {
     score += 4;
@@ -369,6 +381,8 @@ export function scoreProduct(product: ProductForAi, profile: UserProfile) {
         ? "piel grasosa"
         : profile.skinType === "con tendencia a acné"
         ? "piel con tendencia a acné"
+        : profile.skinType === "madura"
+        ? "piel madura"
         : `piel ${profile.skinType}`,
     );
   }
@@ -551,7 +565,7 @@ function pickBalancedRoutine(
   // 2) Targeted treatment (serum / mask / exfoliant / primary goal cream)
   if (profile.primaryGoal === "manchas") {
     take((item) => /vitamina c|aclarante/i.test(item.product.name));
-  } else if (profile.primaryGoal === "antiedad") {
+  } else if (profile.primaryGoal === "antiedad" || profile.skinType === "madura") {
     take((item) => /macadamia|vitamina c|exfoliante rosa/i.test(item.product.name));
   } else if (profile.primaryGoal === "calmar" || profile.sensitivityLevel === "alta") {
     take((item) => /miel|avena|rosas/i.test(item.product.name));

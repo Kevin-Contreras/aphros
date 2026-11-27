@@ -96,7 +96,7 @@ REGLAS CLÍNICAS Y DE PRECISIÓN (OBLIGATORIAS):
 2. Elige entre 3 y 4 productos recomendados que mejor se adapten al perfil de la persona (no menciones números de paso ni impongas un orden estricto de pasos, son productos recomendados para su piel). Incluye protector solar SPF solo si necesitaProtectorSolar=true.
 3. Diferencia bien cada perfil, NO repitas siempre los mismos productos:
    - Si objetivoPrincipal = "manchas": prioriza Serum Facial de Vitamina C y/o Crema Facial Aclarante (o Protege y Aclara si también necesita SPF).
-   - Si objetivoPrincipal = "antiedad": prioriza Crema Facial Macadamia y/o Serum Facial de Vitamina C (y Crema Exfoliante Rosa de Castilla si no tiene sensibilidad alta).
+   - Si objetivoPrincipal = "antiedad" o piel madura: prioriza Crema Facial Macadamia y/o Serum Facial de Vitamina C (y Crema Exfoliante Rosa de Castilla si no tiene sensibilidad alta).
    - Si objetivoPrincipal = "hidratacion" o piel seca: prioriza Crema Facial Humectante, Jabón Facial de Miel y Avena, Kit Mascarilla de Miel o Agua Micelar Artesanal.
    - Si objetivoPrincipal = "calmar" o sensibilidad alta: prioriza Jabón Facial de Miel y Avena, Agua de Rosas Artesanal (o Combo Rosas) y Kit Mascarilla de Miel; evita exfoliantes fuertes.
    - Si objetivoPrincipal = "control_grasa" o piel grasa: prioriza Crema Facial Hamamelis; solo incluye productos "Anti Acné" si nivelDeAcne es "constante" u "ocasional".
@@ -109,13 +109,14 @@ REGLAS CLÍNICAS Y DE PRECISIÓN (OBLIGATORIAS):
    - "Combo Anti Acné" ya incluye productos antiacné.
 5. En "reasons", cita los ingredientes naturales concretos de la descripción de cada producto y explica cómo benefician directamente las respuestas de esta persona (incluyendo si conviene usarlo de día, noche o semanalmente).
 6. CLASIFICACIÓN ESTRICTA DEL TIPO DE PIEL ("skinType"):
-   El campo "skinType" DEBE SER EXACTAMENTE UNO de estos 5 tipos (y NINGÚN OTRO):
+   El campo "skinType" DEBE SER EXACTAMENTE UNO de estos 6 tipos (y NINGÚN OTRO):
    - "grasosa" (piel con exceso de sebo, brillo o tendencia oleosa sin brotes severos)
    - "mixta" (piel con brillo en zona T y mejillas normales o secas, o equilibrada)
    - "sensible" (piel reactiva, con enrojecimiento, tirantez reactiva o irritación fácil)
-   - "seca" (piel deshidratada, tirante, áspera o madura con falta de humectación)
+   - "seca" (piel deshidratada, tirante, áspera o con falta de humectación y lípidos)
    - "con tendencia a acné" (piel con brotes frecuentes o constantes de acné, espinillas o poros congestionados)
-   ESTÁ TOTALMENTE PROHIBIDO responder con cualquier otro valor (como "normal", "madura", "grasa", "deshidratada"). La clasificación debe ser única y estrictamente una de las cinco: grasosa, mixta, sensible, seca o con tendencia a acné.
+   - "madura" (piel con líneas de expresión, pérdida de firmeza/elasticidad o necesidad de nutrición y regeneración celular profunda)
+   ESTÁ TOTALMENTE PROHIBIDO responder con cualquier otro valor (como "normal", "grasa", "deshidratada", "envejecida"). La clasificación debe ser única y estrictamente una de las seis: grasosa, mixta, sensible, seca, con tendencia a acné o madura.
 
 Responde ÚNICAMENTE con JSON válido con esta estructura exacta:
 {
