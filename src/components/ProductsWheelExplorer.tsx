@@ -138,67 +138,9 @@ export function ProductsWheelExplorer({ products }: ProductsWheelExplorerProps) 
 
   return (
     <div className="w-full">
-      {/* SECCIÓN 1: SOLO LA RULETA AL INICIO (A PANTALLA COMPLETA EN DESKTOP, OCULTA EN RESPONSIVE) */}
-      <section
-        ref={wheelSectionRef}
-        className="relative hidden lg:flex min-h-[calc(100svh-4rem)] sm:min-h-[calc(100svh-5rem)] w-full flex-col items-center justify-center px-4 sm:px-6 lg:px-8"
-      >
-        <div className="relative flex h-[72svh] min-h-[460px] max-h-[640px] w-full max-w-7xl items-center justify-center bg-transparent">
-          {wheelItems.length > 0 ? (
-              <WheelCarousel
-                items={wheelItems}
-                activeIndex={safeIndex}
-                onActiveChange={(_, index) => setActiveIndex(index)}
-                mode="custom"
-                background="transparent"
-                panelColor="transparent"
-                photoSide="left"
-                photoWidth={42}
-                photoAspect="1/1"
-                photoRadius={0}
-                contentWidth={1050}
-                radius={320}
-                spacing={14}
-                visibleItems={7}
-                apexInset={26}
-                textColor="rgba(82, 35, 45, 0.42)"
-                selectedColor="#52232d"
-                markerColor="#52232d"
-                markerSize={11}
-                markerGap={16}
-                className="h-full w-full bg-transparent border-0 shadow-none"
-                photoClassName="bg-transparent border-0 shadow-none p-0"
-                imageClassName="object-contain p-2 drop-shadow-md"
-              />
-            ) : (
-              <div className="flex h-full items-center justify-center text-sm text-aphros-espresso/60">
-                No hay productos en esta categoría
-              </div>
-            )}
-          </div>
-
-        {/* Indicador inferior sutil para bajar a la descripción */}
-        <div className="mt-2 flex flex-col items-center gap-2 text-center pb-6">
-          <span className="text-[11px] font-light tracking-[0.16em] text-aphros-cocoa/60 uppercase">
-            Gira con el mouse o desliza para navegar
-          </span>
-          <a
-            href="#detalles-producto"
-            className="group flex flex-col items-center gap-1 text-[11px] font-medium tracking-[0.2em] text-aphros-wine/75 uppercase transition-colors hover:text-aphros-wine"
-          >
-            <span>Ver descripción y precio</span>
-            <ChevronDownIcon className="size-4 animate-bounce text-aphros-wine" />
-          </a>
-        </div>
-      </section>
-
-      {/* SECCIÓN 2: BUSCADOR, FILTROS Y DETALLES */}
-      <section
-        id="detalles-producto"
-        className="mx-auto w-full max-w-5xl px-4 pt-8 pb-16 sm:px-6 lg:px-8 lg:pt-12"
-      >
-        {/* Buscador de productos */}
-        <div className="mb-6 flex w-full justify-center">
+      {/* BUSCADOR SUPERIOR (Posicionado arriba en desktop y móvil) */}
+      <div className="mx-auto w-full max-w-5xl px-4 pt-6 pb-2 sm:px-6 lg:px-8">
+        <div className="flex w-full justify-center">
           <div className="relative w-full max-w-md">
             <SearchIcon className="pointer-events-none absolute left-4 top-1/2 size-4 -translate-y-1/2 text-aphros-espresso/45" />
             <input
@@ -222,6 +164,67 @@ export function ProductsWheelExplorer({ products }: ProductsWheelExplorerProps) 
             ) : null}
           </div>
         </div>
+      </div>
+
+      {/* SECCIÓN 1: SOLO LA RULETA AL INICIO (A PANTALLA COMPLETA EN DESKTOP, OCULTA EN RESPONSIVE) */}
+      <section
+        ref={wheelSectionRef}
+        className="relative hidden lg:flex min-h-[calc(100svh-9rem)] w-full flex-col items-center justify-center px-4 sm:px-6 lg:px-8"
+      >
+        <div className="relative flex h-[70svh] min-h-[460px] max-h-[640px] w-full max-w-7xl items-center justify-center bg-transparent">
+          {wheelItems.length > 0 ? (
+            <WheelCarousel
+              items={wheelItems}
+              activeIndex={safeIndex}
+              onActiveChange={(_, index) => setActiveIndex(index)}
+              mode="custom"
+              background="transparent"
+              panelColor="transparent"
+              photoSide="left"
+              photoWidth={42}
+              photoAspect="1/1"
+              photoRadius={0}
+              contentWidth={1050}
+              radius={320}
+              spacing={14}
+              visibleItems={7}
+              apexInset={26}
+              textColor="rgba(82, 35, 45, 0.42)"
+              selectedColor="#52232d"
+              markerColor="#52232d"
+              markerSize={11}
+              markerGap={16}
+              className="h-full w-full bg-transparent border-0 shadow-none"
+              photoClassName="bg-transparent border-0 shadow-none p-0"
+              imageClassName="object-contain p-2 drop-shadow-md"
+            />
+          ) : (
+            <div className="flex h-full items-center justify-center text-sm text-aphros-espresso/60">
+              No hay productos que coincidan con la búsqueda
+            </div>
+          )}
+        </div>
+
+        {/* Indicador inferior sutil para bajar a la descripción */}
+        <div className="mt-2 flex flex-col items-center gap-2 text-center pb-6">
+          <span className="text-[11px] font-light tracking-[0.16em] text-aphros-cocoa/60 uppercase">
+            Gira con el mouse o desliza para navegar
+          </span>
+          <a
+            href="#detalles-producto"
+            className="group flex flex-col items-center gap-1 text-[11px] font-medium tracking-[0.2em] text-aphros-wine/75 uppercase transition-colors hover:text-aphros-wine"
+          >
+            <span>Ver descripción y precio</span>
+            <ChevronDownIcon className="size-4 animate-bounce text-aphros-wine" />
+          </a>
+        </div>
+      </section>
+
+      {/* SECCIÓN 2: FILTROS Y DETALLES */}
+      <section
+        id="detalles-producto"
+        className="mx-auto w-full max-w-5xl px-4 pt-6 pb-16 sm:px-6 lg:px-8 lg:pt-10"
+      >
 
         {/* Controles de categoría y flechas */}
         <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between border-b border-aphros-espresso/10 pb-5">
