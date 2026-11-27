@@ -1,6 +1,7 @@
 "use client";
 
 import { FormEvent, useEffect, useState, useTransition } from "react";
+import { toast } from "sonner";
 import { toPublicImageUrl } from "@/lib/media-url";
 
 type Product = {
@@ -94,8 +95,11 @@ export function ProductsAdmin() {
         // Persist the private blob URL (or local path); preview uses display helper
         imageUrl: data.url,
       }));
+      toast.success("Imagen subida correctamente");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Error al subir imagen");
+      const msg = err instanceof Error ? err.message : "Error al subir imagen";
+      setError(msg);
+      toast.error("Error al subir imagen", { description: msg });
     } finally {
       setUploading(false);
     }
@@ -107,7 +111,9 @@ export function ProductsAdmin() {
 
     const price = Number(form.price);
     if (!Number.isFinite(price) || price <= 0) {
-      setError("El precio debe ser un número positivo.");
+      const msg = "El precio debe ser un número positivo.";
+      setError(msg);
+      toast.error("Precio inválido", { description: msg });
       return;
     }
 
@@ -122,6 +128,9 @@ export function ProductsAdmin() {
       buyUrl: form.buyUrl.trim(),
       active: form.active,
     };
+
+    const isEditing = Boolean(editingId);
+    const productName = payload.name;
 
     startTransition(async () => {
       try {
@@ -141,24 +150,46 @@ export function ProductsAdmin() {
         }
         resetForm();
         await load();
+
+        if (isEditing) {
+          toast.success("Producto actualizado exitosamente", {
+            description: `"${productName}" se actualizó correctamente.`,
+          });
+        } else {
+          toast.success("Producto creado exitosamente", {
+            description: `"${productName}" se agregó al catálogo.`,
+          });
+        }
       } catch (err) {
-        setError(err instanceof Error ? err.message : "Error al guardar");
+        const msg = err instanceof Error ? err.message : "Error al guardar";
+        setError(msg);
+        toast.error("Error al guardar", { description: msg });
       }
     });
   }
 
-  function remove(id: string) {
-    if (!confirm("¿Eliminar este producto?")) return;
+  function remove(id: string, name?: string) {
+    const label = name ? `el producto "${name}"` : "este producto";
+    if (!confirm(`¿Estás seguro de eliminar ${label}?`)) return;
+
     startTransition(async () => {
       try {
         const response = await fetch(`/api/admin/products/${id}`, {
           method: "DELETE",
         });
-        if (!response.ok) throw new Error("No se pudo eliminar");
+        if (!response.ok) throw new Error("No se pudo eliminar el producto");
         if (editingId === id) resetForm();
         await load();
+
+        toast.success("Producto eliminado exitosamente", {
+          description: name
+            ? `"${name}" fue removido del catálogo.`
+            : "El producto fue removido del catálogo.",
+        });
       } catch (err) {
-        setError(err instanceof Error ? err.message : "Error al eliminar");
+        const msg = err instanceof Error ? err.message : "Error al eliminar";
+        setError(msg);
+        toast.error("Error al eliminar", { description: msg });
       }
     });
   }
@@ -346,7 +377,7 @@ export function ProductsAdmin() {
                   </button>
                   <button
                     type="button"
-                    onClick={() => remove(product.id)}
+                    onClick={() => remove(product.id, product.name)}
                     className="rounded-full border border-sand px-3 py-1.5 text-xs text-red-700 hover:border-red-300"
                   >
                     Eliminar
