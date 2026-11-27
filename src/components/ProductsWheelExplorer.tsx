@@ -181,22 +181,23 @@ export function ProductsWheelExplorer({ products }: ProductsWheelExplorerProps) 
               background="transparent"
               panelColor="transparent"
               photoSide="left"
-              photoWidth={42}
+              photoWidth={35}
               photoAspect="1/1"
               photoRadius={0}
-              contentWidth={1050}
+              contentWidth={1300}
               radius={320}
               spacing={14}
               visibleItems={7}
-              apexInset={26}
+              apexInset={8}
               textColor="rgba(82, 35, 45, 0.42)"
               selectedColor="#52232d"
               markerColor="#52232d"
-              markerSize={11}
-              markerGap={16}
+              markerSize={10}
+              markerGap={14}
               className="h-full w-full bg-transparent border-0 shadow-none"
               photoClassName="bg-transparent border-0 shadow-none p-0"
               imageClassName="object-contain p-2 drop-shadow-md"
+              itemClassName="text-[clamp(0.95rem,1.5vw,1.3rem)] font-medium tracking-[-0.01em]"
             />
           ) : (
             <div className="flex h-full items-center justify-center text-sm text-aphros-espresso/60">
