@@ -12,11 +12,12 @@ export function SiteHeader({ isQuiz = false }: SiteHeaderProps) {
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-5 sm:h-20 sm:px-10">
         <Link
           href="/"
-          className="group flex items-center gap-2.5 focus-visible:outline-none"
+          className="group flex items-center gap-2.5 focus-visible:outline-none sm:gap-3"
+          aria-label="Aphros Inicio"
         >
           <AphrosShellMark
             priority
-            className="h-8 w-11 transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-105 sm:h-9 sm:w-12"
+            className="h-7 w-auto transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-105 sm:h-8"
           />
           <AphrosWordmark
             priority

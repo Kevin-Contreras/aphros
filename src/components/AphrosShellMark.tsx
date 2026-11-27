@@ -23,12 +23,17 @@ export function AphrosShellMark({
       : "/brand/shell-dark.png";
 
   return (
-    <span className={cn("relative inline-flex items-center justify-center shrink-0", className)}>
+    <span
+      className={cn(
+        "relative inline-flex aspect-[774/470] shrink-0 items-center justify-center",
+        className
+      )}
+    >
       <Image
         src={src}
         alt="Aphros"
-        width={958}
-        height={662}
+        width={774}
+        height={470}
         priority={priority}
         className="h-full w-full object-contain"
       />
@@ -47,12 +52,17 @@ export function AphrosWordmark({
   priority?: boolean;
 }) {
   return (
-    <span className={cn("relative inline-flex items-center justify-center shrink-0", className)}>
+    <span
+      className={cn(
+        "relative inline-flex aspect-[816/192] shrink-0 items-center justify-center",
+        className
+      )}
+    >
       <Image
         src="/brand/logo-dark.png"
         alt="APHROS"
-        width={1058}
-        height={412}
+        width={816}
+        height={192}
         priority={priority}
         className="h-full w-full object-contain"
       />

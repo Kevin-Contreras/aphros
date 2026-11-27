@@ -4,9 +4,7 @@ import { connection } from "next/server";
 import {
   ArrowRightIcon,
   CheckCircle2Icon,
-  HelpCircleIcon,
   MessageCircleIcon,
-  PackageIcon,
   SparklesIcon,
   TrendingUpIcon,
   UsersIcon,
