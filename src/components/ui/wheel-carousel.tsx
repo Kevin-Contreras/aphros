@@ -494,11 +494,12 @@ export function WheelCarousel({
                   moveBy(offset);
                 }}
                 className={cn(
-                  "pointer-events-auto cursor-pointer absolute top-1/2 origin-left whitespace-nowrap text-[clamp(1rem,2.4vw,1.625rem)] font-medium leading-none tracking-[-0.01em] transition-colors duration-200",
+                  "pointer-events-auto cursor-pointer absolute top-1/2 origin-left whitespace-normal break-words text-[clamp(1rem,2.4vw,1.625rem)] font-medium leading-[1.22] tracking-[-0.01em] transition-colors duration-200",
                   itemClassName,
                 )}
                 style={{
                   left: `${apexInset}%`,
+                  maxWidth: `calc(100% - ${apexInset}% - 1.5rem)`,
                   color: selected ? palette.selected : palette.text,
                   opacity,
                   transform: `translate(${x}px, ${y}px) translateY(-50%) rotate(${angle}deg) scale(${scale})`,
